@@ -9,7 +9,6 @@
 
 # Temp files
 .vs/
-.vscode/
 
 # Others
 ~$*

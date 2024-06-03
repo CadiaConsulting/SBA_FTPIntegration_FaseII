@@ -96,7 +96,36 @@ page 50000 "FTP Integration Setup"
                     ApplicationArea = All;
                     ToolTip = 'Active Prefix File Name';
                 }
-
+                field("Import Excel"; Rec."Import Excel")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Import Excel';
+                }
+                field("Create Order"; Rec."Create Order")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Create Order';
+                }
+                field("Release Order"; Rec."Release Order")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Release Order';
+                }
+                field("Post Order"; Rec."Post Order")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Post Order';
+                }
+                field("Export Purch Tax"; Rec."Export Purch Tax")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Export Purch Tax';
+                }
+                field("Import Purch Post"; Rec."Import Purch Post")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Import Purch Post';
+                }
 
             }
 

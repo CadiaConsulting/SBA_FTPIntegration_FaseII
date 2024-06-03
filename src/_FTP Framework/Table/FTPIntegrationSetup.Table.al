@@ -93,12 +93,50 @@ table 50001 "FTP Integration Setup"
             DataClassification = CustomerContent;
         }
 
+        field(200; "Import Excel"; Boolean)
+        {
+            Caption = 'Import Excel';
+            DataClassification = CustomerContent;
+        }
+
+        field(201; "Create Order"; Boolean)
+        {
+            Caption = 'Create Order';
+            DataClassification = CustomerContent;
+        }
+        field(202; "Release Order"; Boolean)
+        {
+            Caption = 'Release Order';
+            DataClassification = CustomerContent;
+        }
+
+        field(203; "Post Order"; Boolean)
+        {
+            Caption = 'Post Order';
+            DataClassification = CustomerContent;
+        }
+        field(204; "Export Purch Tax"; Boolean)
+        {
+            Caption = 'Export Purch Tax';
+            DataClassification = CustomerContent;
+        }
+        field(205; "Import Purch Post"; Boolean)
+        {
+            Caption = 'Import Purch Post';
+            DataClassification = CustomerContent;
+        }
+
     }
     keys
     {
         key(PK; "Integration")
         {
             Clustered = true;
+        }
+
+        key(FK; "Integration Relation", Sequence)
+        {
+
         }
     }
 }

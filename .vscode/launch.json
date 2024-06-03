@@ -1,0 +1,56 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+             
+            "name": "COPY_SBA_26032024",
+            "request": "launch",
+            "type": "al",
+            "environmentType":"Sandbox"   ,
+            "tenant": "3688e59a-3259-4495-8f8b-39d3649166e4",
+            "environmentName": "COPY_SBA_26032024",
+            "startupObjectId": 50000,
+            "startupObjectType": "Page",
+            "breakOnError": true,
+            "launchBrowser": true,
+            "enableLongRunningSqlStatements": true,
+            "enableSqlInformationDebugger": true,
+            "schemaUpdateMode": "ForceSync" 
+        
+        },
+        {
+             
+            "name": "FASE II",
+            "request": "launch",
+            "type": "al",
+            "environmentType":"Sandbox"   ,
+            "tenant": "3688e59a-3259-4495-8f8b-39d3649166e4",
+            "environmentName": "SBA_DEV_FASE_2_16052024",
+            "startupObjectId": 22,
+            "startupObjectType": "Page",
+            "breakOnError": true,
+            "launchBrowser": true,
+            "enableLongRunningSqlStatements": true,
+            "enableSqlInformationDebugger": true,
+            "schemaUpdateMode": "ForceSync" 
+        
+        },
+        {
+             
+            "name": "SBA_UAT_02032024",
+            "request": "launch",
+            "type": "al",
+            "environmentType":"Sandbox"   ,
+            "tenant": "3688e59a-3259-4495-8f8b-39d3649166e4",
+            "environmentName": "SBA_UAT_02032024",
+            "startupObjectId": 50000,
+            "startupObjectType": "Page",
+            "breakOnError": true,
+            "launchBrowser": true,
+            "enableLongRunningSqlStatements": true,
+            "enableSqlInformationDebugger": true,
+            "schemaUpdateMode": "ForceSync" 
+        
+        }
+    ]
+}

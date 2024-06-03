@@ -5,113 +5,110 @@ codeunit 50009 "Integration SBA Job Runner"
 
     trigger OnRun()
     var
-
-    begin
-        //Processing Sales ( Import, Create, Post)
-        if rec."Parameter String" = '1' then
-            IntSales();
-
-        //Processing Return Sales ( Import, Create, Post)
-        if rec."Parameter String" = '2' then
-            IntReturnSales();
-
-        //Processing Purchase ( Import, Create, Post)
-        if rec."Parameter String" = '3' then
-            IntPurchase();
-
-        //Processing Purchase ( Import, Create, Post)
-        if rec."Parameter String" = '4' then
-            IntPurchasereturn();
-
-        //Processing Purchase ( Import, Create, Post)
-        if rec."Parameter String" = '5' then
-            IntPurchPayment();
-
-        //Processing Purchase ( Import, Create, Post)
-        if rec."Parameter String" = '6' then
-            IntPurchPaymentApply();
-
-        //Processing Purchase ( Import, Create, Post)
-        if rec."Parameter String" = '7' then
-            IntPurchPaymentUnapply();
-
-    end;
-
-    local procedure IntSales()
-    var
-        IntegSales: Record IntegrationSales;
-        IntegrationSales: codeunit IntegrationSales;
-    begin
-        ImportExcelBuffer.ImportExcelSales();
-        IntegrationSales.CreateSales(IntegSales);
-        IntegrationSales.PostSales(IntegSales);
-
-    end;
-
-    local procedure IntReturnSales()
-    var
-        IntSalesCred: Record IntSalesCreditNote;
-        IntSalesCreditNote: codeunit IntSalesCreditNote;
-    begin
-        ImportExcelBuffer.ImportExcelSalesReturn();
-        IntSalesCreditNote.CreateSalesCredit(IntSalesCred);
-        IntSalesCreditNote.PostSalesCredit(IntSalesCred);
-
-    end;
-
-    local procedure IntPurchase()
-    var
-        IntPurch: Record "Integration Purchase";
-        IntegrationPurchase: codeunit "Integration Purchase";
-    begin
-        ImportExcelBuffer.ImportExcelPurchase();
-        IntegrationPurchase.CreatePurchase(IntPurch);
-        IntegrationPurchase.PostPurchase(IntPurch);
-
-    end;
-
-    local procedure IntPurchasereturn()
-    var
-        IntPurhRet: Record "Integration Purchase Return";
-        IntegrationPurchaseReturn: codeunit "Integration Purchase Return";
-
-    begin
-        ImportExcelBuffer.ImportExcelPurchase();
-        IntegrationPurchaseReturn.PostPurchaseReturn(IntPurhRet);
-        IntegrationPurchaseReturn.PostPurchaseReturn(IntPurhRet);
-
-    end;
-
-    local procedure IntPurchPayment()
-    var
-        IntPurchPayment: codeunit IntPurchPayment;
-    begin
-        //Import Excel
-        ImportExcelBuffer.ImportExcelPaymentPurchaseJournal(FTPIntegrationType::"Purchase Apply");
-        Commit();
-        IntPurchPayment.Run();
-    end;
-
-    local procedure IntPurchPaymentApply()
-    var
-        IntPurchPaymentApply: codeunit IntPurchPaymentApply;
-    begin
-        ImportExcelBuffer.ImportExcelPaymentPurchaseJournal(FTPIntegrationType::"Purchase Apply");
-        Commit();
-        IntPurchPaymentApply.Run();
-    end;
-
-    procedure IntPurchPaymentUnapply()
-    var
-        IntPurchPaymentUnapply: Codeunit IntPurchPaymentUnapply;
-    begin
-        ImportExcelBuffer.ImportExcelPaymentPurchaseJournal(FTPIntegrationType::"Purchase Unapply");
-        Commit();
-        IntPurchPaymentUnapply.Run();
-    end;
-
-    var
         ImportExcelBuffer: codeunit "Import Excel Buffer";
         FTPIntegrationType: Enum "FTP Integration Type";
+        FTPSetup: Record "FTP Integration Setup";
+        IntPurch: Record "Integration Purchase";
+        IntegrationPurchase: codeunit "Integration Purchase";
+        IntPurhRet: Record "Integration Purchase Return";
+        IntegrationPurchaseReturn: codeunit "Integration Purchase Return";
+        IntegSales: Record IntegrationSales;
+        IntegrationSales: codeunit IntegrationSales;
+        IntSalesCred: Record IntSalesCreditNote;
+        IntSalesCreditNote: codeunit IntSalesCreditNote;
+        IntPurchPayment: codeunit IntPurchPayment;
+        IntPurchPaymentApply: codeunit IntPurchPaymentApply;
+        IntPurchPaymentUnapply: Codeunit IntPurchPaymentUnapply;
+
+    begin
+
+        FTPSetup.Reset();
+        FTPSetup.SetCurrentKey("Integration Relation", Sequence);
+        if FTPSetup.FindSet() then
+            repeat
+
+                if FTPSetup.Integration = FTPSetup.Integration::Sales then begin
+                    if FTPSetup."Post Order" then
+                        ImportExcelBuffer.ImportExcelSales();
+
+                    if FTPSetup."Create Order" then
+                        IntegrationSales.CreateSales(IntegSales);
+
+                    if FTPSetup."Post Order" then
+                        IntegrationSales.PostSales(IntegSales);
+
+                end;
+
+                if FTPSetup.Integration = FTPSetup.Integration::"Sales Credit Note" then begin
+                    if FTPSetup."Post Order" then
+                        ImportExcelBuffer.ImportExcelSalesReturn();
+
+                    if FTPSetup."Create Order" then
+                        IntSalesCreditNote.CreateSalesCredit(IntSalesCred);
+
+                    if FTPSetup."Post Order" then
+                        IntSalesCreditNote.PostSalesCredit(IntSalesCred);
+                end;
+
+                if FTPSetup.Integration = FTPSetup.Integration::Purchase then begin
+
+                    if FTPSetup."Import Excel" then
+                        ImportExcelBuffer.ImportExcelPurchase();
+
+                    if FTPSetup."Create Order" then
+                        IntegrationPurchase.CreatePurchase(IntPurch);
+
+                    if FTPSetup."Release Order" then
+                        IntegrationPurchase.PurchRealse(IntPurch);
+
+                    if FTPSetup."Post Order" then
+                        IntegrationPurchase.PostPurchase(IntPurch);
+
+                    if FTPSetup."Export Purch Tax" then
+                        ImportExcelBuffer.ExportExcelPurchaseTax();
+
+                    if FTPSetup."Import Purch Post" then
+                        ImportExcelBuffer.ImportExcelPurchasePost();
+
+                end;
+
+                if FTPSetup.Integration = FTPSetup.Integration::"Purchase Credit Note" then begin
+                    if FTPSetup."Post Order" then
+                        ImportExcelBuffer.ImportExcelPurchase();
+
+                    if FTPSetup."Post Order" then
+                        IntegrationPurchaseReturn.PostPurchaseReturn(IntPurhRet);
+
+                end;
+
+                if FTPSetup.Integration = FTPSetup.Integration::"Purchase Payment" then begin
+                    if FTPSetup."Post Order" then begin
+                        ImportExcelBuffer.ImportExcelPaymentPurchaseJournal(FTPIntegrationType::"Purchase Apply");
+                        Commit();
+                        IntPurchPayment.Run();
+                    end;
+                end;
+
+                if FTPSetup.Integration = FTPSetup.Integration::"Purchase Apply" then begin
+                    if FTPSetup."Post Order" then begin
+                        ImportExcelBuffer.ImportExcelPaymentPurchaseJournal(FTPIntegrationType::"Purchase Apply");
+                        Commit();
+                        IntPurchPaymentApply.Run();
+
+                    end;
+
+                end;
+
+                if FTPSetup.Integration = FTPSetup.Integration::"Purchase Unapply" then begin
+                    if FTPSetup."Post Order" then begin
+                        ImportExcelBuffer.ImportExcelPaymentPurchaseJournal(FTPIntegrationType::"Purchase Unapply");
+                        Commit();
+                        IntPurchPaymentUnapply.Run();
+                    end;
+                end;
+
+            until FTPSetup.Next() = 0;
+
+    end;
 
 }

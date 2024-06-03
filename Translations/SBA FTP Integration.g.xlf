@@ -98,6 +98,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field Active Prefix File Name - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Table 2709587453 - Field 2461787606 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Create Order</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field Create Order - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Table 2709587453 - Field 1987941387 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Directory</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -118,6 +123,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field Error Folder - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Table 2709587453 - Field 1987961607 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Export Purch Tax</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field Export Purch Tax - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Table 2709587453 - Field 3180352575 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>FTP Password</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -127,6 +137,16 @@
           <source>FTP User</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field FTP User - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 2709587453 - Field 3236640638 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Import Excel</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field Import Excel - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 2709587453 - Field 4139720563 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Import Purch Post</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field Import Purch Post - Property Caption</note>
         </trans-unit>
         <trans-unit id="Table 2709587453 - Field 3625550110 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Imported Folder</source>
@@ -148,10 +168,20 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field Manage by file - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Table 2709587453 - Field 1750937698 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Post Order</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field Post Order - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Table 2709587453 - Field 637436115 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Prefix File Name</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field Prefix File Name - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 2709587453 - Field 2582270369 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Release Order</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field Release Order - Property Caption</note>
         </trans-unit>
         <trans-unit id="Table 2709587453 - Field 1251813484 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Send Email</source>
@@ -3643,6 +3673,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page FTP Integration Setup - Control Active Prefix File Name - Property ToolTip</note>
         </trans-unit>
+        <trans-unit id="Page 2709587453 - Control 2461787606 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Create Order</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page FTP Integration Setup - Control Create Order - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Page 2709587453 - Control 1987941387 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Specifies the value of the Directory field.</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -3663,6 +3698,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page FTP Integration Setup - Control Error Folder - Property ToolTip</note>
         </trans-unit>
+        <trans-unit id="Page 2709587453 - Control 1987961607 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Export Purch Tax</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page FTP Integration Setup - Control Export Purch Tax - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Page 2709587453 - Control 3180352575 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Specifies the value of the FTP Password field.</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -3672,6 +3712,16 @@
           <source>Specifies the value of the FTP User field.</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page FTP Integration Setup - Control FTP User - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2709587453 - Control 3236640638 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Import Excel</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page FTP Integration Setup - Control Import Excel - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2709587453 - Control 4139720563 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Import Purch Post</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page FTP Integration Setup - Control Import Purch Post - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 2709587453 - Control 3625550110 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Specifies the value of the Imported Folder field.</source>
@@ -3693,10 +3743,20 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page FTP Integration Setup - Control Manage by file - Property ToolTip</note>
         </trans-unit>
+        <trans-unit id="Page 2709587453 - Control 1750937698 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Post Order</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page FTP Integration Setup - Control Post Order - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Page 2709587453 - Control 637436115 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Prefix File Name</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page FTP Integration Setup - Control Prefix File Name - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2709587453 - Control 2582270369 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Release Order</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page FTP Integration Setup - Control Release Order - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 2709587453 - Control 1251813484 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Specifies the value of the Send Email field.</source>
