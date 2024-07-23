@@ -1,12 +1,12 @@
 page 50014 "Integration Purchase Posted"
 {
-    Caption = 'Integration Purchase Order Posted';
+    Caption = 'Integration Purchase Order Posted/Cancelled';
     PageType = List;
     Editable = false;
     ApplicationArea = All;
     RefreshOnActivate = true;
     SourceTable = "Integration Purchase";
-    SourceTableView = where(Status = filter(Posted));
+    SourceTableView = where(Status = filter(Posted | Cancelled));
     UsageCategory = Lists;
 
     layout

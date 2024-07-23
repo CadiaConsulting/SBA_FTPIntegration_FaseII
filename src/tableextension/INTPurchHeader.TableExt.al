@@ -2,13 +2,6 @@ tableextension 50013 INTPurchHeader extends "Purchase Header"
 {
     fields
     {
-        // Add changes to table fields here
-        // field(50104; "Doc. URL"; Text[250])
-        // {
-        //     Caption = 'Doc. URL';
-        //     ExtendedDatatype = URL;
-        //     Editable = false;
-        // }
         field(50000; "IRRF Ret"; Decimal)
         {
             Caption = 'IRRF Ret';
@@ -48,6 +41,10 @@ tableextension 50013 INTPurchHeader extends "Purchase Header"
         {
             Caption = 'PO Total';
             Editable = false;
+        }
+        field(50099; "Posting Message"; text[200])
+        {
+            Caption = 'Posting Message';
         }
     }
 

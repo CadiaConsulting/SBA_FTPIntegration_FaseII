@@ -87,7 +87,7 @@ pageextension 50021 "IntCADBRTaxBRMngrRC" extends "CADBR Tax BR Manager RC"
 
                         action(PurchaseOrderIntPosted)
                         {
-                            Caption = 'Integration Purchase Order Posted';
+                            Caption = 'Integration Purchase Order Posted/Cancelled';
                             ApplicationArea = all;
                             RunObject = page "Integration Purchase Posted";
                         }

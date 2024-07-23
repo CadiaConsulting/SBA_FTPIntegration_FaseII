@@ -38,4 +38,13 @@ enum 50010 "Integration Import Status"
     {
         Caption = 'Exported';
     }
+    value(9; "Under Analysis")
+    {
+        Caption = 'Under Analysis';
+    }
+    value(10; "Cancelled")
+    {
+        Caption = 'Cancelled';
+    }
+
 }

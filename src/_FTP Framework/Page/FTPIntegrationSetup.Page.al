@@ -279,10 +279,6 @@ page 50000 "FTP Integration Setup"
                     If PathToFile = '' Then
                         Exit;
 
-                    // From Blob:
-                    // TempBlob.CalcFields(Blob);
-                    // TempBlob.Blob.CreateInStream(InStr);
-
                     FileBase64 := Base64.ToBase64(InStr);
 
                     FTPComm.DoAction(Enum::"FTP Actions"::upload, FileName, Rec.Directory, Destination, FileBase64);
@@ -290,7 +286,6 @@ page 50000 "FTP Integration Setup"
                 end;
 
             }
-
             action(TestErrorEmail)
             {
                 ApplicationArea = All;
@@ -349,28 +344,6 @@ page 50000 "FTP Integration Setup"
                 end;
 
             }
-            // action(XML)
-            // {
-            //     ApplicationArea = All;
-            //     ToolTip = 'XML Test';
-            //     Image = Process;
-            //     Promoted = true;
-            //     PromotedOnly = true;
-            //     PromotedCategory = Process;
-            //     PromotedIsBig = true;
-            //     Visible = false;
-
-            //     trigger OnAction()
-            //     var
-            //         FTPComm: codeunit "XML Test";
-            //     begin
-            //         FTPComm.Run();
-
-            //         Message('Fim');
-            //     end;
-
-            // }
-
 
         }
 

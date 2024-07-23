@@ -179,4 +179,39 @@ codeunit 50017 "Codeunits Events"
         GenJournalLine."External Document No." := VendorLedgerEntry."External Document No.";
 
     end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Purchase Header", 'OnBeforeOnDelete', '', false, false)]
+    local procedure PurcHeaderOnBeforeOnDelete(var PurchaseHeader: Record "Purchase Header");
+    var
+        intPur: Record "Integration Purchase";
+    begin
+
+        PurchaseHeader."Posting No." := '';
+
+        intPur.Reset();
+        intPur.SetRange("Document No.", PurchaseHeader."No.");
+        if not intPur.IsEmpty then
+            intPur.ModifyAll(Status, intpur.Status::Cancelled);
+
+
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Release Purchase Document", 'OnBeforeManualReleasePurchaseDoc', '', false, false)]
+    local procedure ReleasePurcDoc_OnBeforeManualReleasePurchaseDoc(var PurchaseHeader: Record "Purchase Header");
+    var
+
+        intPurch: Codeunit "Integration Purchase";
+        UserSetup: Record "User Setup";
+    begin
+        UserSetup.Reset();
+        UserSetup.Get(USERID);
+        if UserSetup."Release PO" then begin
+            intPurch.ReleasePurcDocValidate(PurchaseHeader);
+            if PurchaseHeader."Posting Message" <> '' then
+                exit;
+        end else
+            error('Usuario %1 sem Permissão para Liberar Pedido');
+
+    end;
+
 }

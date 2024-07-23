@@ -84,6 +84,12 @@ pageextension 50020 "INTRBusinessMngrRoleCenter" extends "Business Manager Role 
                             ApplicationArea = all;
                             RunObject = page "Integration Purchase";
                         }
+                        action(PurchaseOrderIntPosted)
+                        {
+                            Caption = 'Integration Purchase Order Posted/Cancelled';
+                            ApplicationArea = all;
+                            RunObject = page "Integration Purchase Posted";
+                        }
                     }
                     group(PaymentsInt)
                     {

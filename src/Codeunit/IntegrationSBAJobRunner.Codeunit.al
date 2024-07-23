@@ -21,14 +21,16 @@ codeunit 50009 "Integration SBA Job Runner"
         IntPurchPaymentUnapply: Codeunit IntPurchPaymentUnapply;
 
     begin
+        Rec.TestField("Parameter String");
 
         FTPSetup.Reset();
         FTPSetup.SetCurrentKey("Integration Relation", Sequence);
+        FTPSetup.SetRange("Integration Relation", Rec."Parameter String");
         if FTPSetup.FindSet() then
             repeat
 
                 if FTPSetup.Integration = FTPSetup.Integration::Sales then begin
-                    if FTPSetup."Post Order" then
+                    if FTPSetup."Import Excel" then
                         ImportExcelBuffer.ImportExcelSales();
 
                     if FTPSetup."Create Order" then
@@ -40,7 +42,7 @@ codeunit 50009 "Integration SBA Job Runner"
                 end;
 
                 if FTPSetup.Integration = FTPSetup.Integration::"Sales Credit Note" then begin
-                    if FTPSetup."Post Order" then
+                    if FTPSetup."Import Excel" then
                         ImportExcelBuffer.ImportExcelSalesReturn();
 
                     if FTPSetup."Create Order" then

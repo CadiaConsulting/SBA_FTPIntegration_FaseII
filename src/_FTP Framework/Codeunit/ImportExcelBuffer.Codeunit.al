@@ -771,6 +771,7 @@ codeunit 50002 "Import Excel Buffer"
         ExistLine: Boolean;
         MaxCollumn: Integer;
         PostingDateEmptyErr: Label 'The Posting date cannot be empty.';
+        Orderdate: Date;
 
     begin
         RowNo := 0;
@@ -840,13 +841,13 @@ codeunit 50002 "Import Excel Buffer"
                         ErrorFile := true;
                 end else
                     //Column END Error
-                for RowNo := 2 to MaxRowNo do begin
+                    for RowNo := 2 to MaxRowNo do begin
                         LineNo := LineNo + 10000;
                         ExistLine := false;
 
                         if (StrLen(GetValueAtCell(RowNo, 2)) <= 20) then begin
 
-                            if IntegrationPurchase.Get(GetValueAtCell(RowNo, 2), GetValueAtCell(RowNo, 6)) then
+                            if IntegrationPurchase.Get(GetValueAtCell(RowNo, 2), GetValueAtCell(RowNo, 6), copystr(Filename, 1, 200)) then
                                 ExistLine := true
                             else
                                 IntegrationPurchase.Init();
@@ -1162,7 +1163,8 @@ codeunit 50002 "Import Excel Buffer"
                         IntPurcOld.Reset();
                         IntPurcOld.SetCurrentKey("Document No.", "Order Date");
                         IntPurcOld.SetRange("Document No.", IntegrationPurchase."Document No.");
-                        IntPurcOld.SetFilter("Order Date", '<>%1', IntegrationPurchase."Order Date");
+                        //IntPurcOld.SetFilter("Order Date", '<>%1', IntegrationPurchase."Order Date");
+                        IntPurcOld.SetFilter("Excel File Name", '<>%1', IntegrationPurchase."Excel File Name");
                         if IntPurcOld.FindFirst() then begin
 
                             IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Excel Error";
@@ -1245,6 +1247,9 @@ codeunit 50002 "Import Excel Buffer"
                 TempExcelBuffer.AddColumn(IntPurchase.Status, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
                 TempExcelBuffer.AddColumn(IntPurchase."Posting Message", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
                 TempExcelBuffer.AddColumn(IntPurchase."Reason Description", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+
+                IntPurchase.Status := IntPurchase.Status::Exported;
+                IntPurchase.Modify();
 
             until IntPurchase.Next() = 0;
 

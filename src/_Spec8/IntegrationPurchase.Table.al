@@ -155,6 +155,7 @@ table 50013 "Integration Purchase"
         {
             Caption = 'Release to Post';
         }
+
         field(91; "Post Code"; Code[20])
         {
             Caption = 'Post Code';
@@ -287,7 +288,7 @@ table 50013 "Integration Purchase"
 
     keys
     {
-        key("Key1"; "Document No.", "Line No.")
+        key("Key1"; "Document No.", "Line No.", "Excel File Name")
         {
             Clustered = true;
         }
@@ -300,6 +301,11 @@ table 50013 "Integration Purchase"
 
         }
         key("Key4"; "Document No.", "Order Date")
+        {
+
+        }
+
+        key("Key5"; "Excel File Name", Status)
         {
 
         }

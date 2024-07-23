@@ -283,7 +283,9 @@ codeunit 50013 "Integration Purchase"
         // IntegrationPurchase.Modify();
 
         if PurchaseHeader."CADBR Taxes Matrix Code" = 'SEM IMP' then
-            ReleasePurchaseDocument.Run(PurchaseHeader);
+            ReleasePurchaseDocument.Run(PurchaseHeader)
+        else if PurchaseHeader."Tax Area Code" <> '' then // GAP08-004b
+            ReleasePurchaseDocument.Run(PurchaseHeader)
 
     end;
 
@@ -684,6 +686,52 @@ codeunit 50013 "Integration Purchase"
 
     end;
 
+    procedure UnderAnalysis(var IntPurchase: Record "Integration Purchase")
+    var
+        IntegrationPurchase: Record "Integration Purchase";
+        PurchHeader: Record "Purchase Header";
+
+    begin
+
+        IntegrationPurchase.Reset();
+        IntegrationPurchase.CopyFilters(IntPurchase);
+        IntegrationPurchase.SetFilter(Status, '%1|%2|%3|%4', IntegrationPurchase.Status::Imported,
+                                                       IntegrationPurchase.Status::"Data Error",
+                                                       IntegrationPurchase.Status::Created,
+                                                       IntegrationPurchase.Status::Reviewed);
+        if not IntegrationPurchase.IsEmpty then begin
+            IntegrationPurchase.FindSet();
+            repeat
+                PurchHeader.Reset();
+                PurchHeader.SetRange("No.", IntegrationPurchase."Document No.");
+                if PurchHeader.Find('-') then
+                    repeat
+                        if not StatusOrderUnderAnalysis(PurchHeader) then begin
+                            IntegrationPurchase."Posting Message" := GetLastErrorText;
+                            IntegrationPurchase.Modify();
+                        end;
+                    until PurchHeader.Next() = 0;
+
+            until IntegrationPurchase.Next() = 0;
+        end;
+
+    end;
+
+    [TryFunction]
+    procedure StatusOrderUnderAnalysis(PurchaseHeader: Record "Purchase Header")
+    var
+
+    begin
+        PurchaseHeader.Status := PurchaseHeader.Status::"Under Analysis";
+        PurchaseHeader.Modify();
+        CalcTax(PurchaseHeader, false);
+
+        ReleasePurcDocValidate(PurchaseHeader);
+
+        if not ValidateCodMun(PurchaseHeader) then
+            exit;
+    end;
+
     [TryFunction]
     procedure StatusOrder(PurchaseHeader: Record "Purchase Header")
     var
@@ -691,6 +739,9 @@ codeunit 50013 "Integration Purchase"
     begin
         PurchaseHeader.Status := PurchaseHeader.Status::Released;
         PurchaseHeader.Modify();
+
+        ReleasePurcDocValidate(PurchaseHeader);
+
         CalcTax(PurchaseHeader, false);
         if not ValidateCodMun(PurchaseHeader) then
             exit;
@@ -1325,6 +1376,106 @@ codeunit 50013 "Integration Purchase"
 
                 IntegPurch.Modify();
             until IntegPurch.Next() = 0;
+
+    end;
+
+
+    procedure ReleasePurcDocValidate(var PurchaseHeader: Record "Purchase Header");
+    var
+        PurcLine: Record "Purchase Line";
+        PurchSetup: Record "Purchases & Payables Setup";
+        purchInvHeader: Record "Purch. Inv. Header";
+        TaxPostAcc: Record "CADBR Tax Posting Accounts";
+        intPurch: Record "Integration Purchase";
+        DocumentAlreadyExists: label 'The %1 document no. already exists for Vendor %2 - %3.';
+        DocumentAndSerieAlreadyExists: label 'The Document No. %1 and Print Serie %2 already exists for Vendor %3 - %4.';
+        DocumentSerieAndFiscalDocTypeAlreadyExists: label 'The Document No. %1, Print Serie %2 and Fiscal Doc. Type %3 already exists for Vendor %4 - %5.';
+
+    begin
+        PurchSetup.Get;
+
+        if PurchaseHeader."Payment Terms Code" = '' then
+            PurchaseHeader."Posting Message" := 'Payment Terms Code.. must have a value in Header.';
+
+        if PurchaseHeader."Document Date" > PurchaseHeader."Posting Date" then
+            PurchaseHeader."Posting Message" := 'The document date cannot be greater than the registration date.';
+
+        if PurchaseHeader."Pay-to Address" = '' then
+            PurchaseHeader."Posting Message" := 'Payment.-a Address. must have a value in Header.';
+
+        if PurchaseHeader."Vendor Invoice No." = '' then
+            PurchaseHeader."Posting Message" := 'Vendor Invoice No... must have a value in Header.';
+
+        if PurchaseHeader."CADBR NFe Reference key" = '' then
+            PurchaseHeader."Posting Message" := 'CADBR NFe Reference key... must have a value in Header.'
+        else begin
+
+            if CopyStr(PurchaseHeader."CADBR NFe Reference key", 23, 3) <> PurchaseHeader."CADBR Print Serie" then
+                PurchaseHeader."Posting Message" := 'The NF-e key series does not match the Print Series';
+
+            if CopyStr(PurchaseHeader."CADBR NFe Reference key", 26, 9) <> PurchaseHeader."Vendor Invoice No." then
+                PurchaseHeader."Posting Message" := 'The NF-e key number does not match the Tax Nº.';
+        end;
+
+        if PurchaseHeader."Vendor Invoice No." <> '' then begin
+
+            TaxPostAcc.Reset();
+            TaxPostAcc.SetRange("Payable Account Type", TaxPostAcc."Payable Account Type"::Vendor);
+            TaxPostAcc.SetRange("Payable Account No.", PurchaseHeader."Pay-to Vendor No.");
+            if not TaxPostAcc.FindFirst() then
+                if PurchaseHeader."Document Type" in [PurchaseHeader."document type"::Order, PurchaseHeader."document type"::Invoice] then begin
+                    purchInvHeader.SetCurrentkey("Pay-to Vendor No.", "Vendor Invoice No.", "CADBR Print Serie");
+                    purchInvHeader.SetRange("Pay-to Vendor No.", PurchaseHeader."Pay-to Vendor No.");
+                    purchInvHeader.SetRange("Vendor Invoice No.", PurchaseHeader."Vendor Invoice No.");
+                    case PurchSetup."CADBR Validation for Vendor Doc." of
+                        PurchSetup."CADBR Validation for Vendor Doc."::"Vendor Doc. No. + Print Serie":
+                            purchInvHeader.SetRange("CADBR Print Serie", PurchaseHeader."CADBR Print Serie");
+                        PurchSetup."CADBR Validation for Vendor Doc."::"Vendor Doc. No. + Print Serie + Fiscal Doc. Type":
+                            begin
+                                purchInvHeader.SetRange("CADBR Print Serie", PurchaseHeader."CADBR Print Serie");
+                                purchInvHeader.SetRange("CADBR Fiscal Document Type", PurchaseHeader."CADBR Fiscal Document Type");
+                            end;
+                    end;
+                    purchInvHeader.SetRange("CADBR Credit Memos", false);
+                    if purchInvHeader.Count > 0 then
+                        case PurchSetup."CADBR Validation for Vendor Doc." of
+                            PurchSetup."CADBR Validation for Vendor Doc."::"Vendor Doc. No. + Print Serie":
+                                PurchaseHeader."Posting Message" := StrSubstNo(DocumentAndSerieAlreadyExists, PurchaseHeader."Vendor Invoice No.", PurchaseHeader."CADBR Print Serie", PurchaseHeader."Pay-to Vendor No.", PurchaseHeader."Pay-to Name");
+                            PurchSetup."CADBR Validation for Vendor Doc."::"Vendor Doc. No. + Print Serie + Fiscal Doc. Type":
+                                PurchaseHeader."Posting Message" := StrSubstNo(DocumentSerieAndFiscalDocTypeAlreadyExists, PurchaseHeader."Vendor Invoice No.", PurchaseHeader."CADBR Print Serie", PurchaseHeader."CADBR Fiscal Document Type", PurchaseHeader."Pay-to Vendor No.", PurchaseHeader."Pay-to Name");
+                            else
+                                PurchaseHeader."Posting Message" := StrSubstNo(DocumentAlreadyExists, PurchaseHeader."Vendor Invoice No.", PurchaseHeader."Pay-to Vendor No.", PurchaseHeader."Pay-to Name");
+                        end;
+                end;
+        end;
+
+        PurcLine.Reset();
+        PurcLine.SetRange("Document Type", PurchaseHeader."Document Type");
+        PurcLine.SetRange("Document No.", PurchaseHeader."No.");
+        if PurcLine.FindSet() then
+            repeat
+                if PurcLine."CADBR Origin Code" = '' then
+                    PurchaseHeader."Posting Message" := 'Origin Code. must have a value in Line 1.';
+
+                if PurcLine."Unit Cost" = 0 then
+                    PurchaseHeader."Posting Message" := 'Unit Cost. Direct Excl. CUBA must have a value in Line';
+
+                if PurcLine."CADBR Base Calculation Credit Code" = '' then
+                    PurchaseHeader."Posting Message" := 'PIS/COFINS Credit Calculation Base Code. must have a value in Line';
+
+            until PurcLine.Next() = 0;
+
+
+        if PurchaseHeader."Posting Message" <> '' then begin
+            PurchaseHeader.Modify();
+
+            intPurch.Reset();
+            intPurch.SetRange("Document No.", PurchaseHeader."No.");
+            intPurch.ModifyAll("Posting Message", PurchaseHeader."Posting Message");
+            intPurch.ModifyAll(Status, intPurch.Status::"Data Error");
+
+            exit;
+        end;
 
     end;
 

@@ -6,7 +6,7 @@ page 50013 "Integration Purchase"
     ApplicationArea = All;
     RefreshOnActivate = true;
     SourceTable = "Integration Purchase";
-    SourceTableView = where(Status = filter(<> Posted));
+    SourceTableView = where(Status = filter(Imported | Created | "Data Error" | Reviewed | "On Hold" | "Data Excel Error" | "Layout Error" | "Exported" | "Under Analysis"));
     UsageCategory = Lists;
 
     layout
@@ -400,6 +400,27 @@ page 50013 "Integration Purchase"
                     CurrPage.SaveRecord();
                     CurrPage.Update();
                     Message('Purchase Open');
+                end;
+            }
+            action(UnderAnalysis)
+            {
+                ApplicationArea = All;
+                Caption = 'Under Analysis';
+                Image = UndoFluent;
+                ToolTip = 'Under Analysis';
+
+                trigger OnAction();
+                var
+                    IntPurchase: Record "Integration Purchase";
+                begin
+                    CurrPage.SetSelectionFilter(IntPurchase);
+                    IntPurchase.CopyFilters(Rec);
+
+                    IntegrationPurchase.UnderAnalysis(IntPurchase);
+
+                    CurrPage.SaveRecord();
+                    CurrPage.Update();
+                    Message('Under Analysis');
                 end;
             }
             action(PostOrder)

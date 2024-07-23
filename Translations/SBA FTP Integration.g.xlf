@@ -3263,6 +3263,21 @@
           <note from="Developer" annotates="general" priority="2">#1 IntegrationPurchase</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method CreatePurchaseByDoc - NamedType DialogCrePurchaseLbl</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 3740721899" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The %1 document no. already exists for Vendor %2 - %3.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType DocumentAlreadyExists</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 1108886390" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Document No. %1 and Print Serie %2 already exists for Vendor %3 - %4.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType DocumentAndSerieAlreadyExists</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 18415292" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Document No. %1, Print Serie %2 and Fiscal Doc. Type %3 already exists for Vendor %4 - %5.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType DocumentSerieAndFiscalDocTypeAlreadyExists</note>
+        </trans-unit>
         <trans-unit id="Codeunit 2300234719 - Method 1078628940 - NamedType 3233590637" size-unit="char" translate="yes" xml:space="preserve">
           <source>Specify Service Delivery City</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -5603,6 +5618,16 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Action ReleaseOrder - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Page 2300234719 - Action 995899470 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Under Analysis</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Action UnderAnalysis - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2300234719 - Action 995899470 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Under Analysis</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Action UnderAnalysis - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Page 2300234719 - Action 1936001480 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Vendor Card</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -5614,7 +5639,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Action Vendor - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 770492064 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Integration Purchase Order Posted</source>
+          <source>Integration Purchase Order Posted/Cancelled</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase Posted - Property Caption</note>
         </trans-unit>
@@ -8519,7 +8544,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension IntCADBRTaxBRMngrRC - Action PurchaseOrderInt - Property Caption</note>
         </trans-unit>
         <trans-unit id="PageExtension 2807289801 - Action 3117557345 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3500708443">
-          <source>Integration Purchase Order Posted</source>
+          <source>Integration Purchase Order Posted/Cancelled</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension IntCADBRTaxBRMngrRC - Action PurchaseOrderIntPosted - Property Caption</note>
         </trans-unit>
@@ -8683,6 +8708,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderList - Action DeleteRecords - Property Caption</note>
         </trans-unit>
+        <trans-unit id="PageExtension 3981024632 - Action 995899470 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3195034673">
+          <source>Under Analysis</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderList - Action UnderAnalysis - Property Caption</note>
+        </trans-unit>
         <trans-unit id="PageExtension 3981024632 - Control 3425279406 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3195034673">
           <source>Buy-from City</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -8692,6 +8722,11 @@
           <source>Delete Records</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseReturnOrderList - Action DeleteRecords - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2627532652 - Action 995899470 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 387971303">
+          <source>Under Analysis</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchHeader - Action UnderAnalysis - Property Caption</note>
         </trans-unit>
         <trans-unit id="PageExtension 2627532652 - Control 783039621 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 387971303">
           <source>Cofins Credit</source>
@@ -8732,6 +8767,11 @@
           <source>PO Total</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchHeader - Control PO Total - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2627532652 - Control 3066042533 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 387971303">
+          <source>Posting Message</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchHeader - Control Posting Message - Property ToolTip</note>
         </trans-unit>
         <trans-unit id="PageExtension 1655246868 - Control 1114870316 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3921990236">
           <source>Activate Auxiliary Taxes</source>
@@ -8842,6 +8882,11 @@
           <source>Integration Purchase Order</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTRBusinessMngrRoleCenter - Action PurchaseOrderInt - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 904312498 - Action 3117557345 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2458191494">
+          <source>Integration Purchase Order Posted/Cancelled</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTRBusinessMngrRoleCenter - Action PurchaseOrderIntPosted - Property Caption</note>
         </trans-unit>
         <trans-unit id="PageExtension 904312498 - Action 2318586126 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2458191494">
           <source>Integration Purchase Return</source>
@@ -9008,6 +9053,16 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA Customer - Control Integration Taxes Matrix  - Property ToolTip</note>
         </trans-unit>
+        <trans-unit id="PageExtension 918401266 - Control 2848134066 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 337631938">
+          <source>Specifies the value of the Release PO field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA User Setup - Control Release PO - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 918401266 - Control 2882060535 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 337631938">
+          <source>Specifies the value of the Review PO field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA User Setup - Control Review PO - Property ToolTip</note>
+        </trans-unit>
         <trans-unit id="PageExtension 811273880 - Control 2788186602 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 4055858012">
           <source>Integration Taxes Matrix</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -9067,6 +9122,11 @@
           <source>PO Total</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">TableExtension INTPurchHeader - Field PO Total - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 2627532652 - Field 3066042533 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2072992664">
+          <source>Posting Message</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension INTPurchHeader - Field Posting Message - Property Caption</note>
         </trans-unit>
         <trans-unit id="TableExtension 1087312652 - Field 2937722553 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2575310733">
           <source>Cidade Prestação Serviço</source>
@@ -9187,6 +9247,16 @@
           <source>Tax Settlement No.</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA Process Jud - Info RRA - Field Tax Settlement No. - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 918401266 - Field 2848134066 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 337631938">
+          <source>Release PO</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA User Setup - Field Release PO - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 918401266 - Field 2882060535 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 337631938">
+          <source>Review PO</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA User Setup - Field Review PO - Property Caption</note>
         </trans-unit>
         <trans-unit id="TableExtension 811273880 - Field 3950862098 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 1936001480">
           <source>Integration Taxes Matrix</source>
@@ -9338,6 +9408,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Enum FTP Integration Type - EnumValue Vendor - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Enum 863328713 - EnumValue 4069904181 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Cancelled</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Enum Integration Import Status - EnumValue Cancelled - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Enum 863328713 - EnumValue 1249475212 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Created</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -9382,6 +9457,11 @@
           <source>Reviewed</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Enum Integration Import Status - EnumValue Reviewed - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Enum 863328713 - EnumValue 1397721846 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Under Analysis</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Enum Integration Import Status - EnumValue Under Analysis - Property Caption</note>
         </trans-unit>
         <trans-unit id="Enum 491495835 - EnumValue 1249475212 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Created</source>
@@ -9522,6 +9602,11 @@
           <source>5 Microempreendedor Individual - MEI</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Enum Vendor Regime - EnumValue 5 Microempreendedor Individual - MEI - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="EnumExtension 3213495181 - EnumValue 1397721846 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Enum 1445684588">
+          <source>Under Analysis</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">EnumExtension INTPurcDocStatus - EnumValue Under Analysis - Property Caption</note>
         </trans-unit>
       </group>
     </body>
