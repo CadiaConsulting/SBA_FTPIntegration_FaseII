@@ -3646,6 +3646,12 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension REINF Settlement - R4010 - Action ProcessJudInfRRA - Property Caption</note>
         </trans-unit>
+        <trans-unit id="TableExtension 4006878580 - Method 1756609995 - NamedType 3114637384" size-unit="char" translate="yes" xml:space="preserve" al-object-target="TableExtension 4006878580">
+          <source>Then length of the field %1 must be %2 characters. Actual Value: %3</source>
+          <target state="translated">A longitude do campo %1 deve ser de %2 caracteres. Valor Atual: %3.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA EFD Participant - Method VerifyFieldLength - NamedType Text001</note>
+        </trans-unit>
       </group>
     </body>
   </file>

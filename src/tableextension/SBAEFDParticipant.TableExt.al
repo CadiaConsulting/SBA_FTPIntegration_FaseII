@@ -61,8 +61,10 @@ tableextension 50007 "SBA EFD Participant" extends "CADBR EFD Participant"
 
             cep.reset;
             cep.Setrange(Code, vend."Post Code");
-            if cep.FindFirst() then
+            if cep.FindFirst() then begin
+                VerifyFieldLength(cep.FieldCaption(cep."CADBR IBGE City Code"), 7, cep."CADBR IBGE City Code");
                 "IBGE City Code" := cep."CADBR IBGE City Code";
+            end;
 
         end else
             if vend."CADBR Category" = vend."CADBR Category"::"3.- Foreign" then begin
@@ -123,4 +125,13 @@ tableextension 50007 "SBA EFD Participant" extends "CADBR EFD Participant"
         Insert;
     end;
 
+    procedure VerifyFieldLength(Field: Text; Length: Integer; Value: Text)
+    var
+        Text001: Label 'Then length of the field %1 must be %2 characters. Actual Value: %3';
+    begin
+        if StrLen(Value) > Length then
+            Error(Text001, Field, Length, Value);
+    end;
 }
+
+

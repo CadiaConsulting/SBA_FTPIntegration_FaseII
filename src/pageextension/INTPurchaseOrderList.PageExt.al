@@ -14,6 +14,31 @@ pageextension 50017 "INTPurchaseOrderList" extends "Purchase Order List"
             {
 
             }
+            field("CADBR E-Invoice Posting No."; rec."CADBR E-Invoice Posting No.")
+            {
+                ApplicationArea = All;
+                ToolTip = 'Número da NF';
+            }
+            field("CADBR Fiscal Document Type"; rec."CADBR Fiscal Document Type")
+            {
+                ApplicationArea = All;
+                ToolTip = 'Tipo Documento Fiscal';
+            }
+            field("CADBR Print Serie"; rec."CADBR Print Serie")
+            {
+                ApplicationArea = All;
+                ToolTip = 'Série Impressão';
+            }
+            field("CADBR CFOP Code"; rec."CADBR CFOP Code")
+            {
+                ApplicationArea = All;
+                ToolTip = 'Cod. CFOP';
+            }
+            field("CADBR Service Delivery City"; rec."CADBR Service Delivery City")
+            {
+                ApplicationArea = All;
+                ToolTip = 'Município Prestação Serviço';
+            }
         }
     }
     actions

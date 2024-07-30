@@ -47,7 +47,68 @@ codeunit 50073 "IntPurchPaymentsFromBC"
         VendorLedgerEntry: Record "Vendor Ledger Entry";
         DetailedVendorLed: Record "Detailed Vendor Ledg. Entry";
         CNABPaymentLine: Record "CADBR CNAB Payment Line";
+        TotalAmount: Decimal;
+        ExtDocumentNo: Code[20];
+        EntryNo: Integer;
+        DetEntryNo: Integer;
+        LineNo: Integer;
+        DocumentNo: Code[20];
+        AppliesToDocNo: Code[20];
     begin
+        /*  AMS - Comentando código original sem agrupar  
+            VendorLedgerEntry.Reset;
+            VendorLedgerEntry.SetCurrentKey("Source Code");
+            VendorLedgerEntry.SetRange("Source Code", 'CNABCP');
+            VendorLedgerEntry.SetRange(Integrated, false);
+            if VendorLedgerEntry.FindSet then
+                repeat
+
+                    DetailedVendorLed.Reset();
+                    DetailedVendorLed.SetRange("Document No.", VendorLedgerEntry."Document No.");
+                    DetailedVendorLed.SetRange("Document Type", VendorLedgerEntry."Document Type");
+                    DetailedVendorLed.SetRange("Entry Type", DetailedVendorLed."Entry Type"::Application);
+                    if VendorLedgerEntry."Document Type" = VendorLedgerEntry."Document Type"::"Finance Charge Memo" then
+                        DetailedVendorLed.SetFilter(Amount, '<%1', 0)
+                    else
+                        DetailedVendorLed.SetFilter(Amount, '>%1', 0);
+                    if DetailedVendorLed.FindSet() then
+                        repeat
+
+                            IPPFromBC.Init();
+                            IPPFromBC."Journal Template Name" := VendorLedgerEntry."Journal Templ. Name";
+                            IPPFromBC."Journal Batch Name" := VendorLedgerEntry."Journal Batch Name";
+                            IPPFromBC."Line No." := VendorLedgerEntry."Entry No.";
+                            IPPFromBC."Detail Ledger Entry No." := DetailedVendorLed."Entry No.";
+                            IPPFromBC."Account Type" := IPPFromBC."Account Type"::Vendor;
+                            IPPFromBC."Account No." := VendorLedgerEntry."Vendor No.";
+                            IPPFromBC."Posting Date" := VendorLedgerEntry."Posting Date";
+                            IPPFromBC."Document Type" := VendorLedgerEntry."Document Type";
+                            IPPFromBC."Document No." := VendorLedgerEntry."Document No.";
+                            IPPFromBC.Description := VendorLedgerEntry.Description;
+                            IPPFromBC."Bal. Account Type" := VendorLedgerEntry."Bal. Account Type";
+                            IPPFromBC."Bal. Account No." := VendorLedgerEntry."Bal. Account No.";
+                            VendorLedgerEntry.CalcFields(VendorLedgerEntry.Amount);
+                            //IPPFromBC.Amount := VendorLedgerEntry.Amount;
+                            IPPFromBC.Amount := DetailedVendorLed.Amount;
+
+                            IPPFromBC."Dimension Set ID" := VendorLedgerEntry."Dimension Set ID";
+
+
+                            IPPFromBC."Applies-to Doc. Type" := VendorLedgerEntry."Applies-to Doc. Type";
+
+
+                            DetailedVendorLed.CalcFields("CADBR VendLedg. Ext. Doc. No.");
+
+                            IPPFromBC."External Document No." := DetailedVendorLed."CADBR VendLedg. Ext. Doc. No."; //ajustar
+                            IPPFromBC."Applies-to Doc. No." := DetailedVendorLed."CADBR VendLedg. Ext. Doc. No.";
+
+                            IPPFromBC.Status := IPPFromBC.Status::Created;
+                            if IPPFromBC.Insert then;
+
+                        until DetailedVendorLed.Next() = 0;
+
+                until VendorLedgerEntry.Next = 0;*/
+
         VendorLedgerEntry.Reset;
         VendorLedgerEntry.SetCurrentKey("Source Code");
         VendorLedgerEntry.SetRange("Source Code", 'CNABCP');
@@ -59,43 +120,123 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                 DetailedVendorLed.SetRange("Document No.", VendorLedgerEntry."Document No.");
                 DetailedVendorLed.SetRange("Document Type", VendorLedgerEntry."Document Type");
                 DetailedVendorLed.SetRange("Entry Type", DetailedVendorLed."Entry Type"::Application);
-                if VendorLedgerEntry."Document Type" = VendorLedgerEntry."Document Type"::"Finance Charge Memo" then
-                    DetailedVendorLed.SetFilter(Amount, '<%1', 0)
-                else
-                    DetailedVendorLed.SetFilter(Amount, '>%1', 0);
+                DetailedVendorLed.SetFilter(Amount, '>%1', 0);
                 if DetailedVendorLed.FindSet() then
                     repeat
-
-                        IPPFromBC.Init();
-                        IPPFromBC."Journal Template Name" := VendorLedgerEntry."Journal Templ. Name";
-                        IPPFromBC."Journal Batch Name" := VendorLedgerEntry."Journal Batch Name";
-                        IPPFromBC."Line No." := VendorLedgerEntry."Entry No.";
-                        IPPFromBC."Detail Ledger Entry No." := DetailedVendorLed."Entry No.";
-                        IPPFromBC."Account Type" := IPPFromBC."Account Type"::Vendor;
-                        IPPFromBC."Account No." := VendorLedgerEntry."Vendor No.";
-                        IPPFromBC."Posting Date" := VendorLedgerEntry."Posting Date";
-                        IPPFromBC."Document Type" := VendorLedgerEntry."Document Type";
-                        IPPFromBC."Document No." := VendorLedgerEntry."Document No.";
-                        IPPFromBC.Description := VendorLedgerEntry.Description;
-                        IPPFromBC."Bal. Account Type" := VendorLedgerEntry."Bal. Account Type";
-                        IPPFromBC."Bal. Account No." := VendorLedgerEntry."Bal. Account No.";
-                        VendorLedgerEntry.CalcFields(VendorLedgerEntry.Amount);
-                        //IPPFromBC.Amount := VendorLedgerEntry.Amount;
-                        IPPFromBC.Amount := DetailedVendorLed.Amount;
-
-                        IPPFromBC."Dimension Set ID" := VendorLedgerEntry."Dimension Set ID";
-
-
-                        IPPFromBC."Applies-to Doc. Type" := VendorLedgerEntry."Applies-to Doc. Type";
-
-
                         DetailedVendorLed.CalcFields("CADBR VendLedg. Ext. Doc. No.");
+                        DetailedVendorLed.CalcFields("CADBR Vend. Ledg. Document No.");
 
-                        IPPFromBC."External Document No." := DetailedVendorLed."CADBR VendLedg. Ext. Doc. No."; //ajustar
-                        IPPFromBC."Applies-to Doc. No." := DetailedVendorLed."CADBR VendLedg. Ext. Doc. No.";
+                        if DetailedVendorLed."CADBR VendLedg. Ext. Doc. No." <> '' then begin
 
-                        IPPFromBC.Status := IPPFromBC.Status::Created;
-                        if IPPFromBC.Insert then;
+                            if ExtDocumentNo <> DetailedVendorLed."CADBR VendLedg. Ext. Doc. No." then begin
+
+
+                                IPPFromBC.Init();
+                                IPPFromBC."Journal Template Name" := VendorLedgerEntry."Journal Templ. Name";
+                                IPPFromBC."Journal Batch Name" := VendorLedgerEntry."Journal Batch Name";
+                                IPPFromBC."Line No." := VendorLedgerEntry."Entry No.";
+                                IPPFromBC."Detail Ledger Entry No." := DetailedVendorLed."Entry No.";
+                                IPPFromBC."Account Type" := IPPFromBC."Account Type"::Vendor;
+                                IPPFromBC."Account No." := VendorLedgerEntry."Vendor No.";
+                                IPPFromBC."Posting Date" := VendorLedgerEntry."Posting Date";
+                                IPPFromBC."Document Type" := VendorLedgerEntry."Document Type";
+                                IPPFromBC."Document No." := VendorLedgerEntry."Document No.";
+                                IPPFromBC.Description := VendorLedgerEntry.Description;
+                                IPPFromBC."Bal. Account Type" := VendorLedgerEntry."Bal. Account Type";
+                                IPPFromBC."Bal. Account No." := VendorLedgerEntry."Bal. Account No.";
+                                VendorLedgerEntry.CalcFields(VendorLedgerEntry.Amount);
+                                //IPPFromBC.Amount := VendorLedgerEntry.Amount;
+                                IPPFromBC.Amount := DetailedVendorLed.Amount;
+
+                                IPPFromBC."Dimension Set ID" := VendorLedgerEntry."Dimension Set ID";
+
+
+                                IPPFromBC."Applies-to Doc. Type" := VendorLedgerEntry."Applies-to Doc. Type";
+
+                                IPPFromBC."Applies-to Doc. No." := Format(DetailedVendorLed."CADBR Vend. Ledg. Document No.");
+                                ;
+                                IPPFromBC."External Document No." := DetailedVendorLed."CADBR VendLedg. Ext. Doc. No."; //ajustar
+
+
+                                IPPFromBC.Status := IPPFromBC.Status::Created;
+                                if IPPFromBC.Insert then;
+                                ExtDocumentNo := DetailedVendorLed."CADBR VendLedg. Ext. Doc. No.";
+                                DocumentNo := VendorLedgerEntry."Document No.";
+                                LineNo := VendorLedgerEntry."Entry No.";
+                                EntryNo := DetailedVendorLed."Entry No.";
+                                TotalAmount := DetailedVendorLed.Amount;
+
+                            end else begin
+                                IPPFromBC.Reset();
+                                IPPFromBC.SetRange("External Document No.", ExtDocumentNo);
+                                IPPFromBC.SetRange("Line No.", LineNo);
+                                IPPFromBC.SetRange("Detail Ledger Entry No.", EntryNo);
+                                IPPFromBC.SetRange("Document No.", DocumentNo);
+                                if IPPFromBC.FindFirst() then begin
+                                    IPPFromBC.Amount := TotalAmount + DetailedVendorLed.Amount;
+
+                                    IPPFromBC.Modify(true);
+
+                                    TotalAmount := TotalAmount + DetailedVendorLed.Amount;
+                                end;
+
+                            end;
+                        end else begin
+                            //DetailedVendorLed.CalcFields("Applied Vend. Ledger Entry No.");
+
+                            if ExtDocumentNo <> Format(DetailedVendorLed."CADBR Vend. Ledg. Document No.") then begin
+
+                                IPPFromBC.Init();
+                                IPPFromBC."Journal Template Name" := VendorLedgerEntry."Journal Templ. Name";
+                                IPPFromBC."Journal Batch Name" := VendorLedgerEntry."Journal Batch Name";
+                                IPPFromBC."Line No." := VendorLedgerEntry."Entry No.";
+                                IPPFromBC."Detail Ledger Entry No." := DetailedVendorLed."Entry No.";
+                                IPPFromBC."Account Type" := IPPFromBC."Account Type"::Vendor;
+                                IPPFromBC."Account No." := VendorLedgerEntry."Vendor No.";
+                                IPPFromBC."Posting Date" := VendorLedgerEntry."Posting Date";
+                                IPPFromBC."Document Type" := VendorLedgerEntry."Document Type";
+                                IPPFromBC."Document No." := VendorLedgerEntry."Document No.";
+                                IPPFromBC.Description := VendorLedgerEntry.Description;
+                                IPPFromBC."Bal. Account Type" := VendorLedgerEntry."Bal. Account Type";
+                                IPPFromBC."Bal. Account No." := VendorLedgerEntry."Bal. Account No.";
+                                VendorLedgerEntry.CalcFields(VendorLedgerEntry.Amount);
+                                //IPPFromBC.Amount := VendorLedgerEntry.Amount;
+                                IPPFromBC.Amount := DetailedVendorLed.Amount;
+
+                                IPPFromBC."Dimension Set ID" := VendorLedgerEntry."Dimension Set ID";
+
+
+                                IPPFromBC."Applies-to Doc. Type" := VendorLedgerEntry."Applies-to Doc. Type";
+
+                                IPPFromBC."Applies-to Doc. No." := Format(DetailedVendorLed."CADBR Vend. Ledg. Document No.");
+                                IPPFromBC."External Document No." := Format(DetailedVendorLed."CADBR Vend. Ledg. Document No."); //ajustar
+
+
+                                IPPFromBC.Status := IPPFromBC.Status::Created;
+                                if IPPFromBC.Insert then;
+                                ExtDocumentNo := Format(DetailedVendorLed."CADBR Vend. Ledg. Document No.");
+                                DocumentNo := VendorLedgerEntry."Document No.";
+                                LineNo := VendorLedgerEntry."Entry No.";
+                                EntryNo := DetailedVendorLed."Entry No.";
+                                TotalAmount := DetailedVendorLed.Amount;
+
+                            end else begin
+                                IPPFromBC.Reset();
+                                IPPFromBC.SetRange("External Document No.", ExtDocumentNo);
+                                IPPFromBC.SetRange("Line No.", LineNo);
+                                IPPFromBC.SetRange("Detail Ledger Entry No.", EntryNo);
+                                IPPFromBC.SetRange("Document No.", DocumentNo);
+                                if IPPFromBC.FindFirst() then begin
+                                    IPPFromBC.Amount := TotalAmount + DetailedVendorLed.Amount;
+
+                                    IPPFromBC.Modify(true);
+
+                                    TotalAmount := TotalAmount + DetailedVendorLed.Amount;
+                                end;
+
+                            end;
+
+                        end;
 
                     until DetailedVendorLed.Next() = 0;
 

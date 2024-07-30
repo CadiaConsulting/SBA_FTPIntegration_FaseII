@@ -9258,6 +9258,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA Customer - Field Integration Taxes Matrix - Property Caption</note>
         </trans-unit>
+        <trans-unit id="TableExtension 4006878580 - Method 1756609995 - NamedType 3114637384" size-unit="char" translate="yes" xml:space="preserve" al-object-target="TableExtension 4006878580">
+          <source>Then length of the field %1 must be %2 characters. Actual Value: %3</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA EFD Participant - Method VerifyFieldLength - NamedType Text001</note>
+        </trans-unit>
         <trans-unit id="TableExtension 4021180446 - Field 2351430553 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 1214179344">
           <source>Tax Settlement No.</source>
           <note from="Developer" annotates="general" priority="2"></note>
