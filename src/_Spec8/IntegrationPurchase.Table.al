@@ -219,6 +219,12 @@ table 50013 "Integration Purchase"
             Caption = 'Purch Post Excel File Name';
             Editable = false;
         }
+
+        field(117; "Exported Excel Purch. Tax Name"; text[200])
+        {
+            Caption = 'Exported Excel Purch. Tax Name';
+            Editable = false;
+        }
         field(120; "Status PO"; enum "Purchase Document Status")
         {
             Caption = 'Status PO';

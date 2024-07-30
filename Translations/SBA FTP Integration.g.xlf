@@ -913,6 +913,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table Integration Purchase - Field Excel File Name - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Table 2300234719 - Field 1448230046 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Exported Excel Purch. Tax Name</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table Integration Purchase - Field Exported Excel Purch. Tax Name - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Table 2300234719 - Field 4289059343 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Fiscal Document Type</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -5293,6 +5298,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Control Excel File Name - Property ToolTip</note>
         </trans-unit>
+        <trans-unit id="Page 2300234719 - Control 1448230046 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Exported Excel Purch. Tax Name</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Control Exported Excel Purch. Tax Name - Property ToolTip</note>
+        </trans-unit>
         <trans-unit id="Page 2300234719 - Control 4289059343 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Fiscal Document Type</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -5402,6 +5412,11 @@
           <source>Posting Message</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Control Posting Message - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2300234719 - Control 2842546430 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Purch Post Excel File Name</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Control Purch Post Excel File Name - Property ToolTip</note>
         </trans-unit>
         <trans-unit id="Page 2300234719 - Control 2704404533 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Quantity</source>

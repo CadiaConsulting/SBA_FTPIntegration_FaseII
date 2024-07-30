@@ -62,7 +62,7 @@ pageextension 50026 INTPurchaseOrderSubForm extends "Purchase Order Subform"
         }
         modify("Description 2")
         {
-            Enabled = not CheckStatus;
+            Visible = false;
         }
         modify("Drop Shipment")
         {
@@ -444,6 +444,100 @@ pageextension 50026 INTPurchaseOrderSubForm extends "Purchase Order Subform"
         {
             Enabled = not CheckStatus;
         }
+
+        modify("CADBR Charge Item No.")
+        {
+            Visible = false;
+        }
+        modify("CADBR Description 2")
+        {
+            Visible = false;
+        }
+        modify("CADBR CFOP Code")
+        {
+            Enabled = not CheckStatus;
+        }
+        modify("CADBR NCM Code")
+        {
+            Enabled = not CheckStatus;
+        }
+        modify("CADBR NCM Exception Code")
+        {
+            Enabled = not CheckStatus;
+        }
+        modify("CADBR Tax Exception Code")
+        {
+            Enabled = not CheckStatus;
+        }
+        modify("CADBR End User")
+        {
+            Enabled = not CheckStatus;
+        }
+        modify("CADBR Origin Code")
+        {
+            Enabled = not CheckStatus;
+        }
+        modify("CADBR ICMS CST Code")
+        {
+            Enabled = not CheckStatus;
+        }
+        modify("CADBR PIS CST Code")
+        {
+            Enabled = not CheckStatus;
+        }
+        modify("CADBR COFINS CST Code")
+        {
+            Enabled = not CheckStatus;
+        }
+        modify("CADBR IPI CST Code")
+        {
+            Enabled = not CheckStatus;
+        }
+        modify("CADBR Base Calculation Credit Code")
+        {
+            Enabled = not CheckStatus;
+        }
+        modify("CADBR DI No.")
+        {
+            Enabled = not CheckStatus;
+        }
+        modify("CADBR DI Posting Date")
+        {
+            Enabled = not CheckStatus;
+        }
+        modify("CADBR Addition Number")
+        {
+            Enabled = not CheckStatus;
+        }
+        modify("CADBR Addition Sequential Number")
+        {
+            Enabled = not CheckStatus;
+        }
+        modify("CADBR Drawback Act No.")
+        {
+            Enabled = not CheckStatus;
+        }
+        modify("CADBR Service Type REINF")
+        {
+            Enabled = not CheckStatus;
+        }
+        modify("CADBR Nature of Income")
+        {
+            Enabled = not CheckStatus;
+        }
+        modify("CADBR Tax Area Code.")
+        {
+            Enabled = not CheckStatus;
+        }
+        modify("CADBR Status")
+        {
+            Enabled = not CheckStatus;
+        }
+        modify("CADBR Gen. Prod. Posting Group")
+        {
+            Enabled = not CheckStatus;
+        }
+
     }
 
     trigger OnAfterGetRecord()
@@ -452,14 +546,11 @@ pageextension 50026 INTPurchaseOrderSubForm extends "Purchase Order Subform"
 
     begin
         if PurcHeader.get(Rec."Document Type", rec."Document No.") then
-            if PurcHeader.Status = PurcHeader.Status::Open then begin
-                CheckStatus := false;
-                CurrPage.Editable := false;
-            end else begin
-                CheckStatus := true;
-                CurrPage.Editable := true;
-            end;
+            if PurcHeader.Status = PurcHeader.Status::Open then
+                CheckStatus := false
 
+            else
+                CheckStatus := true;
 
     end;
 

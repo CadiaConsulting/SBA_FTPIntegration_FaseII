@@ -106,7 +106,7 @@ codeunit 50013 "Integration Purchase"
     begin
         IntegrationPurchase.Reset();
         IntegrationPurchase.CopyFilters(IntPurchase);
-        IntegrationPurchase.SetFilter(Status, '%1', IntegrationPurchase.Status::Created);
+        IntegrationPurchase.SetFilter(Status, '%1|%2', IntegrationPurchase.Status::Created, IntegrationPurchase.Status::Exported);
         IntegrationPurchase.CalcFields("Error Order");
         IntegrationPurchase.SetFilter("Error Order", '%1', 0);
         IntegrationPurchase.SetRange(Rejected, false);
@@ -278,9 +278,6 @@ codeunit 50013 "Integration Purchase"
         CalcTax(PurchaseHeader, false);
         if not ValidateCodMun(PurchaseHeader) then
             exit;
-
-        // IntegrationPurchase.Status := IntegrationPurchase.Status::Created;
-        // IntegrationPurchase.Modify();
 
         if PurchaseHeader."CADBR Taxes Matrix Code" = 'SEM IMP' then
             ReleasePurchaseDocument.Run(PurchaseHeader)
@@ -664,10 +661,11 @@ codeunit 50013 "Integration Purchase"
 
         IntegrationPurchase.Reset();
         IntegrationPurchase.CopyFilters(IntPurchase);
-        IntegrationPurchase.SetFilter(Status, '%1|%2|%3|%4', IntegrationPurchase.Status::Imported,
+        IntegrationPurchase.SetFilter(Status, '%1|%2|%3|%4|%5', IntegrationPurchase.Status::Imported,
                                                        IntegrationPurchase.Status::"Data Error",
                                                        IntegrationPurchase.Status::Created,
-                                                       IntegrationPurchase.Status::Reviewed);
+                                                       IntegrationPurchase.Status::Reviewed,
+                                                       IntegrationPurchase.Status::Exported);
         if not IntegrationPurchase.IsEmpty then begin
             IntegrationPurchase.FindSet();
             repeat
@@ -690,30 +688,38 @@ codeunit 50013 "Integration Purchase"
     var
         IntegrationPurchase: Record "Integration Purchase";
         PurchHeader: Record "Purchase Header";
+        UserSetup: Record "User Setup";
 
     begin
 
-        IntegrationPurchase.Reset();
-        IntegrationPurchase.CopyFilters(IntPurchase);
-        IntegrationPurchase.SetFilter(Status, '%1|%2|%3|%4', IntegrationPurchase.Status::Imported,
-                                                       IntegrationPurchase.Status::"Data Error",
-                                                       IntegrationPurchase.Status::Created,
-                                                       IntegrationPurchase.Status::Reviewed);
-        if not IntegrationPurchase.IsEmpty then begin
-            IntegrationPurchase.FindSet();
-            repeat
-                PurchHeader.Reset();
-                PurchHeader.SetRange("No.", IntegrationPurchase."Document No.");
-                if PurchHeader.Find('-') then
-                    repeat
-                        if not StatusOrderUnderAnalysis(PurchHeader) then begin
-                            IntegrationPurchase."Posting Message" := GetLastErrorText;
-                            IntegrationPurchase.Modify();
-                        end;
-                    until PurchHeader.Next() = 0;
+        UserSetup.Reset();
+        UserSetup.Get(USERID);
+        if UserSetup."Review PO" then begin
 
-            until IntegrationPurchase.Next() = 0;
-        end;
+            IntegrationPurchase.Reset();
+            IntegrationPurchase.CopyFilters(IntPurchase);
+            IntegrationPurchase.SetFilter(Status, '%1|%2|%3|%4|%5', IntegrationPurchase.Status::Imported,
+                                                           IntegrationPurchase.Status::"Data Error",
+                                                           IntegrationPurchase.Status::Created,
+                                                           IntegrationPurchase.Status::Reviewed,
+                                                           IntegrationPurchase.Status::Exported);
+            if not IntegrationPurchase.IsEmpty then begin
+                IntegrationPurchase.FindSet();
+                repeat
+                    PurchHeader.Reset();
+                    PurchHeader.SetRange("No.", IntegrationPurchase."Document No.");
+                    if PurchHeader.Find('-') then
+                        repeat
+                            if not StatusOrderUnderAnalysis(PurchHeader) then begin
+                                IntegrationPurchase."Posting Message" := GetLastErrorText;
+                                IntegrationPurchase.Modify();
+                            end;
+                        until PurchHeader.Next() = 0;
+
+                until IntegrationPurchase.Next() = 0;
+            end;
+        end else
+            error('Usuario %1 sem Permissão para Revisar o Pedido');
 
     end;
 
@@ -756,10 +762,11 @@ codeunit 50013 "Integration Purchase"
 
         IntegrationPurchase.Reset();
         IntegrationPurchase.CopyFilters(IntPurchase);
-        IntegrationPurchase.SetFilter(Status, '%1|%2|%3|%4', IntegrationPurchase.Status::Imported,
+        IntegrationPurchase.SetFilter(Status, '%1|%2|%3|%4|%5', IntegrationPurchase.Status::Imported,
                                                        IntegrationPurchase.Status::"Data Error",
                                                        IntegrationPurchase.Status::Created,
-                                                       IntegrationPurchase.Status::Reviewed);
+                                                       IntegrationPurchase.Status::Reviewed,
+                                                       IntegrationPurchase.Status::Exported);
         if not IntegrationPurchase.IsEmpty then begin
             IntegrationPurchase.FindSet();
             repeat

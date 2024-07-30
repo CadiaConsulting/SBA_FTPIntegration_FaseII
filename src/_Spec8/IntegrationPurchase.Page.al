@@ -310,6 +310,16 @@ page 50013 "Integration Purchase"
                     ApplicationArea = All;
                     ToolTip = 'Excel File Name';
                 }
+                field("Purch Post Excel File Name"; rec."Purch Post Excel File Name")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Purch Post Excel File Name';
+                }
+                field("Exported Excel Purch. Tax Name"; rec."Exported Excel Purch. Tax Name")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Exported Excel Purch. Tax Name';
+                }
             }
         }
         area(Factboxes)

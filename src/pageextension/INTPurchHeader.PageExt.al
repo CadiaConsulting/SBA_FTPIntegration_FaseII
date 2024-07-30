@@ -673,6 +673,19 @@ pageextension 50013 "INTPurchHeader" extends "Purchase Order"
         {
             Editable = not CheckStatus;
         }
+        modify("CADBR Tax Area Code.")
+        {
+            Editable = not CheckStatus;
+        }
+        modify(ShippingOptionWithLocation)
+        {
+            Editable = not CheckStatus;
+        }
+        modify(PayToOptions)
+        {
+            Editable = not CheckStatus;
+        }
+
 
 
     }
@@ -706,12 +719,14 @@ pageextension 50013 "INTPurchHeader" extends "Purchase Order"
         }
     }
 
-    trigger OnAfterGetCurrRecord()
+    trigger OnAfterGetRecord()
     begin
+
         if rec.Status = rec.Status::Open then
             CheckStatus := false
         else
             CheckStatus := true;
+
     end;
 
     var

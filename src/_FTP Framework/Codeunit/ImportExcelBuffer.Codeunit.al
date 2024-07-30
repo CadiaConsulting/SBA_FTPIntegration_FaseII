@@ -1204,13 +1204,14 @@ codeunit 50002 "Import Excel Buffer"
         TempBlob: codeunit "Temp Blob";
         FileBase64: Text;
         PathToFile: Text;
+        DocumentOld: Code[20];
     begin
 
         TempExcelBuffer.Reset();
         TempExcelBuffer.DeleteAll();
 
         IntPurchase.Reset();
-        IntPurchase.SetRange(Status, IntPurchase.Status::Created);
+        IntPurchase.SetFilter(Status, '%1|%2', IntPurchase.Status::Created, IntPurchase.Status::Exported);
         IntPurchase.SetRange("Status PO", IntPurchase."Status PO"::Released);
         if IntPurchase.FindFirst() then begin
 
@@ -1229,27 +1230,33 @@ codeunit 50002 "Import Excel Buffer"
             TempExcelBuffer.AddColumn(IntPurchase.FieldCaption(Status), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
             TempExcelBuffer.AddColumn(IntPurchase.FieldCaption("Posting Message"), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
             TempExcelBuffer.AddColumn(IntPurchase.FieldCaption("Reason Code"), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+            DocumentOld := '999cvgt67vv';
 
             repeat
 
-                TempExcelBuffer.NewRow();
-                TempExcelBuffer.AddColumn('Order', false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
-                TempExcelBuffer.AddColumn(IntPurchase."Document No.", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
-                TempExcelBuffer.AddColumn(IntPurchase."Buy-from Vendor No.", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
-                TempExcelBuffer.AddColumn(IntPurchase."Order IRRF Ret", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
-                TempExcelBuffer.AddColumn(IntPurchase."Order CSRF Ret", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
-                TempExcelBuffer.AddColumn(IntPurchase."Order INSS Ret", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
-                TempExcelBuffer.AddColumn(IntPurchase."Order ISS Ret", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
-                TempExcelBuffer.AddColumn(IntPurchase."Order PIS Credit", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
-                TempExcelBuffer.AddColumn(IntPurchase."Order Cofins Credit", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
-                TempExcelBuffer.AddColumn(IntPurchase."Order DIRF Ret", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
-                TempExcelBuffer.AddColumn(IntPurchase.Rejected, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
-                TempExcelBuffer.AddColumn(IntPurchase.Status, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
-                TempExcelBuffer.AddColumn(IntPurchase."Posting Message", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
-                TempExcelBuffer.AddColumn(IntPurchase."Reason Description", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                if DocumentOld <> IntPurchase."Document No." then begin
+                    TempExcelBuffer.NewRow();
+                    TempExcelBuffer.AddColumn('Order', false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                    TempExcelBuffer.AddColumn(IntPurchase."Document No.", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                    TempExcelBuffer.AddColumn(IntPurchase."Buy-from Vendor No.", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                    TempExcelBuffer.AddColumn(IntPurchase."Order IRRF Ret", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
+                    TempExcelBuffer.AddColumn(IntPurchase."Order CSRF Ret", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
+                    TempExcelBuffer.AddColumn(IntPurchase."Order INSS Ret", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
+                    TempExcelBuffer.AddColumn(IntPurchase."Order ISS Ret", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
+                    TempExcelBuffer.AddColumn(IntPurchase."Order PIS Credit", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
+                    TempExcelBuffer.AddColumn(IntPurchase."Order Cofins Credit", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
+                    TempExcelBuffer.AddColumn(IntPurchase."Order DIRF Ret", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
+                    TempExcelBuffer.AddColumn(IntPurchase.Rejected, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                    TempExcelBuffer.AddColumn(IntPurchase.Status, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                    TempExcelBuffer.AddColumn(IntPurchase."Posting Message", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                    TempExcelBuffer.AddColumn(IntPurchase."Reason Description", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                end;
 
                 IntPurchase.Status := IntPurchase.Status::Exported;
+                IntPurchase."Exported Excel Purch. Tax Name" := format(FTPIntSetup.Integration::"Purchase Tax Validation") + DelChr(Format(Today) + Format(Time), '=', '/:');
                 IntPurchase.Modify();
+
+                DocumentOld := IntPurchase."Document No.";
 
             until IntPurchase.Next() = 0;
 
@@ -1267,7 +1274,7 @@ codeunit 50002 "Import Excel Buffer"
 
             FileBase64 := Base64.ToBase64(InSTR);
             FTPIntSetup.Get(FTPIntSetup.Integration::"Purchase Tax Validation");
-            FTPCommunication.DoAction(Enum::"FTP Actions"::upload, format(FTPIntSetup.Integration::"Purchase Tax Validation") + DelChr(Format(Today) + Format(Time), '=', '/:') + '.xlsx', FTPIntSetup.Directory, '', FileBase64);
+            FTPCommunication.DoAction(Enum::"FTP Actions"::upload, IntPurchase."Exported Excel Purch. Tax Name" + '.xlsx', FTPIntSetup.Directory, '', FileBase64);
             Message('Uploaded');
         end;
     end;
