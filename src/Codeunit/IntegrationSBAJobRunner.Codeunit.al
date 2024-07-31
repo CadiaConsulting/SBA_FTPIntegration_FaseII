@@ -75,8 +75,8 @@ codeunit 50009 "Integration SBA Job Runner"
                 end;
 
                 if FTPSetup.Integration = FTPSetup.Integration::"Purchase Credit Note" then begin
-                    if FTPSetup."Post Order" then
-                        ImportExcelBuffer.ImportExcelPurchase();
+                    //if FTPSetup."Post Order" then
+                    //ImportExcelBuffer.ImportExcelPurchase();
 
                     if FTPSetup."Post Order" then
                         IntegrationPurchaseReturn.PostPurchaseReturn(IntPurhRet);

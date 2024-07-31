@@ -3,6 +3,9 @@ codeunit 50002 "Import Excel Buffer"
     var
         TempExcelBuffer: Record "Excel Buffer" temporary;
         TypeIntergationErrorLbl: Label 'This routine is not prepared for this type of %1.';
+        SetLanguage: Codeunit Language;
+        GlobalDateYes: Date;
+        GlobalDecimalYes: Decimal;
 
 
     // > TEST
@@ -195,7 +198,7 @@ codeunit 50002 "Import Excel Buffer"
                         end;
 
                         if ValidateDate(GetValueAtCell(RowNo, 5)) then
-                            Evaluate(IntegrationSales."Order Date", GetValueAtCell(RowNo, 5))
+                            IntegrationSales."Order Date" := GlobalDateYes
                         else begin
                             IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
                             IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
@@ -205,7 +208,7 @@ codeunit 50002 "Import Excel Buffer"
                         end;
 
                         if ValidateDate(GetValueAtCell(RowNo, 6)) then
-                            Evaluate(IntegrationSales."Posting Date", GetValueAtCell(RowNo, 6))
+                            IntegrationSales."Posting Date" := GlobalDateYes
                         else begin
                             IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
                             IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
@@ -224,7 +227,7 @@ codeunit 50002 "Import Excel Buffer"
                         end;
 
                         if ValidateDate(GetValueAtCell(RowNo, 9)) then
-                            Evaluate(IntegrationSales."Document Date", GetValueAtCell(RowNo, 9))
+                            IntegrationSales."Document Date" := GlobalDateYes
                         else begin
                             IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
                             IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
@@ -329,7 +332,7 @@ codeunit 50002 "Import Excel Buffer"
                         end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 26)) then
-                            Evaluate(IntegrationSales.Quantity, GetValueAtCell(RowNo, 26))
+                            IntegrationSales.Quantity := GlobalDecimalYes
                         else begin
                             IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
                             IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
@@ -339,7 +342,7 @@ codeunit 50002 "Import Excel Buffer"
                         end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 27)) then
-                            Evaluate(IntegrationSales."Unit Price", GetValueAtCell(RowNo, 27))
+                            IntegrationSales."Unit Price" := GlobalDecimalYes
                         else begin
                             IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
                             IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
@@ -358,7 +361,7 @@ codeunit 50002 "Import Excel Buffer"
                         end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 35)) then
-                            Evaluate(IntegrationSales."Tax From Billing APP (PIS)", GetValueAtCell(RowNo, 35))
+                            IntegrationSales."Tax From Billing APP (PIS)" := GlobalDecimalYes
                         else
                             if (GetValueAtCell(RowNo, 35) <> '') then begin
                                 IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
@@ -369,7 +372,7 @@ codeunit 50002 "Import Excel Buffer"
                             end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 36)) then
-                            Evaluate(IntegrationSales."Tax From Billing APP (COFINS)", GetValueAtCell(RowNo, 36))
+                            IntegrationSales."Tax From Billing APP (COFINS)" := GlobalDecimalYes
                         else
                             if (GetValueAtCell(RowNo, 36) <> '') then begin
                                 IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
@@ -548,7 +551,7 @@ codeunit 50002 "Import Excel Buffer"
                         end;
 
                         if ValidateDate(GetValueAtCell(RowNo, 5)) then
-                            Evaluate(IntSalesCreditNote."Order Date", GetValueAtCell(RowNo, 5))
+                            IntSalesCreditNote."Order Date" := GlobalDateYes
                         else begin
                             IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
                             IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
@@ -558,7 +561,7 @@ codeunit 50002 "Import Excel Buffer"
                         end;
 
                         if ValidateDate(GetValueAtCell(RowNo, 6)) then
-                            Evaluate(IntSalesCreditNote."Posting Date", GetValueAtCell(RowNo, 6))
+                            IntSalesCreditNote."Posting Date" := GlobalDateYes
                         else begin
                             IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
                             IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
@@ -577,7 +580,7 @@ codeunit 50002 "Import Excel Buffer"
                         end;
 
                         if ValidateDate(GetValueAtCell(RowNo, 9)) then
-                            Evaluate(IntSalesCreditNote."Document Date", GetValueAtCell(RowNo, 9))
+                            IntSalesCreditNote."Document Date" := GlobalDateYes
                         else begin
                             IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
                             IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
@@ -680,7 +683,7 @@ codeunit 50002 "Import Excel Buffer"
                         end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 26)) then
-                            Evaluate(IntSalesCreditNote.Quantity, GetValueAtCell(RowNo, 26))
+                            IntSalesCreditNote.Quantity := GlobalDecimalYes
                         else begin
                             IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
                             IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
@@ -690,7 +693,7 @@ codeunit 50002 "Import Excel Buffer"
                         end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 27)) then
-                            Evaluate(IntSalesCreditNote."Unit Price", GetValueAtCell(RowNo, 27))
+                            IntSalesCreditNote."Unit Price" := GlobalDecimalYes
                         else begin
                             IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
                             IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Return Order",
@@ -709,7 +712,7 @@ codeunit 50002 "Import Excel Buffer"
                         end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 35)) then
-                            Evaluate(IntSalesCreditNote."Tax From Billing APP (PIS)", GetValueAtCell(RowNo, 35))
+                            IntSalesCreditNote."Tax From Billing APP (PIS)" := GlobalDecimalYes
                         else
                             if (GetValueAtCell(RowNo, 35) <> '') then begin
                                 IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
@@ -720,7 +723,7 @@ codeunit 50002 "Import Excel Buffer"
                             end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 36)) then
-                            Evaluate(IntSalesCreditNote."Tax From Billing APP (COFINS)", GetValueAtCell(RowNo, 36))
+                            IntSalesCreditNote."Tax From Billing APP (COFINS)" := GlobalDecimalYes
                         else
                             if (GetValueAtCell(RowNo, 36) <> '') then begin
                                 IntSalesCreditNote.Status := IntSalesCreditNote.Status::"Data Excel Error";
@@ -869,7 +872,7 @@ codeunit 50002 "Import Excel Buffer"
                         end;
 
                         if ValidateDate(GetValueAtCell(RowNo, 3)) then
-                            Evaluate(IntegrationPurchase."Order Date", GetValueAtCell(RowNo, 3))
+                            IntegrationPurchase."Order Date" := GlobalDateYes
                         else begin
                             IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Excel Error";
                             IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Order",
@@ -926,7 +929,7 @@ codeunit 50002 "Import Excel Buffer"
                         end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 13)) then
-                            Evaluate(IntegrationPurchase.Quantity, GetValueAtCell(RowNo, 13))
+                            IntegrationPurchase.Quantity := GlobalDecimalYes
                         else begin
                             IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Excel Error";
                             IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Order",
@@ -936,7 +939,7 @@ codeunit 50002 "Import Excel Buffer"
                         end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 14)) then
-                            Evaluate(IntegrationPurchase."Direct Unit Cost Excl. Vat", GetValueAtCell(RowNo, 14))
+                            IntegrationPurchase."Direct Unit Cost Excl. Vat" := GlobalDecimalYes
                         else begin
                             IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Excel Error";
                             IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Order",
@@ -1027,7 +1030,7 @@ codeunit 50002 "Import Excel Buffer"
 
                         //IRRF Ret
                         if ValidateDecimal(GetValueAtCell(RowNo, 25)) then
-                            Evaluate(IntegrationPurchase."IRRF Ret", GetValueAtCell(RowNo, 25))
+                            IntegrationPurchase."IRRF Ret" := GlobalDecimalYes
                         else
                             if (GetValueAtCell(RowNo, 25) <> '') then begin
                                 IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Excel Error";
@@ -1037,7 +1040,7 @@ codeunit 50002 "Import Excel Buffer"
                             end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 26)) then
-                            Evaluate(IntegrationPurchase."CSRF Ret", GetValueAtCell(RowNo, 26))
+                            IntegrationPurchase."CSRF Ret" := GlobalDecimalYes
                         else
                             if (GetValueAtCell(RowNo, 26) <> '') then begin
                                 IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Excel Error";
@@ -1047,7 +1050,7 @@ codeunit 50002 "Import Excel Buffer"
                             end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 27)) then
-                            Evaluate(IntegrationPurchase."INSS Ret", GetValueAtCell(RowNo, 27))
+                            IntegrationPurchase."INSS Ret" := GlobalDecimalYes
                         else
                             if (GetValueAtCell(RowNo, 27) <> '') then begin
                                 IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Excel Error";
@@ -1057,7 +1060,7 @@ codeunit 50002 "Import Excel Buffer"
                             end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 28)) then
-                            Evaluate(IntegrationPurchase."ISS Ret", GetValueAtCell(RowNo, 28))
+                            IntegrationPurchase."ISS Ret" := GlobalDecimalYes
                         else
                             if (GetValueAtCell(RowNo, 28) <> '') then begin
                                 IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Excel Error";
@@ -1067,7 +1070,7 @@ codeunit 50002 "Import Excel Buffer"
                             end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 29)) then
-                            Evaluate(IntegrationPurchase."PIS Credit", GetValueAtCell(RowNo, 29))
+                            IntegrationPurchase."PIS Credit" := GlobalDecimalYes
                         else
                             if (GetValueAtCell(RowNo, 29) <> '') then begin
                                 IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Excel Error";
@@ -1077,7 +1080,7 @@ codeunit 50002 "Import Excel Buffer"
                             end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 30)) then
-                            Evaluate(IntegrationPurchase."Cofins Credit", GetValueAtCell(RowNo, 30))
+                            IntegrationPurchase."Cofins Credit" := GlobalDecimalYes
                         else
                             if (GetValueAtCell(RowNo, 30) <> '') then begin
                                 IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Excel Error";
@@ -1087,7 +1090,7 @@ codeunit 50002 "Import Excel Buffer"
                             end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 31)) then
-                            Evaluate(IntegrationPurchase.DIRF, GetValueAtCell(RowNo, 31))
+                            IntegrationPurchase.DIRF := GlobalDecimalYes
                         else
                             if (GetValueAtCell(RowNo, 31) <> '') then begin
                                 IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Excel Error";
@@ -1097,7 +1100,7 @@ codeunit 50002 "Import Excel Buffer"
                             end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 32)) then
-                            Evaluate(IntegrationPurchase."PO Total", GetValueAtCell(RowNo, 32))
+                            IntegrationPurchase."PO Total" := GlobalDecimalYes
                         else
                             if (GetValueAtCell(RowNo, 32) <> '') then begin
                                 IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Excel Error";
@@ -1143,7 +1146,7 @@ codeunit 50002 "Import Excel Buffer"
                         end;
 
                         if ValidateDate(GetValueAtCell(RowNo, 37)) then begin
-                            Evaluate(IntegrationPurchase."Posting Date", GetValueAtCell(RowNo, 37));
+                            IntegrationPurchase."Posting Date" := GlobalDateYes;
                             if IntegrationPurchase."Posting Date" = 0D then begin
                                 IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Excel Error";
                                 IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Order",
@@ -1397,7 +1400,7 @@ codeunit 50002 "Import Excel Buffer"
                                     IPSaveRejected."Purch Post Excel File Name" := copystr(Filename, 1, 200);
 
                                     if ValidateDate(GetValueAtCell(RowNo, 3)) then
-                                        Evaluate(IPSaveRejected."Posting Date", GetValueAtCell(RowNo, 3));
+                                        IPSaveRejected."Posting Date" := GlobalDateYes;
 
                                     IPSaveRejected.Modify();
 
@@ -1575,7 +1578,7 @@ codeunit 50002 "Import Excel Buffer"
 
 
                         if ValidateDate(GetValueAtCell(RowNo, 3)) and (GetValueAtCell(RowNo, 3) <> '') then
-                            Evaluate(IntPurchReturn."Order Date", GetValueAtCell(RowNo, 3))
+                            IntPurchReturn."Order Date" := GlobalDateYes
                         else begin
                             IntPurchReturn.Status := IntPurchReturn.Status::"Data Excel Error";
                             IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Return Order",
@@ -1632,7 +1635,7 @@ codeunit 50002 "Import Excel Buffer"
                         end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 13)) and (GetValueAtCell(RowNo, 13) <> '') then begin
-                            Evaluate(IntPurchReturn.Quantity, GetValueAtCell(RowNo, 13));
+                            IntPurchReturn.Quantity := GlobalDecimalYes;
 
                             if IntPurchReturn.Quantity = 0 then begin
 
@@ -1652,7 +1655,7 @@ codeunit 50002 "Import Excel Buffer"
                         end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 14)) and (GetValueAtCell(RowNo, 14) <> '') then begin
-                            Evaluate(IntPurchReturn."Direct Unit Cost Excl. Vat", GetValueAtCell(RowNo, 14));
+                            IntPurchReturn."Direct Unit Cost Excl. Vat" := GlobalDecimalYes;
 
                             if IntPurchReturn."Direct Unit Cost Excl. Vat" = 0 then begin
 
@@ -1745,7 +1748,7 @@ codeunit 50002 "Import Excel Buffer"
 
                         //IRRF Ret
                         if ValidateDecimal(GetValueAtCell(RowNo, 25)) then
-                            Evaluate(IntPurchReturn."IRRF Ret", GetValueAtCell(RowNo, 25))
+                            IntPurchReturn."IRRF Ret" := GlobalDecimalYes
                         else
                             if (GetValueAtCell(RowNo, 25) <> '') then begin
                                 IntPurchReturn.Status := IntPurchReturn.Status::"Data Excel Error";
@@ -1755,7 +1758,7 @@ codeunit 50002 "Import Excel Buffer"
                             end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 26)) then
-                            Evaluate(IntPurchReturn."CSRF Ret", GetValueAtCell(RowNo, 26))
+                            IntPurchReturn."CSRF Ret" := GlobalDecimalYes
                         else
                             if (GetValueAtCell(RowNo, 26) <> '') then begin
                                 IntPurchReturn.Status := IntPurchReturn.Status::"Data Excel Error";
@@ -1765,7 +1768,7 @@ codeunit 50002 "Import Excel Buffer"
                             end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 27)) then
-                            Evaluate(IntPurchReturn."INSS Ret", GetValueAtCell(RowNo, 27))
+                            IntPurchReturn."INSS Ret" := GlobalDecimalYes
                         else
                             if (GetValueAtCell(RowNo, 27) <> '') then begin
                                 IntPurchReturn.Status := IntPurchReturn.Status::"Data Excel Error";
@@ -1775,7 +1778,7 @@ codeunit 50002 "Import Excel Buffer"
                             end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 28)) then
-                            Evaluate(IntPurchReturn."ISS Ret", GetValueAtCell(RowNo, 28))
+                            IntPurchReturn."ISS Ret" := GlobalDecimalYes
                         else
                             if (GetValueAtCell(RowNo, 28) <> '') then begin
                                 IntPurchReturn.Status := IntPurchReturn.Status::"Data Excel Error";
@@ -1785,7 +1788,7 @@ codeunit 50002 "Import Excel Buffer"
                             end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 29)) then
-                            Evaluate(IntPurchReturn."PIS Credit", GetValueAtCell(RowNo, 29))
+                            IntPurchReturn."PIS Credit" := GlobalDecimalYes
                         else
                             if (GetValueAtCell(RowNo, 29) <> '') then begin
                                 IntPurchReturn.Status := IntPurchReturn.Status::"Data Excel Error";
@@ -1795,7 +1798,7 @@ codeunit 50002 "Import Excel Buffer"
                             end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 30)) then
-                            Evaluate(IntPurchReturn."Cofins Credit", GetValueAtCell(RowNo, 30))
+                            IntPurchReturn."Cofins Credit" := GlobalDecimalYes
                         else
                             if (GetValueAtCell(RowNo, 30) <> '') then begin
                                 IntPurchReturn.Status := IntPurchReturn.Status::"Data Excel Error";
@@ -1805,7 +1808,7 @@ codeunit 50002 "Import Excel Buffer"
                             end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 31)) then
-                            Evaluate(IntPurchReturn.DIRF, GetValueAtCell(RowNo, 31))
+                            IntPurchReturn.DIRF := GlobalDecimalYes
                         else
                             if (GetValueAtCell(RowNo, 31) <> '') then begin
                                 IntPurchReturn.Status := IntPurchReturn.Status::"Data Excel Error";
@@ -1815,7 +1818,7 @@ codeunit 50002 "Import Excel Buffer"
                             end;
 
                         if ValidateDecimal(GetValueAtCell(RowNo, 32)) then
-                            Evaluate(IntPurchReturn."PO Total", GetValueAtCell(RowNo, 32))
+                            IntPurchReturn."PO Total" := GlobalDecimalYes
                         else
                             if (GetValueAtCell(RowNo, 32) <> '') then begin
                                 IntPurchReturn.Status := IntPurchReturn.Status::"Data Excel Error";
@@ -1940,7 +1943,7 @@ codeunit 50002 "Import Excel Buffer"
 
                     //Month Start Date 5
                     if ValidateDate(GetValueAtCell(RowNo, 5)) then
-                        Evaluate(IntegrationLandlord."Document Date", GetValueAtCell(RowNo, 5))
+                        IntegrationLandlord."Document Date" := GlobalDateYes
                     else begin
                         IntegrationLandlord.Status := IntegrationLandlord.Status::"Data Excel Error";
                         IntegrationErros.InsertErros(IntegrationErros."Integration Type"::Landlord,
@@ -2005,7 +2008,7 @@ codeunit 50002 "Import Excel Buffer"
 
                     //Paid Date 21
                     if ValidateDate(GetValueAtCell(RowNo, 21)) then
-                        Evaluate(IntegrationLandlord."Paid Date", GetValueAtCell(RowNo, 21))
+                        IntegrationLandlord."Paid Date" := GlobalDateYes
                     else begin
                         IntegrationLandlord.Status := IntegrationLandlord.Status::"Data Excel Error";
                         IntegrationErros.InsertErros(IntegrationErros."Integration Type"::Landlord,
@@ -2242,7 +2245,7 @@ codeunit 50002 "Import Excel Buffer"
 
 
                         if ValidateDate(GetValueAtCell(RowNo, 6)) then
-                            Evaluate(TemporaryBuffer."Posting Date", GetValueAtCell(RowNo, 6))
+                            TemporaryBuffer."Posting Date" := GlobalDateYes
                         else begin
                             TemporaryBuffer.Status := TemporaryBuffer.Status::"Data Excel Error";
                             TemporaryBuffer."Excel File Name" := copystr(Filename, 1, 200);
@@ -2559,7 +2562,7 @@ codeunit 50002 "Import Excel Buffer"
                         end;
 
                         if ValidateDate(GetValueAtCell(RowNo, 6)) then
-                            Evaluate(TemporaryBuffer."Posting Date", GetValueAtCell(RowNo, 6))
+                            TemporaryBuffer."Posting Date" := GlobalDateYes
                         else begin
                             TemporaryBuffer.Status := TemporaryBuffer.Status::"Data Excel Error";
                             TemporaryBuffer."Excel File Name" := copystr(Filename, 1, 200);
@@ -2886,7 +2889,7 @@ codeunit 50002 "Import Excel Buffer"
 
 
                         if ValidateDate(GetValueAtCell(RowNo, 6)) then
-                            Evaluate(TemporaryBuffer."Posting Date", GetValueAtCell(RowNo, 6))
+                            TemporaryBuffer."Posting Date" := GlobalDateYes
                         else begin
                             TemporaryBuffer.Status := TemporaryBuffer.Status::"Data Excel Error";
                             TemporaryBuffer."Excel File Name" := copystr(Filename, 1, 200);
@@ -3048,7 +3051,15 @@ codeunit 50002 "Import Excel Buffer"
     var
         DateYes: Date;
     begin
-        evaluate(DateYes, VDate);
+        Clear(GlobalDateYes);
+
+        if GlobalLanguage <> 1046 then begin
+            VDate := CopyStr(VDate, 7, 4) + '-' + CopyStr(VDate, 4, 2) + '-' + CopyStr(VDate, 1, 2);
+            evaluate(DateYes, VDate);
+        end else
+            evaluate(DateYes, VDate);
+
+        GlobalDateYes := DateYes;
 
     end;
 
@@ -3057,7 +3068,16 @@ codeunit 50002 "Import Excel Buffer"
     var
         DecimalYes: Decimal;
     begin
-        evaluate(DecimalYes, VDecimal);
+        Clear(GlobalDecimalYes);
+
+        if GlobalLanguage <> 1046 then begin
+
+            VDecimal := ConvertStr(VDecimal, ',', '.');
+            evaluate(DecimalYes, VDecimal);
+        end else
+            evaluate(DecimalYes, VDecimal);
+
+        GlobalDecimalYes := DecimalYes;
 
     end;
 

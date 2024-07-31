@@ -8468,6 +8468,16 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Query INTPostCode - Property Caption</note>
         </trans-unit>
+        <trans-unit id="PageExtension 183251370 - Control 580412389 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3292376582">
+          <source>Document Date</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Apply Vendor Entries-Ext - Control Document Date - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 183251370 - Control 2757819250 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3292376582">
+          <source>Service Delivery City</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Apply Vendor Entries-Ext - Control Service Delivery City - Property ToolTip</note>
+        </trans-unit>
         <trans-unit id="PageExtension 2807289801 - Action 2782249122 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3500708443">
           <source>SBA Integration</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -8732,6 +8742,36 @@
           <source>Buy-from City</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderList - Control Buy-from City - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3981024632 - Control 3883142323 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3195034673">
+          <source>Cod. CFOP</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderList - Control CADBR CFOP Code - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3981024632 - Control 1166459844 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3195034673">
+          <source>Número da NF</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderList - Control CADBR E-Invoice Posting No. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3981024632 - Control 2610144541 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3195034673">
+          <source>Tipo Documento Fiscal</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderList - Control CADBR Fiscal Document Type - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3981024632 - Control 2673468369 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3195034673">
+          <source>Série Impressão</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderList - Control CADBR Print Serie - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3981024632 - Control 1305184396 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3195034673">
+          <source>Município Prestação Serviço</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderList - Control CADBR Service Delivery City - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3981024632 - Control 3066042533 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3195034673">
+          <source>Posting Message</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderList - Control Posting Message - Property ToolTip</note>
         </trans-unit>
         <trans-unit id="PageExtension 2801933490 - Action 3327007977 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3113493751">
           <source>Delete Records</source>

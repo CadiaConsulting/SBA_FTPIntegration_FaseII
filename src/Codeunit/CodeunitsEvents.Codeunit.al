@@ -214,4 +214,18 @@ codeunit 50017 "Codeunits Events"
 
     end;
 
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Gen. Jnl.-Check Line", 'OnBeforeRunCheck', '', false, false)]
+    local procedure GenJnlCheckLine_OnBeforeRunCheck(var GenJournalLine: Record "Gen. Journal Line");
+    var
+        VendorLedEntry: Record "Vendor Ledger Entry";
+    begin
+        GenJournalLine.TestField("External Document No.", ErrorInfo.Create());
+
+        if GenJournalLine."Document No." <> '' then begin
+
+
+        end;
+
+    end;
+
 }

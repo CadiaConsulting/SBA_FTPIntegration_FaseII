@@ -12,7 +12,8 @@ pageextension 50017 "INTPurchaseOrderList" extends "Purchase Order List"
             }
             field("Posting Message"; rec."Posting Message")
             {
-
+                ApplicationArea = All;
+                ToolTip = 'Posting Message';
             }
             field("CADBR E-Invoice Posting No."; rec."CADBR E-Invoice Posting No.")
             {
