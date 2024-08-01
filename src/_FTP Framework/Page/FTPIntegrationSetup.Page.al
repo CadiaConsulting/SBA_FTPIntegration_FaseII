@@ -126,6 +126,11 @@ page 50000 "FTP Integration Setup"
                     ApplicationArea = All;
                     Caption = 'Import Purch Post';
                 }
+                field("Suggest Vendor Payments"; Rec."Suggest Vendor Payments")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Suggest Vendor Payments';
+                }
 
             }
 

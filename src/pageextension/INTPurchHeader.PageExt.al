@@ -699,14 +699,16 @@ pageextension 50013 "INTPurchHeader" extends "Purchase Order"
             {
                 Caption = 'Under Analysis';
                 ApplicationArea = Suite;
+                Image = Undo;
                 trigger OnAction()
                 var
                     IntPurchase: Record "Integration Purchase";
                     IntegrationPurchase: Codeunit "Integration Purchase";
 
                 begin
-                    CurrPage.SetSelectionFilter(IntPurchase);
-                    IntPurchase.CopyFilters(Rec);
+
+                    IntPurchase.Reset();
+                    IntPurchase.SetRange("Document No.", rec."No.");
 
                     IntegrationPurchase.UnderAnalysis(IntPurchase);
 

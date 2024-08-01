@@ -193,6 +193,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field Sequence - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Table 2709587453 - Field 3037058459 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Suggest Vendor Payments</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field Suggest Vendor Payments - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Table 2709587453 - Field 1412725345 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>URL Address FTP</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -3003,6 +3008,16 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table Status Files Validation - Field Status - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Codeunit 3625489113 - Method 376541200 - NamedType 1758949055" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Document No. %1 já existe para o Fornecedor %2.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Codeunits Events - Method GenJnlCheckLine_OnBeforeRunCheck - NamedType Text50005</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3625489113 - Method 376541200 - NamedType 3672038906" size-unit="char" translate="yes" xml:space="preserve">
+          <source>External Document No. %1 já existe para o Fornecedor %2.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Codeunits Events - Method GenJnlCheckLine_OnBeforeRunCheck - NamedType Text50006</note>
+        </trans-unit>
         <trans-unit id="Codeunit 3833420353 - NamedType 3114637384" size-unit="char" translate="yes" xml:space="preserve">
           <source>Open Excel file</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -3787,6 +3802,11 @@
           <source>Specifies the value of the Sequence field.</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page FTP Integration Setup - Control Sequence - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2709587453 - Control 3037058459 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Suggest Vendor Payments</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page FTP Integration Setup - Control Suggest Vendor Payments - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 2709587453 - Control 1412725345 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Specifies the value of the URL Address FTP field.</source>
@@ -7889,7 +7909,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentsFromBC - Control WiteOffAmount - Property ToolTip</note>
         </trans-unit>
         <trans-unit id="Page 79103387 - Action 2857238821 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Import Excel Purchase Payment</source>
+          <source>Export Excel Purchase Payment</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentsFromBC - Action ExportExcel - Property ToolTip</note>
         </trans-unit>
@@ -7912,11 +7932,6 @@
           <source>Suggest Vendor Payments</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentsFromBC - Action SuggestPayments - Property Caption</note>
-        </trans-unit>
-        <trans-unit id="Page 79103387 - Action 3968773999 - Method 1377591017 - NamedType 3791575771" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Excel File Exported.</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentsFromBC - Action SuggestPayments - Method OnAction - NamedType ExportedFileLbl</note>
         </trans-unit>
         <trans-unit id="Page 79103387 - Action 1936001480 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Vendor Card</source>

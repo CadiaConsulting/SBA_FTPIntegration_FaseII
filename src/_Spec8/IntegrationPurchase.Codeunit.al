@@ -719,7 +719,7 @@ codeunit 50013 "Integration Purchase"
                 until IntegrationPurchase.Next() = 0;
             end;
         end else
-            error('Usuario %1 sem Permissão para Revisar o Pedido');
+            error('Usuario %1 sem Permissão para Revisar o Pedido', USERID);
 
     end;
 
@@ -1394,6 +1394,7 @@ codeunit 50013 "Integration Purchase"
         purchInvHeader: Record "Purch. Inv. Header";
         TaxPostAcc: Record "CADBR Tax Posting Accounts";
         intPurch: Record "Integration Purchase";
+        FiscalDoc: Record "CADBR Fiscal Document Type";
         DocumentAlreadyExists: label 'The %1 document no. already exists for Vendor %2 - %3.';
         DocumentAndSerieAlreadyExists: label 'The Document No. %1 and Print Serie %2 already exists for Vendor %3 - %4.';
         DocumentSerieAndFiscalDocTypeAlreadyExists: label 'The Document No. %1, Print Serie %2 and Fiscal Doc. Type %3 already exists for Vendor %4 - %5.';
@@ -1413,16 +1414,18 @@ codeunit 50013 "Integration Purchase"
         if PurchaseHeader."Vendor Invoice No." = '' then
             PurchaseHeader."Posting Message" := 'Vendor Invoice No... must have a value in Header.';
 
-        if PurchaseHeader."CADBR NFe Reference key" = '' then
-            PurchaseHeader."Posting Message" := 'CADBR NFe Reference key... must have a value in Header.'
-        else begin
+        if FiscalDoc.Get(PurchaseHeader."CADBR Fiscal Document Type") and
+            (FiscalDoc."Document Model" = '55') then
+            if PurchaseHeader."CADBR NFe Reference key" = '' then
+                PurchaseHeader."Posting Message" := 'CADBR NFe Reference key... must have a value in Header.'
+            else begin
 
-            if CopyStr(PurchaseHeader."CADBR NFe Reference key", 23, 3) <> PurchaseHeader."CADBR Print Serie" then
-                PurchaseHeader."Posting Message" := 'The NF-e key series does not match the Print Series';
+                if CopyStr(PurchaseHeader."CADBR NFe Reference key", 23, 3) <> PurchaseHeader."CADBR Print Serie" then
+                    PurchaseHeader."Posting Message" := 'The NF-e key series does not match the Print Series';
 
-            if CopyStr(PurchaseHeader."CADBR NFe Reference key", 26, 9) <> PurchaseHeader."Vendor Invoice No." then
-                PurchaseHeader."Posting Message" := 'The NF-e key number does not match the Tax Nº.';
-        end;
+                if CopyStr(PurchaseHeader."CADBR NFe Reference key", 26, 9) <> PurchaseHeader."Vendor Invoice No." then
+                    PurchaseHeader."Posting Message" := 'The NF-e key number does not match the Tax Nº.';
+            end;
 
         if PurchaseHeader."Vendor Invoice No." <> '' then begin
 

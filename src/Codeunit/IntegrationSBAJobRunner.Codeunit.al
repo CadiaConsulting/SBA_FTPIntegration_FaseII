@@ -19,6 +19,7 @@ codeunit 50009 "Integration SBA Job Runner"
         IntPurchPayment: codeunit IntPurchPayment;
         IntPurchPaymentApply: codeunit IntPurchPaymentApply;
         IntPurchPaymentUnapply: Codeunit IntPurchPaymentUnapply;
+        IntPurchPaymentsFromBC: Codeunit IntPurchPaymentsFromBC;
 
     begin
         Rec.TestField("Parameter String");
@@ -108,6 +109,17 @@ codeunit 50009 "Integration SBA Job Runner"
                         IntPurchPaymentUnapply.Run();
                     end;
                 end;
+
+                if FTPSetup.Integration = FTPSetup.Integration::"Payments From BC" then begin
+
+                    if FTPSetup."Suggest Vendor Payments" then
+                        IntPurchPaymentsFromBC.SuggestVendorPayments();
+
+                    if FTPSetup."Export Purch Tax" then
+                        IntPurchPaymentsFromBC.ExportExcelIntPurchPaymentsFromBC();
+
+                end;
+
 
             until FTPSetup.Next() = 0;
 

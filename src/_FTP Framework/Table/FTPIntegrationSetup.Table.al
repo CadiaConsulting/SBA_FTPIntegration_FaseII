@@ -125,6 +125,12 @@ table 50001 "FTP Integration Setup"
             Caption = 'Import Purch Post';
             DataClassification = CustomerContent;
         }
+        field(206; "Suggest Vendor Payments"; Boolean)
+        {
+            Caption = 'Suggest Vendor Payments';
+            DataClassification = CustomerContent;
+        }
+
 
     }
     keys

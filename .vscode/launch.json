@@ -37,6 +37,23 @@
         },
         {
              
+            "name": "SBA_UAT_FASE_2_17052024",
+            "request": "launch",
+            "type": "al",
+            "environmentType":"Sandbox"   ,
+            "tenant": "3688e59a-3259-4495-8f8b-39d3649166e4",
+            "environmentName": "SBA_UAT_FASE_2_17052024",
+            "startupObjectId": 22,
+            "startupObjectType": "Page",
+            "breakOnError": true,
+            "launchBrowser": true,
+            "enableLongRunningSqlStatements": true,
+            "enableSqlInformationDebugger": true,
+            "schemaUpdateMode": "ForceSync" 
+        
+        },
+        {
+             
             "name": "SBA_UAT_02032024",
             "request": "launch",
             "type": "al",

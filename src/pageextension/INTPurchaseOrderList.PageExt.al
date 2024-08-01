@@ -94,6 +94,7 @@ pageextension 50017 "INTPurchaseOrderList" extends "Purchase Order List"
             {
                 Caption = 'Under Analysis';
                 ApplicationArea = Suite;
+                Image = Undo;
                 trigger OnAction()
 
                 begin

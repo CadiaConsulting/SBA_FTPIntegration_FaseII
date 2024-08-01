@@ -218,12 +218,34 @@ codeunit 50017 "Codeunits Events"
     local procedure GenJnlCheckLine_OnBeforeRunCheck(var GenJournalLine: Record "Gen. Journal Line");
     var
         VendorLedEntry: Record "Vendor Ledger Entry";
+        Text50005: Label 'Document No. %1 já existe para o Fornecedor %2.';
+        Text50006: Label 'External Document No. %1 já existe para o Fornecedor %2.';
     begin
-        GenJournalLine.TestField("External Document No.", ErrorInfo.Create());
 
-        if GenJournalLine."Document No." <> '' then begin
+        if GenJournalLine.EmptyLine() then
+            exit;
 
+        if GenJournalLine."Journal Template Name" = 'PURCHASES' then begin
 
+            GenJournalLine.TestField("External Document No.", ErrorInfo.Create());
+
+            if GenJournalLine."Document No." <> '' then begin
+
+                VendorLedEntry.Reset();
+                VendorLedEntry.SetRange("Vendor No.", GenJournalLine."Account No.");
+                VendorLedEntry.SetRange("Document No.", GenJournalLine."Document No.");
+                if VendorLedEntry.FindFirst() then
+                    Error(
+                        ErrorInfo.Create(StrSubstNo(Text50005, GenJournalLine."Document No.", GenJournalLine."Document No.")));
+
+                VendorLedEntry.Reset();
+                VendorLedEntry.SetRange("Vendor No.", GenJournalLine."Account No.");
+                VendorLedEntry.SetRange("External Document No.", GenJournalLine."External Document No.");
+                if VendorLedEntry.FindFirst() then
+                    Error(
+                        ErrorInfo.Create(StrSubstNo(Text50006, GenJournalLine."External Document No.", GenJournalLine."Account No.")));
+
+            end;
         end;
 
     end;

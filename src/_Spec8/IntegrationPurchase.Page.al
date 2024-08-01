@@ -416,7 +416,7 @@ page 50013 "Integration Purchase"
             {
                 ApplicationArea = All;
                 Caption = 'Under Analysis';
-                Image = UndoFluent;
+                Image = Undo;
                 ToolTip = 'Under Analysis';
 
                 trigger OnAction();

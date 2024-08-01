@@ -185,7 +185,7 @@ page 50073 "IntPurchPaymentsFromBC"
                 ApplicationArea = All;
                 Caption = 'Export Excel Purchase Payment';
                 Image = CreateDocument;
-                ToolTip = 'Import Excel Purchase Payment';
+                ToolTip = 'Export Excel Purchase Payment';
 
                 trigger OnAction();
                 var
@@ -195,7 +195,6 @@ page 50073 "IntPurchPaymentsFromBC"
                 begin
                     IntPurchPaymentsFromBC.ExportExcelIntPurchPaymentsFromBC();
 
-                    // CurrPage.SaveRecord();
                     CurrPage.Update();
 
                     Message(ExportedFileLbl);
@@ -211,8 +210,6 @@ page 50073 "IntPurchPaymentsFromBC"
                 trigger OnAction();
                 var
                     IntPurchPaymentsFromBC: Codeunit IntPurchPaymentsFromBC;
-                    ExportedFileLbl: Label 'Excel File Exported.';
-                    FTPIntegrationType: Enum "FTP Integration Type";
                 begin
                     IntPurchPaymentsFromBC.SuggestVendorPayments();
 
