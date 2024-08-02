@@ -1,4 +1,4 @@
-pageextension 50008 "Apply Vendor Entries-Ext" extends "Apply Vendor Entries"
+pageextension 50008 "Apply Vendor Entries-Ext" extends "CADBR Apply Vendor Entries"
 {
     layout
     {

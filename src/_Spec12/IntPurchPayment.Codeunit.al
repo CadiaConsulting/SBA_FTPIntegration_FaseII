@@ -157,6 +157,7 @@ codeunit 50070 "IntPurchPayment"
     local procedure CreatePaymentJournal(var RecordToPost: Record IntPurchPayment)
     var
         GenJournalLine: Record "Gen. Journal Line";
+        VendorLedEntry: Record "Vendor Ledger Entry";
         GenJnlPostLine: Codeunit "Gen. Jnl.-Post Line";
         CADBRPayTaxMgt: Codeunit "CADBR Payment Tax Mgt";
 
@@ -183,7 +184,18 @@ codeunit 50070 "IntPurchPayment"
         GenJournalLine."Bal. Account Type" := RecordToPost."Bal. Account Type";
         GenJournalLine."Document No." := RecordToPost."Document No.";
         GenJournalLine."Document Type" := RecordToPost."Document Type";
-        GenJournalLine."External Document No." := RecordToPost."External Document No.";
+
+        if RecordToPost."Applies-to Doc. No." <> '' then begin
+            VendorLedEntry.Reset();
+            VendorLedEntry.SetCurrentKey("Document No.");
+            VendorLedEntry.SetRange("Document No.", RecordToPost."Applies-to Doc. No.");
+            if VendorLedEntry.FindFirst() then
+                if VendorLedEntry."External Document No." <> '' then
+                    GenJournalLine."External Document No." := VendorLedEntry."External Document No."
+                else
+                    GenJournalLine."External Document No." := VendorLedEntry."Document No.";
+
+        end;
 
         if RecordToPost."Dimension 1" <> '' then
             GenJournalLine.Validate("Shortcut Dimension 1 Code", RecordToPost."Dimension 1");
@@ -245,7 +257,7 @@ codeunit 50070 "IntPurchPayment"
             GenJourTax."Tax Amount" := IntPurchPayment."Order CSRF Ret";
             GenJourTax."Tax Base Amount" := IntPurchPayment."Order PO Total";
             GenJourTax."Payable Account Type" := GenJourTax."Payable Account Type"::Vendor;
-           
+
             CTPostingAccounts.Reset();
             CTPostingAccounts.SetRange("Filter Type", CTPostingAccounts."Filter Type"::Jurisdiction);
             CTPostingAccounts.SetRange("Filter Code", VatEntry."Tax Jurisdiction Code");
