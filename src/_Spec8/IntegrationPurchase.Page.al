@@ -471,7 +471,7 @@ page 50013 "Integration Purchase"
                 end;
             }
 
-            action(ExportPosting)
+            action(ImportPosting)
             {
                 ApplicationArea = All;
                 Caption = 'Import Excel Purchase Posting';

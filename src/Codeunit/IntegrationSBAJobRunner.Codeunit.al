@@ -67,7 +67,7 @@ codeunit 50009 "Integration SBA Job Runner"
                     if FTPSetup."Post Order" then
                         IntegrationPurchase.PostPurchase(IntPurch);
 
-                    if FTPSetup."Export Purch Tax" then
+                    if FTPSetup."Export Excel" then
                         ImportExcelBuffer.ExportExcelPurchaseTax();
 
                     if FTPSetup."Import Purch Post" then
@@ -115,7 +115,7 @@ codeunit 50009 "Integration SBA Job Runner"
                     if FTPSetup."Suggest Vendor Payments" then
                         IntPurchPaymentsFromBC.SuggestVendorPayments();
 
-                    if FTPSetup."Export Purch Tax" then
+                    if FTPSetup."Export Excel" then
                         IntPurchPaymentsFromBC.ExportExcelIntPurchPaymentsFromBC();
 
                 end;

@@ -116,10 +116,10 @@ page 50000 "FTP Integration Setup"
                     ApplicationArea = All;
                     Caption = 'Post Order';
                 }
-                field("Export Purch Tax"; Rec."Export Purch Tax")
+                field("Export Excel"; Rec."Export Excel")
                 {
                     ApplicationArea = All;
-                    Caption = 'Export Purch Tax';
+                    Caption = 'Export Excel';
                 }
                 field("Import Purch Post"; Rec."Import Purch Post")
                 {

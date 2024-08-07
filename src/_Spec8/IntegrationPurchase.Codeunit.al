@@ -1414,18 +1414,23 @@ codeunit 50013 "Integration Purchase"
         if PurchaseHeader."Vendor Invoice No." = '' then
             PurchaseHeader."Posting Message" := 'Vendor Invoice No... must have a value in Header.';
 
-        if FiscalDoc.Get(PurchaseHeader."CADBR Fiscal Document Type") and
-            (FiscalDoc."Document Model" = '55') then
-            if PurchaseHeader."CADBR NFe Reference key" = '' then
-                PurchaseHeader."Posting Message" := 'CADBR NFe Reference key... must have a value in Header.'
-            else begin
+        if FiscalDoc.Get(PurchaseHeader."CADBR Fiscal Document Type") then begin
+            if (FiscalDoc."Series Mandatory") then
+                if PurchaseHeader."CADBR Print Serie" = '' then
+                    PurchaseHeader."Posting Message" := 'The Print series does not match the Print Series';
 
-                if CopyStr(PurchaseHeader."CADBR NFe Reference key", 23, 3) <> PurchaseHeader."CADBR Print Serie" then
-                    PurchaseHeader."Posting Message" := 'The NF-e key series does not match the Print Series';
+            if FiscalDoc."Document Model" = '55' then
+                if PurchaseHeader."CADBR NFe Reference key" = '' then
+                    PurchaseHeader."Posting Message" := 'CADBR NFe Reference key... must have a value in Header.'
+                else begin
 
-                if CopyStr(PurchaseHeader."CADBR NFe Reference key", 26, 9) <> PurchaseHeader."Vendor Invoice No." then
-                    PurchaseHeader."Posting Message" := 'The NF-e key number does not match the Tax Nº.';
-            end;
+                    if CopyStr(PurchaseHeader."CADBR NFe Reference key", 23, 3) <> PurchaseHeader."CADBR Print Serie" then
+                        PurchaseHeader."Posting Message" := 'The NF-e key series does not match the Print Series';
+
+                    if CopyStr(PurchaseHeader."CADBR NFe Reference key", 26, 9) <> PurchaseHeader."Vendor Invoice No." then
+                        PurchaseHeader."Posting Message" := 'The NF-e key number does not match the Tax Nº.';
+                end;
+        end;
 
         if PurchaseHeader."Vendor Invoice No." <> '' then begin
 

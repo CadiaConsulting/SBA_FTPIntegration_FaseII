@@ -115,9 +115,9 @@ table 50001 "FTP Integration Setup"
             Caption = 'Post Order';
             DataClassification = CustomerContent;
         }
-        field(204; "Export Purch Tax"; Boolean)
+        field(204; "Export Excel"; Boolean)
         {
-            Caption = 'Export Purch Tax';
+            Caption = 'Export Excel';
             DataClassification = CustomerContent;
         }
         field(205; "Import Purch Post"; Boolean)

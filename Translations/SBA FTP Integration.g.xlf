@@ -123,10 +123,10 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field Error Folder - Property Caption</note>
         </trans-unit>
-        <trans-unit id="Table 2709587453 - Field 1987961607 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Export Purch Tax</source>
+        <trans-unit id="Table 2709587453 - Field 3905943853 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Export Excel</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field Export Purch Tax - Property Caption</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field Export Excel - Property Caption</note>
         </trans-unit>
         <trans-unit id="Table 2709587453 - Field 3180352575 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>FTP Password</source>
@@ -3733,10 +3733,10 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page FTP Integration Setup - Control Error Folder - Property ToolTip</note>
         </trans-unit>
-        <trans-unit id="Page 2709587453 - Control 1987961607 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Export Purch Tax</source>
+        <trans-unit id="Page 2709587453 - Control 3905943853 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Export Excel</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page FTP Integration Setup - Control Export Purch Tax - Property Caption</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page FTP Integration Setup - Control Export Excel - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 2709587453 - Control 3180352575 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Specifies the value of the FTP Password field.</source>
@@ -5563,16 +5563,6 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Action DeleteEntries - Property Caption</note>
         </trans-unit>
-        <trans-unit id="Page 2300234719 - Action 1400803360 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Import Excel Purchase Posting</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Action ExportPosting - Property ToolTip</note>
-        </trans-unit>
-        <trans-unit id="Page 2300234719 - Action 1400803360 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Import Excel Purchase Posting</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Action ExportPosting - Property Caption</note>
-        </trans-unit>
         <trans-unit id="Page 2300234719 - Action 2930931643 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Export Excel Purchase Tax</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -5592,6 +5582,16 @@
           <source>Import Excel Purchase Order</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Action ImportExcel - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2300234719 - Action 3234955335 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Import Excel Purchase Posting</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Action ImportPosting - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2300234719 - Action 3234955335 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Import Excel Purchase Posting</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Action ImportPosting - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 2300234719 - Action 4213141969 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Integration Posted</source>
@@ -8763,11 +8763,6 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderList - Control CADBR CFOP Code - Property ToolTip</note>
         </trans-unit>
-        <trans-unit id="PageExtension 3981024632 - Control 1166459844 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3195034673">
-          <source>Número da NF</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderList - Control CADBR E-Invoice Posting No. - Property ToolTip</note>
-        </trans-unit>
         <trans-unit id="PageExtension 3981024632 - Control 2610144541 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3195034673">
           <source>Tipo Documento Fiscal</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -8787,6 +8782,11 @@
           <source>Posting Message</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderList - Control Posting Message - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 3981024632 - Control 3961227134 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3195034673">
+          <source>Número da NF</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderList - Control Vendor Invoice No. - Property ToolTip</note>
         </trans-unit>
         <trans-unit id="PageExtension 2801933490 - Action 3327007977 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3113493751">
           <source>Delete Records</source>

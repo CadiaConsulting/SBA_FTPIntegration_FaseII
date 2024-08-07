@@ -1395,7 +1395,14 @@ codeunit 50002 "Import Excel Buffer"
                                 IPSaveRejected.FindSet();
                                 repeat
 
-                                    Evaluate(IPSaveRejected.Rejected, GetValueAtCell(RowNo, 2));
+                                    if GlobalLanguage = 1046 then
+                                        Evaluate(IPSaveRejected.Rejected, GetValueAtCell(RowNo, 2))
+                                    else
+                                        if GetValueAtCell(RowNo, 2) = 'Não' then
+                                            IPSaveRejected.Rejected := false
+                                        else
+                                            IPSaveRejected.Rejected := true;
+
                                     IPSaveRejected."Release to Post" := not IPSaveRejected.Rejected;
                                     IPSaveRejected."Purch Post Excel File Name" := copystr(Filename, 1, 200);
 
@@ -3054,7 +3061,11 @@ codeunit 50002 "Import Excel Buffer"
         Clear(GlobalDateYes);
 
         if GlobalLanguage <> 1046 then begin
-            VDate := CopyStr(VDate, 7, 4) + '-' + CopyStr(VDate, 4, 2) + '-' + CopyStr(VDate, 1, 2);
+            if StrLen(VDate) = 8 then
+                VDate := '20' + CopyStr(VDate, 7, 4) + '-' + CopyStr(VDate, 1, 2) + '-' + CopyStr(VDate, 4, 2)
+            else
+                VDate := CopyStr(VDate, 7, 4) + '-' + CopyStr(VDate, 4, 2) + '-' + CopyStr(VDate, 1, 2);
+
             evaluate(DateYes, VDate);
         end else
             evaluate(DateYes, VDate);
