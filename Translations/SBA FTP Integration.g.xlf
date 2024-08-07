@@ -178,11 +178,6 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field Prefix File Name - Property Caption</note>
         </trans-unit>
-        <trans-unit id="Table 2709587453 - Field 2582270369 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Release Order</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field Release Order - Property Caption</note>
-        </trans-unit>
         <trans-unit id="Table 2709587453 - Field 1251813484 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Send Email</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -3787,11 +3782,6 @@
           <source>Prefix File Name</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page FTP Integration Setup - Control Prefix File Name - Property ToolTip</note>
-        </trans-unit>
-        <trans-unit id="Page 2709587453 - Control 2582270369 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Release Order</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page FTP Integration Setup - Control Release Order - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 2709587453 - Control 1251813484 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Specifies the value of the Send Email field.</source>

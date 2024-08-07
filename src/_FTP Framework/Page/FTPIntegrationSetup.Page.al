@@ -106,11 +106,6 @@ page 50000 "FTP Integration Setup"
                     ApplicationArea = All;
                     Caption = 'Create Order';
                 }
-                field("Release Order"; Rec."Release Order")
-                {
-                    ApplicationArea = All;
-                    Caption = 'Release Order';
-                }
                 field("Post Order"; Rec."Post Order")
                 {
                     ApplicationArea = All;

@@ -104,11 +104,6 @@ table 50001 "FTP Integration Setup"
             Caption = 'Create Order';
             DataClassification = CustomerContent;
         }
-        field(202; "Release Order"; Boolean)
-        {
-            Caption = 'Release Order';
-            DataClassification = CustomerContent;
-        }
 
         field(203; "Post Order"; Boolean)
         {

@@ -279,10 +279,13 @@ codeunit 50013 "Integration Purchase"
         if not ValidateCodMun(PurchaseHeader) then
             exit;
 
-        if PurchaseHeader."CADBR Taxes Matrix Code" = 'SEM IMP' then
-            ReleasePurchaseDocument.Run(PurchaseHeader)
-        else if PurchaseHeader."Tax Area Code" <> '' then // GAP08-004b
-            ReleasePurchaseDocument.Run(PurchaseHeader)
+        // if PurchaseHeader."CADBR Taxes Matrix Code" = 'SEM IMP' then
+        //     ReleasePurchaseDocument.Run(PurchaseHeader)
+        // else if PurchaseHeader."Tax Area Code" <> '' then // GAP08-004b
+        //     ReleasePurchaseDocument.Run(PurchaseHeader)
+
+        if IntegrationPurchase."Tax Area Code" <> '' then
+            ReleasePurchaseDocument.Run(PurchaseHeader);
 
     end;
 
@@ -649,7 +652,8 @@ codeunit 50013 "Integration Purchase"
                     exit(false);
                 end;
             end;
-        end;
+        end else
+            exit(true);
     end;
 
     procedure PurchRealse(var IntPurchase: Record "Integration Purchase")

@@ -61,9 +61,6 @@ codeunit 50009 "Integration SBA Job Runner"
                     if FTPSetup."Create Order" then
                         IntegrationPurchase.CreatePurchase(IntPurch);
 
-                    if FTPSetup."Release Order" then
-                        IntegrationPurchase.PurchRealse(IntPurch);
-
                     if FTPSetup."Post Order" then
                         IntegrationPurchase.PostPurchase(IntPurch);
 
