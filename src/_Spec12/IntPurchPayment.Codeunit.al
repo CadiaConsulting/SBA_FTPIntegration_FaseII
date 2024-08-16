@@ -44,10 +44,11 @@ codeunit 50070 "IntPurchPayment"
         CheckVendor(RecordToCheck);
         CheckBankAccount(RecordToCheck);
         ValidateDimensions(RecordToCheck);
+        PrepareTempVendLedgEntry(RecordToCheck);
 
         if not RecordToCheck."Permitir Dif. Aplicação" then
             if RecordToCheck."Amount Entry" < (RecordToCheck."Order CSRF Ret" + RecordToCheck."Order DIRF Ret" + RecordToCheck.Amount) then
-                RecordToCheck."Posting Message" := 'Error Amount Entry';
+                RecordToCheck."Posting Message" += 'Error Amount Entry';
 
         if RecordToCheck."Posting Message" <> '' then begin
             RecordToCheck.Status := RecordToCheck.Status::"Data Error";
@@ -56,6 +57,59 @@ codeunit 50070 "IntPurchPayment"
         end
         else
             exit(true);
+    end;
+
+    local procedure PrepareTempVendLedgEntry(var RecordTocheck: Record IntPurchPayment)
+    var
+        OldVendLedgEntry: Record "Vendor Ledger Entry";
+        PurchSetup: Record "Purchases & Payables Setup";
+        IntPurcPay: Record IntPurchPayment;
+        GenJnlApply: Codeunit "Gen. Jnl.-Apply";
+        RemainingAmount: Decimal;
+        DecimalValueTot: Decimal;
+    begin
+
+        if RecordTocheck."Applies-to Doc. No." <> '' then begin
+            // Find the entry to be applied to
+            OldVendLedgEntry.Reset();
+            OldVendLedgEntry.SetLoadFields(Positive, "Posting Date", "Currency Code");
+            OldVendLedgEntry.SetCurrentKey("Document No.");
+            OldVendLedgEntry.SetRange("Document No.", RecordTocheck."Applies-to Doc. No.");
+            OldVendLedgEntry.SetRange("Document Type", RecordTocheck."Applies-to Doc. Type");
+            OldVendLedgEntry.SetRange("Vendor No.", RecordTocheck."Account No.");
+            OldVendLedgEntry.SetRange(Open, true);
+            if not OldVendLedgEntry.FindFirst() then
+                RecordToCheck."Posting Message" := StrSubstNo('Não existe Movimento Aberto para o Fornecedor %1 Documento %2', RecordTocheck."Account No.", RecordTocheck."Applies-to Doc. No.");
+
+        end;
+
+        if not RecordTocheck."Permitir Dif. Aplicação" then begin
+
+            IntPurcPay.Reset();
+            IntPurcPay.SetCurrentKey("Excel File Name", "Journal Template Name", "Journal Batch Name", Status);
+            IntPurcPay.setrange("Excel File Name", RecordTocheck."Excel File Name");
+            IntPurcPay.SetRange("Applies-to Doc. No.", RecordTocheck."Applies-to Doc. No.");
+            IntPurcPay.SetFilter("Line No.", '<%1', RecordTocheck."Line No.");
+            if IntPurcPay.FindFirst() then begin
+                repeat
+                    DecimalValueTot += IntPurcPay.Amount + IntPurcPay."Order CSRF Ret" + IntPurcPay."Order IRRF Ret";
+                until IntPurcPay.Next() = 0;
+
+                DecimalValueTot += RecordTocheck.Amount + RecordTocheck."Order CSRF Ret" + RecordTocheck."Order IRRF Ret";
+
+                if RecordTocheck."Amount Entry" < DecimalValueTot then begin
+
+                    RecordTocheck."Different Amount" := true;
+                    RecordTocheck.Status := RecordTocheck.Status::"Data Error";
+                    RecordTocheck."Posting Message" += 'Existe mais de 1 linha com o mesmo documento Aplicado que ultrapassa o Valor pendente';
+
+                end;
+
+            end;
+
+        end;
+
+
     end;
 
     local procedure CheckJournalTemplate(var RecordTocheck: Record IntPurchPayment)
@@ -410,8 +464,8 @@ codeunit 50070 "IntPurchPayment"
             until FileToProcessTMP.Next() = 0;
     end;
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Gen. Jnl.-Post Batch", 'OnBeforeCode', '', false, false)]
-    local procedure Codeunit_13_OnCodeOnBeforeCode(var GenJournalLine: Record "Gen. Journal Line")
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Gen. Jnl.-Post Batch", 'OnAfterCode', '', false, false)]
+    local procedure Codeunit_13_OnCodeOnAfterCode(var GenJournalLine: Record "Gen. Journal Line")
     var
         IntPurchPayment: Record IntPurchPayment;
         GjLine: Record "Gen. Journal Line";

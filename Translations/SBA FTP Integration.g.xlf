@@ -8483,6 +8483,16 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension Apply Vendor Entries-Ext - Control Service Delivery City - Property ToolTip</note>
         </trans-unit>
+        <trans-unit id="PageExtension 616041435 - Control 580412389 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3292376582">
+          <source>Document Date</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Apply Vendor EntriesSt-Ext - Control Document Date - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 616041435 - Control 2757819250 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3292376582">
+          <source>Service Delivery City</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Apply Vendor EntriesSt-Ext - Control Service Delivery City - Property ToolTip</note>
+        </trans-unit>
         <trans-unit id="PageExtension 2807289801 - Action 2782249122 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3500708443">
           <source>SBA Integration</source>
           <note from="Developer" annotates="general" priority="2"></note>

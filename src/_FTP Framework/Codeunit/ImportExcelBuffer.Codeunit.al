@@ -3439,11 +3439,6 @@ codeunit 50002 "Import Excel Buffer"
 
     end;
 
-    /// <summary>
-    /// ImportExcelPaymentPurchaseJournal.
-    /// NGS
-    /// </summary>
-    /// <param name="Integration">Enum "FTP Integration Type".</param>
     procedure ImportExcelPaymentPurchaseJournal(Integration: Enum "FTP Integration Type")
     var
         IntegrationImportStatus: enum "Integration Import Status";
@@ -4315,6 +4310,39 @@ codeunit 50002 "Import Excel Buffer"
 
                                 end;
 
+                                IntPurcPay.Reset();
+                                IntPurcPay.SetCurrentKey("Excel File Name", "Journal Template Name", "Journal Batch Name", Status);
+                                IntegrationFieldRef := IntegrationRef.Field(115);
+                                IntPurcPay.setrange("Excel File Name", IntegrationFieldRef.Value);
+                                IntegrationFieldRef := IntegrationRef.Field(23);
+                                IntPurcPay.SetRange("Applies-to Doc. No.", IntegrationFieldRef.Value);
+                                IntegrationFieldRef := IntegrationRef.Field(3);
+                                IntPurcPay.SetFilter("Line No.", '<>%1', IntegrationFieldRef.Value);
+                                if IntPurcPay.FindFirst() then begin
+                                    repeat
+                                        DecimalValueTot += IntPurcPay.Amount + IntPurcPay."Order CSRF Ret" + IntPurcPay."Order IRRF Ret";
+                                    until IntPurcPay.Next() = 0;
+
+                                    IntegrationFieldRef := IntegrationRef.Field(26);
+                                    DecimalValue := IntegrationFieldRef.Value;
+
+                                    if DecimalValue < DecimalValueTot then begin
+                                        IntegrationFieldRef := IntegrationRef.Field(27);
+                                        IntegrationFieldRef.Value := true;
+
+                                        TextValue := '';
+                                        if TextValue = '' then begin
+                                            IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Existe mais de 1 linha com o mesmo documento Aplicado que ultrapassa o Valor pendente', TextValue, FileName);
+                                            IntegrationFieldRef := IntegrationRef.Field(98);
+                                            IntegrationFieldRef.Value := IntegrationImportStatus::"Data Error";
+
+                                            IntegrationFieldRef := IntegrationRef.Field(99);
+                                            IntegrationFieldRef.Value := 'Existe mais de 1 linha com o mesmo documento Aplicado que ultrapassa o Valor pendente';
+
+                                        end;
+                                    end;
+
+                                end;
 
                             end;
 
@@ -4323,9 +4351,9 @@ codeunit 50002 "Import Excel Buffer"
                                 IntegrationRef.Modify()
                             else
                                 IntegrationRef.Insert();
+
                         end;
                     end;
-
 
                 if ErrorFile then begin
                     FTPCommunication.DoAction(Enum::"FTP Actions"::rename, FileName, FTPIntSetup.Directory, FTPIntSetup."Error Folder", '');
@@ -4335,13 +4363,10 @@ codeunit 50002 "Import Excel Buffer"
                 else
                     FTPCommunication.DoAction(Enum::"FTP Actions"::rename, FileName, FTPIntSetup.Directory, FTPIntSetup."Imported Folder", '');
                 LineNo := 0;
+
             until FTPDir.Next() = 0;
     end;
 
-    /// <summary>
-    /// ImportExcelIntAccountingEntries.
-    /// </summary>
-    /// <param name="Integration">Enum "FTP Integration Type".</param>
     procedure ImportExcelIntAccountingEntries(Integration: Enum "FTP Integration Type")
     var
         IntegrationErros: Record IntegrationErros;
