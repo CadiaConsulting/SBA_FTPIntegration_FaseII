@@ -531,9 +531,17 @@ pageextension 50026 INTPurchaseOrderSubForm extends "Purchase Order Subform"
         }
         modify("CADBR Status")
         {
-            Enabled = not CheckStatus;
+            Visible = false;
         }
         modify("CADBR Gen. Prod. Posting Group")
+        {
+            Enabled = not CheckStatus;
+        }
+        modify("CADBR Net Weight")
+        {
+            Enabled = not CheckStatus;
+        }
+        modify("CADBR Gross Weight")
         {
             Enabled = not CheckStatus;
         }

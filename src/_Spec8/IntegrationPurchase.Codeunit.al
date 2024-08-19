@@ -150,142 +150,143 @@ codeunit 50013 "Integration Purchase"
     begin
 
         PurchaseHeader.Reset();
-        if PurchaseHeader.Get(PurchaseHeader."Document Type"::Order, IntegrationPurchase."Document No.") then begin
-            PurchaseHeader."Posting No." := '';
+        if not PurchaseHeader.Get(PurchaseHeader."Document Type"::Order, IntegrationPurchase."Document No.") then begin
+            // PurchaseHeader."Posting No." := '';
+            // PurchaseHeader.Modify();
+            // PurchaseHeader.Delete(true);
+            //end else begin
+
+            PurchaseHeader.Init();
+            PurchaseHeader."Document Type" := PurchaseHeader."Document Type"::Order;
+            PurchaseHeader.Validate("CADBR Branch Code", IntegrationPurchase."Shortcut Dimension 6 Code");
+            PurchaseHeader.validate("No.", IntegrationPurchase."document No.");
+            PurchaseHeader.InitRecord();
+            PurchaseHeader.validate("Buy-from Vendor No.", IntegrationPurchase."Buy-from Vendor No.");
+            PurchaseHeader."Order Date" := IntegrationPurchase."Order Date";
+            PurchaseHeader.validate("Posting Date", IntegrationPurchase."Order Date");
+            PurchaseHeader."Document Date" := IntegrationPurchase."Order Date";
+
+            PurchaseHeader."Vendor Invoice No." := IntegrationPurchase."Vendor Invoice No.";
+            // PurchaseHeader."Posting No." := IntegrationPurchase."Document No.";
+
+            if IntegrationPurchase."Tax Area Code" <> '' then
+                PurchaseHeader.Validate("CADBR Taxes Matrix Code", IntegrationPurchase."Tax Area Code");
+
+            PurchaseHeader.Receive := true;
+            PurchaseHeader.Invoice := true;
+
+            PurchaseHeader."IRRF Ret" += IntegrationPurchase."IRRF Ret";
+            PurchaseHeader."CSRF Ret" += IntegrationPurchase."CSRF Ret";
+            PurchaseHeader."INSS Ret" += IntegrationPurchase."INSS Ret";
+            PurchaseHeader."ISS Ret" += IntegrationPurchase."ISS Ret";
+            PurchaseHeader."PIS Credit" += IntegrationPurchase."PIS Credit";
+            PurchaseHeader."Cofins Credit" += IntegrationPurchase."Cofins Credit";
+            PurchaseHeader."DIRF" += IntegrationPurchase.DIRF;
+            PurchaseHeader."PO Total" := IntegrationPurchase."PO Total";
+            PurchaseHeader.Insert();
+
+            PurchaseHeader.AddLink(IntegrationPurchase."Doc. URL", IntegrationPurchase."Doc. URL");
+
+            PurchaseHeader.Status := PurchaseHeader.Status::Open;
+            if IntegrationPurchase."Shortcut Dimension 1 Code" <> '' then
+                PurchaseHeader.ValidateShortcutDimCode(1, IntegrationPurchase."Shortcut Dimension 1 Code");
+            if IntegrationPurchase."Shortcut Dimension 2 Code" <> '' then
+                PurchaseHeader.ValidateShortcutDimCode(2, IntegrationPurchase."Shortcut Dimension 2 Code");
+            if IntegrationPurchase."Shortcut Dimension 3 Code" <> '' then
+                PurchaseHeader.ValidateShortcutDimCode(3, IntegrationPurchase."Shortcut Dimension 3 Code");
+            if IntegrationPurchase."Shortcut Dimension 4 Code" <> '' then
+                PurchaseHeader.ValidateShortcutDimCode(4, IntegrationPurchase."Shortcut Dimension 4 Code");
+            if IntegrationPurchase."Shortcut Dimension 5 Code" <> '' then
+                PurchaseHeader.ValidateShortcutDimCode(5, IntegrationPurchase."Shortcut Dimension 5 Code");
+            if IntegrationPurchase."Shortcut Dimension 6 Code" <> '' then
+                PurchaseHeader.ValidateShortcutDimCode(6, IntegrationPurchase."Shortcut Dimension 6 Code");
+
+            PurchaseHeader.Validate("CADBR Service Delivery City", IntegrationPurchase."Municipio Code");
+
+            if IntegrationPurchase."Fiscal Document Type" <> '' then
+                PurchaseHeader."CADBR Fiscal Document Type" := IntegrationPurchase."Fiscal Document Type";
             PurchaseHeader.Modify();
-            PurchaseHeader.Delete(true);
+
+            //Purchase Line
+            PurchaseLine.Reset();
+            if PurchaseLine.get(PurchaseLine."Document Type"::Order, IntegrationPurchase."document No.", IntegrationPurchase."Line No.") then
+                PurchaseLine.Delete(true);
+
+            IPLines.Reset();
+            IPLines.SetRange("Document No.", IntegrationPurchase."document No.");
+            if not IPLines.IsEmpty then begin
+                IPLines.FindSet();
+                repeat
+
+                    PurchaseLine.Init();
+                    PurchaseLine."Document Type" := PurchaseLine."Document Type"::Order;
+                    PurchaseLine."Document No." := IPLines."document No.";
+                    PurchaseLine."Line No." := IPLines."Line No.";
+
+                    if IPLines.Type = IPLines.Type::Item then
+                        PurchaseLine.Type := PurchaseLine.Type::Item;
+
+                    PurchaseLine.Validate("No.", IPLines."Item No.");
+
+                    // > Ajuste temporario
+
+                    if (IPLines."Item No." in
+                            ['1628012', '1639012', '1644012', '1645012', '1646012', '1647012', '1657012',
+                             '1662012', '1668012', '1670012', '1672012', '1679012', '1681012']) and
+                        (IPLines."Shortcut Dimension 2 Code" = 'OI  2,113 - GUARANI')
+                    then
+                        PurchaseLine.Validate("Gen. Prod. Posting Group", '4.2.01.0001')
+                    else
+
+                        // < Ajuste temporario
+
+                        if IPLines."Gen. Prod. Posting Group" <> '' then
+                            PurchaseLine.Validate("Gen. Prod. Posting Group", IPLines."Gen. Prod. Posting Group");
+
+                    PurchaseLine.Description := IPLines.Description;
+                    PurchaseLine.validate(Quantity, IPLines.Quantity);
+                    PurchaseLine.validate("Direct Unit Cost", IPLines."Direct Unit Cost Excl. Vat");
+                    PurchaseLine."CADBR Service Code" := IPLines."Service Code";
+                    PurchaseLine."VAT Calculation Type" := PurchaseLine."VAT Calculation Type"::"Sales Tax";
+                    PurchaseLine."Tax Liable" := true;
+                    PurchaseLine."CADBR Operation Type" := PurchaseHeader."CADBR Operation Type";
+                    if IPLines."Shortcut Dimension 1 Code" <> '' then begin
+                        PurchaseLine.ValidateShortcutDimCode(1, IPLines."Shortcut Dimension 1 Code");
+                        PurchaseLine."Shortcut Dimension 1 Code" := IPLines."Shortcut Dimension 1 Code";
+                    end;
+                    if IPLines."Shortcut Dimension 2 Code" <> '' then begin
+                        PurchaseLine.ValidateShortcutDimCode(2, IPLines."Shortcut Dimension 2 Code");
+                        PurchaseLine."Shortcut Dimension 2 Code" := IPLines."Shortcut Dimension 2 Code";
+                    end;
+                    if IPLines."Shortcut Dimension 3 Code" <> '' then
+                        PurchaseLine.ValidateShortcutDimCode(3, IPLines."Shortcut Dimension 3 Code");
+                    if IPLines."Shortcut Dimension 4 Code" <> '' then
+                        PurchaseLine.ValidateShortcutDimCode(4, IPLines."Shortcut Dimension 4 Code");
+                    if IPLines."Shortcut Dimension 5 Code" <> '' then
+                        PurchaseLine.ValidateShortcutDimCode(5, IPLines."Shortcut Dimension 5 Code");
+                    if IPLines."Shortcut Dimension 6 Code" <> '' then
+                        PurchaseLine.ValidateShortcutDimCode(6, IPLines."Shortcut Dimension 6 Code");
+                    PurchaseLine.Insert();
+
+                    IPLines."Posting Message" := '';
+                    IPLines.Status := IPLines.Status::Created;
+                    IPLines.Modify();
+
+                until IPLines.Next() = 0;
+            end;
+
+            CalcTax(PurchaseHeader, false);
+            if not ValidateCodMun(PurchaseHeader) then
+                exit;
+
+            // if PurchaseHeader."CADBR Taxes Matrix Code" = 'SEM IMP' then
+            //     ReleasePurchaseDocument.Run(PurchaseHeader)
+            // else if PurchaseHeader."Tax Area Code" <> '' then // GAP08-004b
+            //     ReleasePurchaseDocument.Run(PurchaseHeader)
+
+            if IntegrationPurchase."Tax Area Code" <> '' then
+                ReleasePurchaseDocument.Run(PurchaseHeader);
         end;
-
-        PurchaseHeader.Init();
-        PurchaseHeader."Document Type" := PurchaseHeader."Document Type"::Order;
-        PurchaseHeader.Validate("CADBR Branch Code", IntegrationPurchase."Shortcut Dimension 6 Code");
-        PurchaseHeader.validate("No.", IntegrationPurchase."document No.");
-        PurchaseHeader.InitRecord();
-        PurchaseHeader.validate("Buy-from Vendor No.", IntegrationPurchase."Buy-from Vendor No.");
-        PurchaseHeader."Order Date" := IntegrationPurchase."Order Date";
-        PurchaseHeader.validate("Posting Date", IntegrationPurchase."Order Date");
-        PurchaseHeader."Document Date" := IntegrationPurchase."Order Date";
-
-        PurchaseHeader."Vendor Invoice No." := IntegrationPurchase."Vendor Invoice No.";
-        // PurchaseHeader."Posting No." := IntegrationPurchase."Document No.";
-
-        if IntegrationPurchase."Tax Area Code" <> '' then
-            PurchaseHeader.Validate("CADBR Taxes Matrix Code", IntegrationPurchase."Tax Area Code");
-
-        PurchaseHeader.Receive := true;
-        PurchaseHeader.Invoice := true;
-
-        PurchaseHeader."IRRF Ret" += IntegrationPurchase."IRRF Ret";
-        PurchaseHeader."CSRF Ret" += IntegrationPurchase."CSRF Ret";
-        PurchaseHeader."INSS Ret" += IntegrationPurchase."INSS Ret";
-        PurchaseHeader."ISS Ret" += IntegrationPurchase."ISS Ret";
-        PurchaseHeader."PIS Credit" += IntegrationPurchase."PIS Credit";
-        PurchaseHeader."Cofins Credit" += IntegrationPurchase."Cofins Credit";
-        PurchaseHeader."DIRF" += IntegrationPurchase.DIRF;
-        PurchaseHeader."PO Total" := IntegrationPurchase."PO Total";
-        PurchaseHeader.Insert();
-
-        PurchaseHeader.AddLink(IntegrationPurchase."Doc. URL", IntegrationPurchase."Doc. URL");
-
-        PurchaseHeader.Status := PurchaseHeader.Status::Open;
-        if IntegrationPurchase."Shortcut Dimension 1 Code" <> '' then
-            PurchaseHeader.ValidateShortcutDimCode(1, IntegrationPurchase."Shortcut Dimension 1 Code");
-        if IntegrationPurchase."Shortcut Dimension 2 Code" <> '' then
-            PurchaseHeader.ValidateShortcutDimCode(2, IntegrationPurchase."Shortcut Dimension 2 Code");
-        if IntegrationPurchase."Shortcut Dimension 3 Code" <> '' then
-            PurchaseHeader.ValidateShortcutDimCode(3, IntegrationPurchase."Shortcut Dimension 3 Code");
-        if IntegrationPurchase."Shortcut Dimension 4 Code" <> '' then
-            PurchaseHeader.ValidateShortcutDimCode(4, IntegrationPurchase."Shortcut Dimension 4 Code");
-        if IntegrationPurchase."Shortcut Dimension 5 Code" <> '' then
-            PurchaseHeader.ValidateShortcutDimCode(5, IntegrationPurchase."Shortcut Dimension 5 Code");
-        if IntegrationPurchase."Shortcut Dimension 6 Code" <> '' then
-            PurchaseHeader.ValidateShortcutDimCode(6, IntegrationPurchase."Shortcut Dimension 6 Code");
-
-        PurchaseHeader.Validate("CADBR Service Delivery City", IntegrationPurchase."Municipio Code");
-
-        if IntegrationPurchase."Fiscal Document Type" <> '' then
-            PurchaseHeader."CADBR Fiscal Document Type" := IntegrationPurchase."Fiscal Document Type";
-        PurchaseHeader.Modify();
-
-        //Purchase Line
-        PurchaseLine.Reset();
-        if PurchaseLine.get(PurchaseLine."Document Type"::Order, IntegrationPurchase."document No.", IntegrationPurchase."Line No.") then
-            PurchaseLine.Delete(true);
-
-        IPLines.Reset();
-        IPLines.SetRange("Document No.", IntegrationPurchase."document No.");
-        if not IPLines.IsEmpty then begin
-            IPLines.FindSet();
-            repeat
-
-                PurchaseLine.Init();
-                PurchaseLine."Document Type" := PurchaseLine."Document Type"::Order;
-                PurchaseLine."Document No." := IPLines."document No.";
-                PurchaseLine."Line No." := IPLines."Line No.";
-
-                if IPLines.Type = IPLines.Type::Item then
-                    PurchaseLine.Type := PurchaseLine.Type::Item;
-
-                PurchaseLine.Validate("No.", IPLines."Item No.");
-
-                // > Ajuste temporario
-
-                if (IPLines."Item No." in
-                        ['1628012', '1639012', '1644012', '1645012', '1646012', '1647012', '1657012',
-                         '1662012', '1668012', '1670012', '1672012', '1679012', '1681012']) and
-                    (IPLines."Shortcut Dimension 2 Code" = 'OI  2,113 - GUARANI')
-                then
-                    PurchaseLine.Validate("Gen. Prod. Posting Group", '4.2.01.0001')
-                else
-
-                    // < Ajuste temporario
-
-                    if IPLines."Gen. Prod. Posting Group" <> '' then
-                        PurchaseLine.Validate("Gen. Prod. Posting Group", IPLines."Gen. Prod. Posting Group");
-
-                PurchaseLine.Description := IPLines.Description;
-                PurchaseLine.validate(Quantity, IPLines.Quantity);
-                PurchaseLine.validate("Direct Unit Cost", IPLines."Direct Unit Cost Excl. Vat");
-                PurchaseLine."CADBR Service Code" := IPLines."Service Code";
-                PurchaseLine."VAT Calculation Type" := PurchaseLine."VAT Calculation Type"::"Sales Tax";
-                PurchaseLine."Tax Liable" := true;
-                PurchaseLine."CADBR Operation Type" := PurchaseHeader."CADBR Operation Type";
-                if IPLines."Shortcut Dimension 1 Code" <> '' then begin
-                    PurchaseLine.ValidateShortcutDimCode(1, IPLines."Shortcut Dimension 1 Code");
-                    PurchaseLine."Shortcut Dimension 1 Code" := IPLines."Shortcut Dimension 1 Code";
-                end;
-                if IPLines."Shortcut Dimension 2 Code" <> '' then begin
-                    PurchaseLine.ValidateShortcutDimCode(2, IPLines."Shortcut Dimension 2 Code");
-                    PurchaseLine."Shortcut Dimension 2 Code" := IPLines."Shortcut Dimension 2 Code";
-                end;
-                if IPLines."Shortcut Dimension 3 Code" <> '' then
-                    PurchaseLine.ValidateShortcutDimCode(3, IPLines."Shortcut Dimension 3 Code");
-                if IPLines."Shortcut Dimension 4 Code" <> '' then
-                    PurchaseLine.ValidateShortcutDimCode(4, IPLines."Shortcut Dimension 4 Code");
-                if IPLines."Shortcut Dimension 5 Code" <> '' then
-                    PurchaseLine.ValidateShortcutDimCode(5, IPLines."Shortcut Dimension 5 Code");
-                if IPLines."Shortcut Dimension 6 Code" <> '' then
-                    PurchaseLine.ValidateShortcutDimCode(6, IPLines."Shortcut Dimension 6 Code");
-                PurchaseLine.Insert();
-
-                IPLines."Posting Message" := '';
-                IPLines.Status := IPLines.Status::Created;
-                IPLines.Modify();
-
-            until IPLines.Next() = 0;
-        end;
-
-        CalcTax(PurchaseHeader, false);
-        if not ValidateCodMun(PurchaseHeader) then
-            exit;
-
-        // if PurchaseHeader."CADBR Taxes Matrix Code" = 'SEM IMP' then
-        //     ReleasePurchaseDocument.Run(PurchaseHeader)
-        // else if PurchaseHeader."Tax Area Code" <> '' then // GAP08-004b
-        //     ReleasePurchaseDocument.Run(PurchaseHeader)
-
-        if IntegrationPurchase."Tax Area Code" <> '' then
-            ReleasePurchaseDocument.Run(PurchaseHeader);
 
     end;
 
@@ -680,7 +681,12 @@ codeunit 50013 "Integration Purchase"
                         if not StatusOrder(PurchHeader) then begin
                             IntegrationPurchase."Posting Message" := GetLastErrorText;
                             IntegrationPurchase.Modify();
+                        end else begin
+                            IntegrationPurchase."Posting Message" := '';
+                            IntegrationPurchase.Modify();
+
                         end;
+
                     until PurchHeader.Next() = 0;
 
             until IntegrationPurchase.Next() = 0;
@@ -714,10 +720,14 @@ codeunit 50013 "Integration Purchase"
                     PurchHeader.SetRange("No.", IntegrationPurchase."Document No.");
                     if PurchHeader.Find('-') then
                         repeat
+                            PurchHeader."Posting Message" := '';
+
                             if not StatusOrderUnderAnalysis(PurchHeader) then begin
                                 IntegrationPurchase."Posting Message" := GetLastErrorText;
                                 IntegrationPurchase.Modify();
+
                             end;
+
                         until PurchHeader.Next() = 0;
 
                 until IntegrationPurchase.Next() = 0;
@@ -729,8 +739,6 @@ codeunit 50013 "Integration Purchase"
 
     [TryFunction]
     procedure StatusOrderUnderAnalysis(PurchaseHeader: Record "Purchase Header")
-    var
-
     begin
         PurchaseHeader.Status := PurchaseHeader.Status::"Under Analysis";
         PurchaseHeader.Modify();
@@ -740,6 +748,12 @@ codeunit 50013 "Integration Purchase"
 
         if not ValidateCodMun(PurchaseHeader) then
             exit;
+
+        if PurchaseHeader."Posting Message" <> '' then begin
+            PurchaseHeader.Status := PurchaseHeader.Status::Open;
+            PurchaseHeader.Modify();
+        end;
+
     end;
 
     [TryFunction]
@@ -755,6 +769,11 @@ codeunit 50013 "Integration Purchase"
         CalcTax(PurchaseHeader, false);
         if not ValidateCodMun(PurchaseHeader) then
             exit;
+
+        if PurchaseHeader."Posting Message" <> '' then begin
+            PurchaseHeader.Status := PurchaseHeader.Status::Open;
+            PurchaseHeader.Modify();
+        end;
     end;
 
     procedure PurchOpen(var IntPurchase: Record "Integration Purchase")
@@ -1494,6 +1513,16 @@ codeunit 50013 "Integration Purchase"
             intPurch.ModifyAll(Status, intPurch.Status::"Data Error");
 
             exit;
+
+        end else begin
+
+            intPurch.Reset();
+            intPurch.SetRange("Document No.", PurchaseHeader."No.");
+            intPurch.ModifyAll("Posting Message", PurchaseHeader."Posting Message");
+            intPurch.ModifyAll(Status, intPurch.Status::Created);
+
+
+
         end;
 
     end;

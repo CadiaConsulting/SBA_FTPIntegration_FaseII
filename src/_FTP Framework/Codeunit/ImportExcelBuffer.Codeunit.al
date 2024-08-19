@@ -1216,7 +1216,7 @@ codeunit 50002 "Import Excel Buffer"
         IntPurchase.Reset();
         IntPurchase.SetFilter(Status, '%1|%2', IntPurchase.Status::Created, IntPurchase.Status::Exported);
         IntPurchase.SetRange("Status PO", IntPurchase."Status PO"::Released);
-        if IntPurchase.FindFirst() then begin
+        if IntPurchase.FindSet() then begin
 
             TempExcelBuffer.NewRow();
             TempExcelBuffer.AddColumn('Document Type', false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
