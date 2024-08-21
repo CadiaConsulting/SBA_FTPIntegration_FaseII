@@ -105,9 +105,9 @@ table 50001 "FTP Integration Setup"
             DataClassification = CustomerContent;
         }
 
-        field(203; "Post Order"; Boolean)
+        field(203; "Post Order\Journal"; Boolean)
         {
-            Caption = 'Post Order';
+            Caption = 'Post Order\Journal';
             DataClassification = CustomerContent;
         }
         field(204; "Export Excel"; Boolean)
@@ -123,6 +123,11 @@ table 50001 "FTP Integration Setup"
         field(206; "Suggest Vendor Payments"; Boolean)
         {
             Caption = 'Suggest Vendor Payments';
+            DataClassification = CustomerContent;
+        }
+        field(207; "Copy to Journal"; Boolean)
+        {
+            Caption = 'Copy to Journal';
             DataClassification = CustomerContent;
         }
 

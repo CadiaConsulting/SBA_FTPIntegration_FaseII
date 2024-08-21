@@ -106,10 +106,10 @@ page 50000 "FTP Integration Setup"
                     ApplicationArea = All;
                     Caption = 'Create Order';
                 }
-                field("Post Order"; Rec."Post Order")
+                field("Post Order"; Rec."Post Order\Journal")
                 {
                     ApplicationArea = All;
-                    Caption = 'Post Order';
+                    Caption = 'Post Order\Journal';
                 }
                 field("Export Excel"; Rec."Export Excel")
                 {
@@ -125,6 +125,11 @@ page 50000 "FTP Integration Setup"
                 {
                     ApplicationArea = All;
                     Caption = 'Suggest Vendor Payments';
+                }
+                field("Copy to Journal"; Rec."Copy to Journal")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Copy to Journal';
                 }
 
             }

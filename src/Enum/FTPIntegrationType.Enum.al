@@ -70,5 +70,9 @@ enum 50003 "FTP Integration Type"
     {
         Caption = 'Landlord';
     }
+    value(17; "Purchase Void Payment")
+    {
+        Caption = 'Purchase Void Payment';
+    }
 
 }

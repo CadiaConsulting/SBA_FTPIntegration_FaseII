@@ -257,20 +257,20 @@ page 50070 "IntPurchPayment"
                 end;
             }
 
-            // action(PostJournal)
-            // {
-            //     ApplicationArea = All;
-            //     Caption = 'Post Journal';
-            //     Image = PostDocument;
-            //     ToolTip = 'Post Jornal';
+            action(PostJournal)
+            {
+                ApplicationArea = All;
+                Caption = 'Post Journal';
+                Image = PostDocument;
+                ToolTip = 'Post Jornal';
 
-            //     trigger OnAction();
-            //     begin
-            //         IntPurchPayment.PostPaymentJournal(Rec);
-            //         CurrPage.Update();
-            //         Message(PostJornalLbl);
-            //     end;
-            // }
+                trigger OnAction();
+                begin
+                    IntPurchPayment.PostPaymentJournal(Rec);
+                    CurrPage.Update();
+                    Message(PostJornalLbl);
+                end;
+            }
             action(Bank)
             {
                 ApplicationArea = All;

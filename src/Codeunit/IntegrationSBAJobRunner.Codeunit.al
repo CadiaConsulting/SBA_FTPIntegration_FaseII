@@ -15,6 +15,7 @@ codeunit 50009 "Integration SBA Job Runner"
         IntegSales: Record IntegrationSales;
         IntegrationSales: codeunit IntegrationSales;
         IntSalesCred: Record IntSalesCreditNote;
+        IntPurchPay: Record IntPurchPayment;
         IntSalesCreditNote: codeunit IntSalesCreditNote;
         IntPurchPayment: codeunit IntPurchPayment;
         IntPurchPaymentApply: codeunit IntPurchPaymentApply;
@@ -37,7 +38,7 @@ codeunit 50009 "Integration SBA Job Runner"
                     if FTPSetup."Create Order" then
                         IntegrationSales.CreateSales(IntegSales);
 
-                    if FTPSetup."Post Order" then
+                    if FTPSetup."Post Order\Journal" then
                         IntegrationSales.PostSales(IntegSales);
 
                 end;
@@ -49,7 +50,7 @@ codeunit 50009 "Integration SBA Job Runner"
                     if FTPSetup."Create Order" then
                         IntSalesCreditNote.CreateSalesCredit(IntSalesCred);
 
-                    if FTPSetup."Post Order" then
+                    if FTPSetup."Post Order\Journal" then
                         IntSalesCreditNote.PostSalesCredit(IntSalesCred);
                 end;
 
@@ -61,7 +62,7 @@ codeunit 50009 "Integration SBA Job Runner"
                     if FTPSetup."Create Order" then
                         IntegrationPurchase.CreatePurchase(IntPurch);
 
-                    if FTPSetup."Post Order" then
+                    if FTPSetup."Post Order\Journal" then
                         IntegrationPurchase.PostPurchase(IntPurch);
 
                     if FTPSetup."Export Excel" then
@@ -76,44 +77,36 @@ codeunit 50009 "Integration SBA Job Runner"
                     //if FTPSetup."Post Order" then
                     //ImportExcelBuffer.ImportExcelPurchase();
 
-                    if FTPSetup."Post Order" then
-                        IntegrationPurchaseReturn.PostPurchaseReturn(IntPurhRet);
+                    // if FTPSetup."Post Order\Journal" then
+                    //     IntegrationPurchaseReturn.PostPurchaseReturn(IntPurhRet);
 
                 end;
 
                 if FTPSetup.Integration = FTPSetup.Integration::"Purchase Payment" then begin
-                    if FTPSetup."Post Order" then begin
+                    if FTPSetup."Import Excel" then begin
                         ImportExcelBuffer.ImportExcelPaymentPurchaseJournal(FTPIntegrationType::"Purchase Apply");
                         Commit();
                         IntPurchPayment.Run();
                     end;
-                end;
 
-                if FTPSetup.Integration = FTPSetup.Integration::"Purchase Apply" then begin
-                    if FTPSetup."Post Order" then begin
-                        ImportExcelBuffer.ImportExcelPaymentPurchaseJournal(FTPIntegrationType::"Purchase Apply");
-                        Commit();
-                        IntPurchPaymentApply.Run();
+                    if FTPSetup."Copy to Journal" then begin
+                        IntPurchPayment.CheckData(IntPurchPay);
+                    end;
 
+                    if FTPSetup."Post Order\Journal" then begin
+                        IntPurchPayment.CheckData(IntPurchPay);
                     end;
 
                 end;
 
-                if FTPSetup.Integration = FTPSetup.Integration::"Purchase Unapply" then begin
-                    if FTPSetup."Post Order" then begin
-                        ImportExcelBuffer.ImportExcelPaymentPurchaseJournal(FTPIntegrationType::"Purchase Unapply");
-                        Commit();
-                        IntPurchPaymentUnapply.Run();
-                    end;
-                end;
 
                 if FTPSetup.Integration = FTPSetup.Integration::"Payments From BC" then begin
 
-                    if FTPSetup."Suggest Vendor Payments" then
-                        IntPurchPaymentsFromBC.SuggestVendorPayments();
+                    // if FTPSetup."Suggest Vendor Payments" then
+                    //     IntPurchPaymentsFromBC.SuggestVendorPayments();
 
-                    if FTPSetup."Export Excel" then
-                        IntPurchPaymentsFromBC.ExportExcelIntPurchPaymentsFromBC();
+                    // if FTPSetup."Export Excel" then
+                    //     IntPurchPaymentsFromBC.ExportExcelIntPurchPaymentsFromBC();
 
                 end;
 
