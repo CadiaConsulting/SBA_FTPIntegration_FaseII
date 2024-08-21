@@ -681,9 +681,6 @@ codeunit 50013 "Integration Purchase"
                         if not StatusOrder(PurchHeader) then begin
                             IntegrationPurchase."Posting Message" := GetLastErrorText;
                             IntegrationPurchase.Modify();
-                        end else begin
-                            IntegrationPurchase."Posting Message" := '';
-                            IntegrationPurchase.Modify();
 
                         end;
 
@@ -780,7 +777,7 @@ codeunit 50013 "Integration Purchase"
     var
         IntegrationPurchase: Record "Integration Purchase";
         PurchHeader: Record "Purchase Header";
-
+        UserSetup: Record "User Setup";
     begin
 
         IntegrationPurchase.Reset();
@@ -794,6 +791,11 @@ codeunit 50013 "Integration Purchase"
             IntegrationPurchase.FindSet();
             repeat
 
+                UserSetup.Reset();
+                UserSetup.Get(USERID);
+                if not UserSetup."Open PO" then
+                    error('Usuario %1 sem Permissão para Reabrir o Pedido', USERID);
+
                 PurchHeader.Reset();
                 PurchHeader.SetRange("No.", IntegrationPurchase."Document No.");
                 if PurchHeader.Find('-') then
@@ -802,6 +804,9 @@ codeunit 50013 "Integration Purchase"
                         PurchHeader.Modify();
 
                     until PurchHeader.Next() = 0;
+
+                IntegrationPurchase.Status := IntegrationPurchase.Status::Created;
+                IntegrationPurchase.Modify();
 
             until IntegrationPurchase.Next() = 0;
         end;

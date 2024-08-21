@@ -199,7 +199,6 @@ codeunit 50017 "Codeunits Events"
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Release Purchase Document", 'OnBeforeManualReleasePurchaseDoc', '', false, false)]
     local procedure ReleasePurcDoc_OnBeforeManualReleasePurchaseDoc(var PurchaseHeader: Record "Purchase Header");
     var
-
         intPurch: Codeunit "Integration Purchase";
         UserSetup: Record "User Setup";
     begin
@@ -211,6 +210,25 @@ codeunit 50017 "Codeunits Events"
                 exit;
         end else
             error('Usuario %1 sem Permissão para Liberar Pedido');
+
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Release Purchase Document", 'OnAfterManualReopenPurchaseDoc', '', false, false)]
+    local procedure ReleasePurcDoc_OnAfterManualReopenPurchaseDoc(var PurchaseHeader: Record "Purchase Header");
+    var
+        intPurch: Record "Integration Purchase";
+        UserSetup: Record "User Setup";
+    begin
+
+        UserSetup.Reset();
+        UserSetup.Get(USERID);
+        if not UserSetup."Open PO" then
+            error('Usuario %1 sem Permissão para Reabrir o Pedido', USERID);
+
+        intPurch.Reset();
+        intPurch.SetRange("Document No.", PurchaseHeader."No.");
+        if intPurch.Find('-') then
+            intPurch.ModifyAll(Status, intPurch.Status::Created);
 
     end;
 

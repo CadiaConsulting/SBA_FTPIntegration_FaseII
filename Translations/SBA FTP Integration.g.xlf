@@ -9123,6 +9123,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA Customer - Control Integration Taxes Matrix  - Property ToolTip</note>
         </trans-unit>
+        <trans-unit id="PageExtension 918401266 - Control 3833891709 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 337631938">
+          <source>Specifies the value of the Open PO field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension SBA User Setup - Control Open PO - Property ToolTip</note>
+        </trans-unit>
         <trans-unit id="PageExtension 918401266 - Control 2848134066 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 337631938">
           <source>Specifies the value of the Release PO field.</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -9322,6 +9327,11 @@
           <source>Tax Settlement No.</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA Process Jud - Info RRA - Field Tax Settlement No. - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 918401266 - Field 3833891709 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 337631938">
+          <source>Open PO</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA User Setup - Field Open PO - Property Caption</note>
         </trans-unit>
         <trans-unit id="TableExtension 918401266 - Field 2848134066 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 337631938">
           <source>Release PO</source>

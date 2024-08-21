@@ -1207,6 +1207,7 @@ codeunit 50002 "Import Excel Buffer"
         TempBlob: codeunit "Temp Blob";
         FileBase64: Text;
         PathToFile: Text;
+        Filename: Text;
         DocumentOld: Code[20];
     begin
 
@@ -1214,9 +1215,11 @@ codeunit 50002 "Import Excel Buffer"
         TempExcelBuffer.DeleteAll();
 
         IntPurchase.Reset();
-        IntPurchase.SetFilter(Status, '%1|%2', IntPurchase.Status::Created, IntPurchase.Status::Exported);
+        IntPurchase.SetFilter(Status, '%1', IntPurchase.Status::Created);
         IntPurchase.SetRange("Status PO", IntPurchase."Status PO"::Released);
         if IntPurchase.FindSet() then begin
+
+            Filename := format(FTPIntSetup.Integration::"Purchase Tax Validation") + DelChr(Format(Today) + Format(Time), '=', '/:');
 
             TempExcelBuffer.NewRow();
             TempExcelBuffer.AddColumn('Document Type', false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
@@ -1256,7 +1259,7 @@ codeunit 50002 "Import Excel Buffer"
                 end;
 
                 IntPurchase.Status := IntPurchase.Status::Exported;
-                IntPurchase."Exported Excel Purch. Tax Name" := format(FTPIntSetup.Integration::"Purchase Tax Validation") + DelChr(Format(Today) + Format(Time), '=', '/:');
+                IntPurchase."Exported Excel Purch. Tax Name" := Filename;
                 IntPurchase.Modify();
 
                 DocumentOld := IntPurchase."Document No.";
