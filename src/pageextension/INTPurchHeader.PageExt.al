@@ -707,9 +707,6 @@ pageextension 50013 "INTPurchHeader" extends "Purchase Order"
 
                 begin
 
-                    IntPurchase.Reset();
-                    IntPurchase.SetRange("Document No.", rec."No.");
-
                     IntegrationPurchase.UnderAnalysis(IntPurchase);
 
                     CurrPage.SaveRecord();
