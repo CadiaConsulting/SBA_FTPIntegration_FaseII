@@ -196,23 +196,6 @@ codeunit 50017 "Codeunits Events"
 
     end;
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Release Purchase Document", 'OnBeforeManualReleasePurchaseDoc', '', false, false)]
-    local procedure ReleasePurcDoc_OnBeforeManualReleasePurchaseDoc(var PurchaseHeader: Record "Purchase Header");
-    var
-        intPurch: Codeunit "Integration Purchase";
-        UserSetup: Record "User Setup";
-    begin
-        UserSetup.Reset();
-        UserSetup.Get(USERID);
-        if UserSetup."Release PO" then begin
-            intPurch.ReleasePurcDocValidate(PurchaseHeader);
-            if PurchaseHeader."Posting Message" <> '' then
-                exit;
-        end else
-            error('Usuario %1 sem Permissão para Liberar Pedido');
-
-    end;
-
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Release Purchase Document", 'OnAfterManualReopenPurchaseDoc', '', false, false)]
     local procedure ReleasePurcDoc_OnAfterManualReopenPurchaseDoc(var PurchaseHeader: Record "Purchase Header");
     var

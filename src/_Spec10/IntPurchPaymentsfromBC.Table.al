@@ -186,6 +186,12 @@ table 50073 "IntPurchPaymentsFromBC"
             Caption = 'Excel File Name';
             Editable = false;
         }
+
+        field(116; "Excel Export File Name"; text[200])
+        {
+            Caption = 'Excel Export File Name';
+            Editable = false;
+        }
     }
     keys
     {

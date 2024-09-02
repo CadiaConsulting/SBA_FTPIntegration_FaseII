@@ -3652,6 +3652,132 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">TableExtension SBA EFD Participant - Method VerifyFieldLength - NamedType Text001</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 3722982102" size-unit="char" translate="yes" xml:space="preserve">
+          <source>PIS/COFINS Credit Calculation Base Code. must have a value in Line</source>
+          <target state="translated">Código da Base de Cálculo do Crédito PIS/COFINS. deve ter valor na Linha</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50001</note>
+        </trans-unit>
+         <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 1809892251" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Unit Cost. Direct Excl. CUBA must have a value in Line</source>
+          <target state="translated">Custo unitário. Direto Excl. CUBA deve ter um valor na Linha</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50002</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 2447588868" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Origin Code. must have a value in Line</source>
+          <target state="translated">Código de Origem. deve ter um valor na Linha</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50003</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 534499017" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Payment Terms Code.. must have a value in Header.</source>
+          <target state="translated">Código de condições de pagamento.. deve ter um valor no cabeçalho</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50004</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 1172195634" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The document date cannot be greater than the registration date.</source>
+          <target state="translated">A data do documento não pode ser posterior à data do registro</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50005</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 3554073079" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Payment.-a Address. must have a value in Header.</source>
+          <target state="translated">Pagamento.-um Endereço. deve ter um valor no Cabeçalho</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50006</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 4191769696" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Vendor Invoice No... must have a value in Header.</source>
+          <target state="translated">Número da fatura do fornecedor... deve ter um valor no cabeçalho</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50007</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 2278679845" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Print series does not match the Print Series</source>
+          <target state="translated">A série Print não corresponde à série Print</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50008</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 2916376462" size-unit="char" translate="yes" xml:space="preserve">
+          <source>CADBR NFe Reference key... must have a value in Header.</source>
+          <target state="translated">Chave de referência CADBR NFe... deve ter um valor no Cabeçalho.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50009</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 3341029406" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The NF-e key series does not match the Print Series</source>
+          <target state="translated">A série de chaves da NF-e não corresponde à série de impressão</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50010</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 2703332789" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The NF-e key number does not match the Tax Nº.</source>
+          <target state="translated">O número da chave NF-e não corresponde ao Nº do Imposto.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50011</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 1078628940 - NamedType 3233590637" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specify Service Delivery City</source>
+          <target state="translated">Especificar cidade de entrega do serviço</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ValidateCodMun - NamedType CodMunErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 146791098 - NamedType 2605746843" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Vendor %1 Not Found</source>
+          <target state="translated">Fornecedor %1 não encontrado</target>
+          <note from="Developer" annotates="general" priority="2">%1 - vendor No.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ValidateIntPurchase - NamedType VendorErr</note>
+        </trans-unit>
+        <trans-unit id="Enum 863328713 - EnumValue 1397721846 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Under Analysis</source>
+          <target state="translated">Em análise</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Enum Integration Import Status - EnumValue Under Analysis - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2300234719 - Action 995899470 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Under Analysis</source>
+          <target state="translated">Em análise</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Action UnderAnalysis - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2300234719 - Action 995899470 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Under Analysis</source>
+          <target state="translated">Em análise</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Action UnderAnalysis - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2300234719 - Action 995899470 - Method 1377591017 - NamedType 3722982102" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Under Analysis</source>
+          <target state="translated">Em análise</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Action UnderAnalysis - Method OnAction - NamedType Label50001</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 1078628940 - NamedType 3233590637" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specify Service Delivery City</source>
+          <target state="translated">Especificar cidade de entrega do serviço</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ValidateCodMun - NamedType CodMunErr</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2627532652 - Action 995899470 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 387971303">
+          <source>Under Analysis</source>
+          <target state="translated">Em análise</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchHeader - Action UnderAnalysis - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2627532652 - Action 995899470 - Method 1377591017 - NamedType 3600765675" size-unit="char" translate="yes" xml:space="preserve" al-object-target="PageExtension 2627532652">
+          <source>Under Analysis</source>
+          <target state="translated">Em análise</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchHeader - Action UnderAnalysis - Method OnAction - NamedType Label50020</note>
+        </trans-unit>
+        <trans-unit id="EnumExtension 3213495181 - EnumValue 1397721846 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Enum 1445684588">
+          <source>Under Analysis</source>
+          <target state="translated">Em análise</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">EnumExtension INTPurcDocStatus - EnumValue Under Analysis - Property Caption</note>
+        </trans-unit>
       </group>
     </body>
   </file>

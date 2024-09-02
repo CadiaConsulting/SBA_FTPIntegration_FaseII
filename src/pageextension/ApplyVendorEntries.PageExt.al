@@ -14,6 +14,11 @@ pageextension 50008 "Apply Vendor Entries-Ext" extends "CADBR Apply Vendor Entri
                 ApplicationArea = All;
                 ToolTip = 'Service Delivery City';
             }
+            field("City Name"; rec."City Name")
+            {
+                ApplicationArea = All;
+                ToolTip = 'City Name';
+            }
         }
     }
 }

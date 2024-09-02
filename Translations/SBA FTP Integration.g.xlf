@@ -98,6 +98,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field Active Prefix File Name - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Table 2709587453 - Field 649152569 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Copy to Journal</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field Copy to Journal - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Table 2709587453 - Field 2461787606 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Create Order</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -168,10 +173,10 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field Manage by file - Property Caption</note>
         </trans-unit>
-        <trans-unit id="Table 2709587453 - Field 1750937698 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Post Order</source>
+        <trans-unit id="Table 2709587453 - Field 1667285957 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Post Order\Journal</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field Post Order - Property Caption</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table FTP Integration Setup - Field Post Order\Journal - Property Caption</note>
         </trans-unit>
         <trans-unit id="Table 2709587453 - Field 637436115 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Prefix File Name</source>
@@ -2603,6 +2608,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchPaymentsFromBC - Field Errors Import Excel - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Table 79103387 - Field 427732678 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Excel Export File Name</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchPaymentsFromBC - Field Excel Export File Name - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Table 79103387 - Field 3764622026 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Excel File Name</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -3293,6 +3303,61 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType DocumentSerieAndFiscalDocTypeAlreadyExists</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 3722982102" size-unit="char" translate="yes" xml:space="preserve">
+          <source>PIS/COFINS Credit Calculation Base Code. must have a value in Line</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50001</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 1809892251" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Unit Cost. Direct Excl. CUBA must have a value in Line</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50002</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 2447588868" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Origin Code. must have a value in Line 1.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50003</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 534499017" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Payment Terms Code.. must have a value in Header.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50004</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 1172195634" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The document date cannot be greater than the registration date.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50005</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 3554073079" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Payment.-a Address. must have a value in Header.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50006</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 4191769696" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Vendor Invoice No... must have a value in Header.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50007</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 2278679845" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Print series does not match the Print Series</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50008</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 2916376462" size-unit="char" translate="yes" xml:space="preserve">
+          <source>CADBR NFe Reference key... must have a value in Header.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50009</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 3341029406" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The NF-e key series does not match the Print Series</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50010</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 2703332789" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The NF-e key number does not match the Tax Nº.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50011</note>
+        </trans-unit>
         <trans-unit id="Codeunit 2300234719 - Method 1078628940 - NamedType 3233590637" size-unit="char" translate="yes" xml:space="preserve">
           <source>Specify Service Delivery City</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -3703,6 +3768,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page FTP Integration Setup - Control Active Prefix File Name - Property ToolTip</note>
         </trans-unit>
+        <trans-unit id="Page 2709587453 - Control 649152569 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Copy to Journal</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page FTP Integration Setup - Control Copy to Journal - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Page 2709587453 - Control 2461787606 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Create Order</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -3774,7 +3844,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Page FTP Integration Setup - Control Manage by file - Property ToolTip</note>
         </trans-unit>
         <trans-unit id="Page 2709587453 - Control 1750937698 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Post Order</source>
+          <source>Post Order\Journal</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page FTP Integration Setup - Control Post Order - Property Caption</note>
         </trans-unit>
@@ -5613,6 +5683,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Action OpenOrder - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Page 2300234719 - Action 2947545438 - Method 1377591017 - NamedType 2447588868" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Purchase Open</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Action OpenOrder - Method OnAction - NamedType Label50003</note>
+        </trans-unit>
         <trans-unit id="Page 2300234719 - Action 2751330090 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Post Order</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -5622,6 +5697,11 @@
           <source>Post Order</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Action PostOrder - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2300234719 - Action 2751330090 - Method 1377591017 - NamedType 1809892251" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Post Order</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Action PostOrder - Method OnAction - NamedType Label50002</note>
         </trans-unit>
         <trans-unit id="Page 2300234719 - Action 1640572759 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Purchase Order Card</source>
@@ -5652,6 +5732,11 @@
           <source>Under Analysis</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Action UnderAnalysis - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 2300234719 - Action 995899470 - Method 1377591017 - NamedType 3722982102" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Under Analysis</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Action UnderAnalysis - Method OnAction - NamedType Label50001</note>
         </trans-unit>
         <trans-unit id="Page 2300234719 - Action 1936001480 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Vendor Card</source>
@@ -7493,6 +7578,16 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPayment - Action PaymentJournal - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Page 308713983 - Action 2926267923 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Post Jornal</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPayment - Action PostJournal - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 308713983 - Action 2926267923 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Post Journal</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPayment - Action PostJournal - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Page 308713983 - Action 1936001480 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Vendor Card</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -7843,10 +7938,10 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentsFromBC - Control Errors Import Excel - Property ToolTip</note>
         </trans-unit>
-        <trans-unit id="Page 79103387 - Control 3764622026 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Specifies the value of the Excel File Name field.</source>
+        <trans-unit id="Page 79103387 - Control 427732678 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Excel Export File Name field.</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentsFromBC - Control Excel File Name - Property ToolTip</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentsFromBC - Control Excel Export File Name - Property ToolTip</note>
         </trans-unit>
         <trans-unit id="Page 79103387 - Control 1527563463 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Specifies the value of the External Document No. field.</source>
@@ -8473,6 +8568,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Query INTPostCode - Property Caption</note>
         </trans-unit>
+        <trans-unit id="PageExtension 183251370 - Control 4200960484 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3665331240">
+          <source>City Name</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension Apply Vendor Entries-Ext - Control City Name - Property ToolTip</note>
+        </trans-unit>
         <trans-unit id="PageExtension 183251370 - Control 580412389 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3665331240">
           <source>Document Date</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -8797,6 +8897,11 @@
           <source>Under Analysis</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchHeader - Action UnderAnalysis - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2627532652 - Action 995899470 - Method 1377591017 - NamedType 3600765675" size-unit="char" translate="yes" xml:space="preserve" al-object-target="PageExtension 2627532652">
+          <source>Under Analysis</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchHeader - Action UnderAnalysis - Method OnAction - NamedType Label50020</note>
         </trans-unit>
         <trans-unit id="PageExtension 2627532652 - Control 783039621 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 387971303">
           <source>Cofins Credit</source>
@@ -9273,6 +9378,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">TableExtension INTSalesReceSetup - Field Int Tax Difference Allowed - Property Caption</note>
         </trans-unit>
+        <trans-unit id="TableExtension 3098612657 - Field 4200960484 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 406314583">
+          <source>Nome Cidade</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension INTVendorLedgerEntryExt - Field City Name - Property Caption</note>
+        </trans-unit>
         <trans-unit id="TableExtension 3098612657 - Field 529761065 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 406314583">
           <source>Integrated</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -9462,6 +9572,11 @@
           <source>Purchase Unapply</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Enum FTP Integration Type - EnumValue Purchase Unapply - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Enum 1526861696 - EnumValue 2143569511 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Purchase Void Payment</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Enum FTP Integration Type - EnumValue Purchase Void Payment - Property Caption</note>
         </trans-unit>
         <trans-unit id="Enum 1526861696 - EnumValue 110500889 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Sale Apply</source>

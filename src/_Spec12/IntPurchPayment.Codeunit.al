@@ -464,28 +464,25 @@ codeunit 50070 "IntPurchPayment"
             until FileToProcessTMP.Next() = 0;
     end;
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Gen. Jnl.-Post Batch", 'OnAfterCode', '', false, false)]
-    local procedure Codeunit_13_OnCodeOnAfterCode(var GenJournalLine: Record "Gen. Journal Line")
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Gen. Jnl.-Post Batch", 'OnAfterPostGenJournalLine', '', false, false)]
+    local procedure Codeunit_13_OnAfterPostGenJournalLine(var GenJournalLine: Record "Gen. Journal Line"; var Result: Boolean)
     var
         IntPurchPayment: Record IntPurchPayment;
-        GjLine: Record "Gen. Journal Line";
     begin
-        GjLine.CopyFilters(GenJournalLine);
-        if GjLine.FindSet() then
-            repeat
 
-                IntPurchPayment.Reset();
-                IntPurchPayment.setrange("Journal Template Name", GjLine."Journal Template Name");
-                IntPurchPayment.setrange("Journal Batch Name", GjLine."Journal Batch Name");
-                IntPurchPayment.SetRange("Line No.", GjLine."Line No.");
-                if IntPurchPayment.FindFirst() then begin
 
-                    IntPurchPayment.Status := IntPurchPayment.Status::Posted;
-                    IntPurchPayment.Modify();
+        if Result then begin
+            IntPurchPayment.Reset();
+            IntPurchPayment.setrange("Journal Template Name", GenJournalLine."Journal Template Name");
+            IntPurchPayment.setrange("Journal Batch Name", GenJournalLine."Journal Batch Name");
+            IntPurchPayment.SetRange("Line No.", GenJournalLine."Line No.");
+            if IntPurchPayment.FindFirst() then begin
 
-                end;
+                IntPurchPayment.Status := IntPurchPayment.Status::Posted;
+                IntPurchPayment.Modify();
 
-            until GjLine.Next() = 0;
+            end;
+        end;
 
     end;
 

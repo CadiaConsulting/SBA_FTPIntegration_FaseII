@@ -2,7 +2,7 @@
   "id": "eaed175f-861c-4c93-b4e6-aa0132db5c16",
   "name": "SBA FTP Integration",
   "publisher": "CADIA CONSULTING DO BRASIL LTDA",
-  "version": "1.0.78.0006",
+  "version": "1.0.79.0007",
   "brief": "SBA FTP Integration",
   "description": "SBA FTP Integration",
   "privacyStatement": "http://www.cadia-consulting.com.br/",
@@ -17,7 +17,7 @@
       "id": "dd663d2b-e8aa-44c4-ba1f-96f3bf189af6",
       "publisher": "CADIA CONSULTING DO BRASIL LTDA",
       "name": "Brazil Localization for Dynamics 365 Business Central",
-      "version": "22.0.0.3"
+      "version": "24.0.0.14"
     }
   ],
   "application": "20.0.0.0",

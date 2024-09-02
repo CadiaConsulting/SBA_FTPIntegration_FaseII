@@ -253,6 +253,7 @@ codeunit 50073 "IntPurchPaymentsFromBC"
         TempBlob: codeunit "Temp Blob";
         FileBase64: Text;
         PathToFile: Text;
+        FileName: Text;
         TempExcelBuffer: Record "Excel Buffer" temporary;
         IntPurchPaymentsFromBC: Record IntPurchPaymentsFromBC;
         VendorLedgerEntry: Record "Vendor Ledger Entry";
@@ -267,6 +268,8 @@ codeunit 50073 "IntPurchPaymentsFromBC"
         IntPurchPaymentsFromBC.SetRange(Status, IntPurchPaymentsFromBC.Status::Created);
         IF IntPurchPaymentsFromBC.FindSet() then begin
             if IntPurchPaymentsFromBC.Findfirst() then begin
+
+                FileName := 'PaymentsFromBC' + DelChr(Format(Today) + Format(Time), '=', '/:') + '.xlsx';
 
                 TempExcelBuffer.NewRow();
                 TempExcelBuffer.AddColumn(IntPurchPaymentsFromBC.FieldCaption("Journal Template Name"), false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
@@ -321,6 +324,8 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                     TempExcelBuffer.AddColumn(IntPurchPaymentsFromBC."External Document No.", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
 
                     IntPurchPaymentsFromBC.Status := IntPurchPaymentsFromBC.Status::Exported;
+                    IntPurchPaymentsFromBC."Excel Export File Name" := FileName;
+
                     IntPurchPaymentsFromBC.Modify();
 
                     VendorLedgerEntry.get(IntPurchPaymentsFromBC."Line No.");
@@ -340,8 +345,9 @@ codeunit 50073 "IntPurchPaymentsFromBC"
 
                 FileBase64 := Base64.ToBase64(InSTR);
                 FTPIntSetup.Get(FTPIntSetup.Integration::"Payments From BC");
-                FTPCommunication.DoAction(Enum::"FTP Actions"::upload, 'PaymentsFromBC' + DelChr(Format(Today) + Format(Time), '=', '/:') + '.xlsx', FTPIntSetup.Directory, '', FileBase64);
+                FTPCommunication.DoAction(Enum::"FTP Actions"::upload, FileName, FTPIntSetup.Directory, '', FileBase64);
                 Message('Uploaded');
+
             end;
         end;
 

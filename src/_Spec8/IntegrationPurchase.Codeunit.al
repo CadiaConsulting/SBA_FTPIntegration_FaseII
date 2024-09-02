@@ -142,6 +142,7 @@ codeunit 50013 "Integration Purchase"
     var
         PurchaseHeader: Record "Purchase Header";
         PurchaseLine: Record "Purchase Line";
+        IntPurStatus: Record "Integration Purchase";
         DocAttac: Record "Document Attachment";
         TempBlob: Codeunit "Temp Blob";
         CADBRMunicipio: Record "CADBR Municipio";
@@ -286,6 +287,13 @@ codeunit 50013 "Integration Purchase"
 
             if IntegrationPurchase."Tax Area Code" <> '' then
                 ReleasePurchaseDocument.Run(PurchaseHeader);
+
+        end else begin
+
+            IntPurStatus.Reset();
+            IntPurStatus.SetRange("Document No.", IntegrationPurchase."Document No.");
+            IntPurStatus.ModifyAll("Posting Message", PurchaseHeader."Posting Message");
+
         end;
 
     end;
@@ -388,6 +396,7 @@ codeunit 50013 "Integration Purchase"
             IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Error";
             IntegrationPurchase.Modify();
             exit(true);
+
         end else begin
 
             IntegrationPurchase.Status := IntegrationPurchase.Status::Reviewed;
@@ -610,9 +619,12 @@ codeunit 50013 "Integration Purchase"
         ISSRetExist: Boolean;
         Vendor: Record Vendor;
         IntegrationPurchase: Record "Integration Purchase";
+        IntPurStatus: Record "Integration Purchase";
         CodMunErr: label 'Specify Service Delivery City';
     begin
         Clear(ISSRetExist);
+
+        Commit();
 
         if PurchaseHeader.get(FromPurchaseHeader."Document Type"::Order, FromPurchaseHeader."No.") then begin
 
@@ -639,18 +651,30 @@ codeunit 50013 "Integration Purchase"
                 until TempTaxAmountLine.next() = 0;
             end;
 
-        end;
 
-        if ISSRetExist then begin
-            Vendor.Get(FromPurchaseHeader."Buy-from Vendor No.");
-            if (Vendor."Territory Code" <> 'SP') and (FromPurchaseHeader."CADBR Service Delivery City" = '') then begin
-                IntegrationPurchase.Reset();
-                IntegrationPurchase.SetRange("Document No.", PurchaseHeader."No.");
-                if IntegrationPurchase.FindFirst() then begin
-                    IntegrationPurchase."Posting Message" := MergePostingMessage(IntegrationPurchase."Posting Message", CodMunErr);
-                    IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Error";
-                    IntegrationPurchase.Modify();
-                    exit(false);
+            if ISSRetExist then begin
+                Vendor.Get(FromPurchaseHeader."Buy-from Vendor No.");
+                if (Vendor."Territory Code" <> 'SP') and (FromPurchaseHeader."CADBR Service Delivery City" = '') then begin
+
+                    IntegrationPurchase.Reset();
+                    IntegrationPurchase.SetRange("Document No.", PurchaseHeader."No.");
+                    if IntegrationPurchase.FindFirst() then begin
+
+                        IntegrationPurchase."Posting Message" := CodMunErr;
+                        IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Error";
+                        IntegrationPurchase.Modify();
+
+                        IntPurStatus.Reset();
+                        IntPurStatus.SetRange("Document No.", IntegrationPurchase."Document No.");
+                        IntPurStatus.ModifyAll("Posting Message", IntegrationPurchase."Posting Message");
+                        IntPurStatus.ModifyAll(Status, IntegrationPurchase.Status);
+
+                        PurchaseHeader."Posting Message" := IntegrationPurchase."Posting Message";
+                        PurchaseHeader.Status := PurchaseHeader.Status::Open;
+                        PurchaseHeader.Modify();
+
+                        exit(false);
+                    end;
                 end;
             end;
         end else
@@ -678,6 +702,9 @@ codeunit 50013 "Integration Purchase"
                 PurchHeader.SetRange("No.", IntegrationPurchase."Document No.");
                 if PurchHeader.Find('-') then
                     repeat
+
+                        PurchHeader."Posting Message" := '';
+
                         if not StatusOrder(PurchHeader) then begin
                             IntegrationPurchase."Posting Message" := GetLastErrorText;
                             IntegrationPurchase.Modify();
@@ -695,6 +722,7 @@ codeunit 50013 "Integration Purchase"
     var
         IntegrationPurchase: Record "Integration Purchase";
         PurchHeader: Record "Purchase Header";
+        PurchLine: Record "Purchase Line";
         UserSetup: Record "User Setup";
 
     begin
@@ -717,6 +745,13 @@ codeunit 50013 "Integration Purchase"
                     PurchHeader.SetRange("No.", IntegrationPurchase."Document No.");
                     if PurchHeader.Find('-') then
                         repeat
+
+                            PurchLine.reset;
+                            PurchLine.SetRange("Document Type", PurchHeader."Document Type");
+                            PurchLine.SetRange("Document No.", PurchHeader."No.");
+                            PurchLine.Setrange(Type, PurchLine.Type::" ");
+                            PurchLine.DeleteAll();
+
                             PurchHeader."Posting Message" := '';
 
                             if not StatusOrderUnderAnalysis(PurchHeader) then begin
@@ -743,8 +778,7 @@ codeunit 50013 "Integration Purchase"
 
         ReleasePurcDocValidate(PurchaseHeader);
 
-        if not ValidateCodMun(PurchaseHeader) then
-            exit;
+        if not ValidateCodMun(PurchaseHeader) then;
 
         if PurchaseHeader."Posting Message" <> '' then begin
             PurchaseHeader.Status := PurchaseHeader.Status::Open;
@@ -756,16 +790,22 @@ codeunit 50013 "Integration Purchase"
     [TryFunction]
     procedure StatusOrder(PurchaseHeader: Record "Purchase Header")
     var
-
+        PurchLine: Record "Purchase Line";
     begin
         PurchaseHeader.Status := PurchaseHeader.Status::Released;
+
+        PurchLine.reset;
+        PurchLine.SetRange("Document Type", PurchaseHeader."Document Type");
+        PurchLine.SetRange("Document No.", PurchaseHeader."No.");
+        PurchLine.Setrange(Type, PurchLine.Type::" ");
+        PurchLine.DeleteAll();
+
         PurchaseHeader.Modify();
 
         ReleasePurcDocValidate(PurchaseHeader);
 
         CalcTax(PurchaseHeader, false);
-        if not ValidateCodMun(PurchaseHeader) then
-            exit;
+        if not ValidateCodMun(PurchaseHeader) then;
 
         if PurchaseHeader."Posting Message" <> '' then begin
             PurchaseHeader.Status := PurchaseHeader.Status::Open;
@@ -1339,19 +1379,56 @@ codeunit 50013 "Integration Purchase"
         PurchLine."CADBR Service Code" := Item."CADBR Service Code";
     end;
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Release Purchase Document", 'OnBeforeReleasePurchaseDoc', '', false, false)]
+    //aqui
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Release Purchase Document", 'OnAfterManualReleasePurchaseDoc', '', false, false)]
+    local procedure ReleasePurcDoc_OnBeforeManualReleasePurchaseDoc(var PurchaseHeader: Record "Purchase Header");
+    var
+        intPurch: Codeunit "Integration Purchase";
+        UserSetup: Record "User Setup";
+        PurchLine: Record "Purchase Line";
+    begin
+
+
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Release Purchase Document", 'OnAfterManualReleasePurchaseDoc', '', false, false)]
     local procedure OnBeforeReleasePurchaseDoc_CodeunitReleasePurchaseDocument(var PurchaseHeader: Record "Purchase Header")
     var
         IntegrationPurchase: Record "Integration Purchase";
-        re: Codeunit 52006503;
+        intPurch: Codeunit "Integration Purchase";
+        UserSetup: Record "User Setup";
+        PurchLine: Record "Purchase Line";
     begin
-
+        //aqui
         if PurchaseHeader."Document Type" <> PurchaseHeader."Document Type"::Order then
             exit;
 
-        CalcTax(PurchaseHeader, true);
-        if not ValidateCodMun(PurchaseHeader) then
-            exit;
+        UserSetup.Reset();
+        UserSetup.Get(USERID);
+        if UserSetup."Release PO" then begin
+
+            PurchaseHeader."Posting Message" := '';
+            PurchaseHeader.Modify();
+
+            PurchLine.reset;
+            PurchLine.SetRange("Document Type", PurchaseHeader."Document Type");
+            PurchLine.SetRange("Document No.", PurchaseHeader."No.");
+            PurchLine.Setrange(Type, PurchLine.Type::" ");
+            PurchLine.DeleteAll();
+
+            intPurch.ReleasePurcDocValidate(PurchaseHeader);
+
+            CalcTax(PurchaseHeader, true);
+            if not ValidateCodMun(PurchaseHeader) then;
+
+            if PurchaseHeader."Posting Message" <> '' then
+                exit;
+
+        end else
+            error('Usuario %1 sem Permissão para Liberar Pedido', USERID);
+
+
+
     end;
 
     [EventSubscriber(ObjectType::Table, Database::"Gen. Journal Line", 'OnAfterCopyGenJnlLineFromPurchHeader', '', false, false)]
@@ -1423,40 +1500,53 @@ codeunit 50013 "Integration Purchase"
         TaxPostAcc: Record "CADBR Tax Posting Accounts";
         intPurch: Record "Integration Purchase";
         FiscalDoc: Record "CADBR Fiscal Document Type";
+        CSTImpostos: Record "CADBR CST Impostos";
         DocumentAlreadyExists: label 'The %1 document no. already exists for Vendor %2 - %3.';
         DocumentAndSerieAlreadyExists: label 'The Document No. %1 and Print Serie %2 already exists for Vendor %3 - %4.';
         DocumentSerieAndFiscalDocTypeAlreadyExists: label 'The Document No. %1, Print Serie %2 and Fiscal Doc. Type %3 already exists for Vendor %4 - %5.';
+        Label50001: Label 'PIS/COFINS Credit Calculation Base Code. must have a value in Line';
+        Label50002: Label 'Unit Cost. Direct Excl. CUBA must have a value in Line';
+        Label50003: Label 'Origin Code. must have a value in Line 1.';
+        Label50004: Label 'Payment Terms Code.. must have a value in Header.';
+        Label50005: Label 'The document date cannot be greater than the registration date.';
+        Label50006: Label 'Payment.-a Address. must have a value in Header.';
+        Label50007: Label 'Vendor Invoice No... must have a value in Header.';
+        Label50008: Label 'The Print series does not match the Print Series';
+        Label50009: Label 'CADBR NFe Reference key... must have a value in Header.';
+        Label50010: Label 'The NF-e key series does not match the Print Series';
+        Label50011: Label 'The NF-e key number does not match the Tax Nº.';
+
 
     begin
         PurchSetup.Get;
 
         if PurchaseHeader."Payment Terms Code" = '' then
-            PurchaseHeader."Posting Message" := 'Payment Terms Code.. must have a value in Header.';
+            PurchaseHeader."Posting Message" := Label50004;
 
         if PurchaseHeader."Document Date" > PurchaseHeader."Posting Date" then
-            PurchaseHeader."Posting Message" := 'The document date cannot be greater than the registration date.';
+            PurchaseHeader."Posting Message" := Label50005;
 
         if PurchaseHeader."Pay-to Address" = '' then
-            PurchaseHeader."Posting Message" := 'Payment.-a Address. must have a value in Header.';
+            PurchaseHeader."Posting Message" := Label50006;
 
         if PurchaseHeader."Vendor Invoice No." = '' then
-            PurchaseHeader."Posting Message" := 'Vendor Invoice No... must have a value in Header.';
+            PurchaseHeader."Posting Message" := Label50007;
 
         if FiscalDoc.Get(PurchaseHeader."CADBR Fiscal Document Type") then begin
             if (FiscalDoc."Series Mandatory") then
                 if PurchaseHeader."CADBR Print Serie" = '' then
-                    PurchaseHeader."Posting Message" := 'The Print series does not match the Print Series';
+                    PurchaseHeader."Posting Message" := Label50008;
 
             if FiscalDoc."Document Model" = '55' then
                 if PurchaseHeader."CADBR NFe Reference key" = '' then
-                    PurchaseHeader."Posting Message" := 'CADBR NFe Reference key... must have a value in Header.'
+                    PurchaseHeader."Posting Message" := Label50009
                 else begin
 
                     if CopyStr(PurchaseHeader."CADBR NFe Reference key", 23, 3) <> PurchaseHeader."CADBR Print Serie" then
-                        PurchaseHeader."Posting Message" := 'The NF-e key series does not match the Print Series';
+                        PurchaseHeader."Posting Message" := Label50010;
 
                     if CopyStr(PurchaseHeader."CADBR NFe Reference key", 26, 9) <> PurchaseHeader."Vendor Invoice No." then
-                        PurchaseHeader."Posting Message" := 'The NF-e key number does not match the Tax Nº.';
+                        PurchaseHeader."Posting Message" := Label50011;
                 end;
         end;
 
@@ -1498,26 +1588,27 @@ codeunit 50013 "Integration Purchase"
         if PurcLine.FindSet() then
             repeat
                 if PurcLine."CADBR Origin Code" = '' then
-                    PurchaseHeader."Posting Message" := 'Origin Code. must have a value in Line 1.';
+                    PurchaseHeader."Posting Message" := Label50003;
 
                 if PurcLine."Unit Cost" = 0 then
-                    PurchaseHeader."Posting Message" := 'Unit Cost. Direct Excl. CUBA must have a value in Line';
+                    PurchaseHeader."Posting Message" := Label50002;
 
-                if PurcLine."CADBR Base Calculation Credit Code" = '' then
-                    PurchaseHeader."Posting Message" := 'PIS/COFINS Credit Calculation Base Code. must have a value in Line';
+                if PurcLine."CADBR Base Calculation Credit Code" = '' then begin
+
+                    if CSTImpostos.get(CSTImpostos."Tax Type"::PIS, PurcLine."CADBR IPI CST Code") then
+                        if CSTImpostos."Tax Credit" then
+                            PurchaseHeader."Posting Message" := Label50001;
+                end;
 
             until PurcLine.Next() = 0;
 
 
         if PurchaseHeader."Posting Message" <> '' then begin
-            PurchaseHeader.Modify();
 
             intPurch.Reset();
             intPurch.SetRange("Document No.", PurchaseHeader."No.");
             intPurch.ModifyAll("Posting Message", PurchaseHeader."Posting Message");
             intPurch.ModifyAll(Status, intPurch.Status::"Data Error");
-
-            exit;
 
         end else begin
 
@@ -1525,8 +1616,6 @@ codeunit 50013 "Integration Purchase"
             intPurch.SetRange("Document No.", PurchaseHeader."No.");
             intPurch.ModifyAll("Posting Message", PurchaseHeader."Posting Message");
             intPurch.ModifyAll(Status, intPurch.Status::Created);
-
-
 
         end;
 

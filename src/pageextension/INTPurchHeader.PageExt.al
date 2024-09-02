@@ -704,14 +704,15 @@ pageextension 50013 "INTPurchHeader" extends "Purchase Order"
                 var
                     IntPurchase: Record "Integration Purchase";
                     IntegrationPurchase: Codeunit "Integration Purchase";
-
+                    Label50020: Label 'Under Analysis';
                 begin
-
+                    IntPurchase.Reset();
+                    IntPurchase.SetRange("Document No.", rec."No.");
                     IntegrationPurchase.UnderAnalysis(IntPurchase);
 
                     CurrPage.SaveRecord();
                     CurrPage.Update();
-                    Message('Under Analysis');
+                    Message(Label50020);
 
                 end;
             }

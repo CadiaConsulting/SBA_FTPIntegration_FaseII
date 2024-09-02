@@ -167,10 +167,10 @@ page 50073 "IntPurchPaymentsFromBC"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Errors Import Excel field.';
                 }
-                field("Excel File Name"; Rec."Excel File Name")
+                field("Excel Export File Name"; Rec."Excel Export File Name")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Excel File Name field.';
+                    ToolTip = 'Specifies the value of the Excel Export File Name field.';
                 }
             }
         }

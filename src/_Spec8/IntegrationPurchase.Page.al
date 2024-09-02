@@ -380,7 +380,14 @@ page 50013 "Integration Purchase"
                 trigger OnAction();
                 var
                     IntPurchase: Record "Integration Purchase";
+                    UserSetup: Record "User Setup";
                 begin
+
+                    UserSetup.Reset();
+                    UserSetup.Get(USERID);
+                    if not UserSetup."Release PO" then
+                        error('Usuario %1 sem Permissão para Liberar Pedido', USERID);
+
                     CurrPage.SetSelectionFilter(IntPurchase);
                     IntPurchase.CopyFilters(Rec);
 
@@ -401,6 +408,7 @@ page 50013 "Integration Purchase"
                 trigger OnAction();
                 var
                     IntPurchase: Record "Integration Purchase";
+                    Label50003: Label 'Purchase Open';
                 begin
                     CurrPage.SetSelectionFilter(IntPurchase);
                     IntPurchase.CopyFilters(Rec);
@@ -409,7 +417,7 @@ page 50013 "Integration Purchase"
 
                     CurrPage.SaveRecord();
                     CurrPage.Update();
-                    Message('Purchase Open');
+                    Message(Label50003);
                 end;
             }
             action(UnderAnalysis)
@@ -422,6 +430,7 @@ page 50013 "Integration Purchase"
                 trigger OnAction();
                 var
                     IntPurchase: Record "Integration Purchase";
+                    Label50001: Label 'Under Analysis';
                 begin
                     CurrPage.SetSelectionFilter(IntPurchase);
                     IntPurchase.CopyFilters(Rec);
@@ -430,7 +439,7 @@ page 50013 "Integration Purchase"
 
                     CurrPage.SaveRecord();
                     CurrPage.Update();
-                    Message('Under Analysis');
+                    Message(Label50001);
                 end;
             }
             action(PostOrder)
@@ -443,12 +452,13 @@ page 50013 "Integration Purchase"
                 trigger OnAction();
                 var
                     IntPurchase: Record "Integration Purchase";
+                    Label50002: Label 'Post Order';
                 begin
                     CurrPage.SetSelectionFilter(IntPurchase);
                     IntPurchase.CopyFilters(Rec);
                     IntegrationPurchase.PostPurchase(IntPurchase);
                     CurrPage.Update();
-                    Message('Post Order');
+                    Message(Label50002);
                 end;
             }
             action(ExportTax)
