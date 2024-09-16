@@ -96,10 +96,25 @@ pageextension 50017 "INTPurchaseOrderList" extends "Purchase Order List"
                 ApplicationArea = Suite;
                 Image = Undo;
                 trigger OnAction()
-
+                var
+                    IntPurchase: Record "Integration Purchase";
+                    IntegrationPurchase: Codeunit "Integration Purchase";
+                    PurchaseHead: Record "Purchase Header";
+                    Label50020: Label 'Under Analysis';
                 begin
-                    rec.Status := rec.Status::"Under Analysis";
-                    rec.Modify();
+
+                    CurrPage.SetSelectionFilter(PurchaseHead);
+                    PurchaseHead.FindSet();
+                    repeat
+                        IntPurchase.Reset();
+                        IntPurchase.SetRange("Document No.", PurchaseHead."No.");
+                        IntegrationPurchase.UnderAnalysis(IntPurchase);
+
+                    until PurchaseHead.Next() = 0;
+
+                    CurrPage.SaveRecord();
+                    CurrPage.Update();
+                    Message(Label50020);
 
                 end;
             }

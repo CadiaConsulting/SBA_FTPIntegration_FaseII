@@ -344,7 +344,12 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                 TempBlob.CreateInStream(InSTR);
 
                 FileBase64 := Base64.ToBase64(InSTR);
-                FTPIntSetup.Get(FTPIntSetup.Integration::"Payments From BC");
+                //FTPIntSetup.Get(FTPIntSetup.Integration::"Payments From BC");
+                FTPIntSetup.Reset();
+                FTPIntSetup.SetRange(Integration, FTPIntSetup.Integration::"Payments From BC");
+                FTPIntSetup.SetRange(Sequence, 0);
+                FTPIntSetup.FindSet();
+
                 FTPCommunication.DoAction(Enum::"FTP Actions"::upload, FileName, FTPIntSetup.Directory, '', FileBase64);
                 Message('Uploaded');
 

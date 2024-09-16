@@ -76,7 +76,11 @@ codeunit 50002 "Import Excel Buffer"
         MaxCollumn := 0;
         ExistLine := false;
 
-        FTPIntSetup.Get(FTPIntSetup.Integration::Sales);
+        //FTPIntSetup.Get(FTPIntSetup.Integration::Sales);
+        FTPIntSetup.Reset();
+        FTPIntSetup.SetRange(Integration, FTPIntSetup.Integration::Sales);
+        FTPIntSetup.SetRange(Sequence, 0);
+        FTPIntSetup.FindSet();
 
         CRLF := 10;
 
@@ -430,7 +434,11 @@ codeunit 50002 "Import Excel Buffer"
         MaxCollumn := 0;
         ExistLine := false;
 
-        FTPIntSetup.Get(FTPIntSetup.Integration::"Sales Credit Note");
+        //FTPIntSetup.Get(FTPIntSetup.Integration::"Sales Credit Note");
+        FTPIntSetup.Reset();
+        FTPIntSetup.SetRange(Integration, FTPIntSetup.Integration::"Sales Credit Note");
+        FTPIntSetup.SetRange(Sequence, 0);
+        FTPIntSetup.FindSet();
 
         CRLF := 10;
 
@@ -784,7 +792,11 @@ codeunit 50002 "Import Excel Buffer"
         MaxCollumn := 0;
         ExistLine := false;
 
-        FTPIntSetup.Get(FTPIntSetup.Integration::Purchase);
+        //FTPIntSetup.Get(FTPIntSetup.Integration::Purchase);
+        FTPIntSetup.Reset();
+        FTPIntSetup.SetRange(Integration, FTPIntSetup.Integration::Purchase);
+        FTPIntSetup.SetRange(Sequence, 0);
+        FTPIntSetup.FindSet();
 
         CRLF := 10;
 
@@ -1279,7 +1291,11 @@ codeunit 50002 "Import Excel Buffer"
             TempBlob.CreateInStream(InSTR);
 
             FileBase64 := Base64.ToBase64(InSTR);
-            FTPIntSetup.Get(FTPIntSetup.Integration::"Purchase Tax Validation");
+            //FTPIntSetup.Get(FTPIntSetup.Integration::"Purchase Tax Validation");
+            FTPIntSetup.Reset();
+            FTPIntSetup.SetRange(Integration, FTPIntSetup.Integration::"Purchase Tax Validation");
+            FTPIntSetup.SetRange(Sequence, 0);
+            FTPIntSetup.FindSet();
             FTPCommunication.DoAction(Enum::"FTP Actions"::upload, IntPurchase."Exported Excel Purch. Tax Name" + '.xlsx', FTPIntSetup.Directory, '', FileBase64);
             Message('Uploaded');
         end;
@@ -1324,7 +1340,11 @@ codeunit 50002 "Import Excel Buffer"
         MaxCollumn := 0;
         ExistLine := false;
 
-        FTPIntSetup.Get(FTPIntSetup.Integration::"Purchase Posting");
+        //FTPIntSetup.Get(FTPIntSetup.Integration::"Purchase Posting");
+        FTPIntSetup.Reset();
+        FTPIntSetup.SetRange(Integration, FTPIntSetup.Integration::"Purchase Posting");
+        FTPIntSetup.SetRange(Sequence, 0);
+        FTPIntSetup.FindSet();
 
         CRLF := 10;
 
@@ -1467,7 +1487,11 @@ codeunit 50002 "Import Excel Buffer"
         MaxRowNo := 0;
         LineNo := 0;
 
-        FTPIntSetup.Get(FTPIntSetup.Integration::"Purchase Credit Note");
+        //FTPIntSetup.Get(FTPIntSetup.Integration::"Purchase Credit Note");
+        FTPIntSetup.Reset();
+        FTPIntSetup.SetRange(Integration, FTPIntSetup.Integration::"Purchase Credit Note");
+        FTPIntSetup.SetRange(Sequence, 0);
+        FTPIntSetup.FindSet();
 
         CRLF := 10;
 
@@ -1890,7 +1914,12 @@ codeunit 50002 "Import Excel Buffer"
         MaxCollumn := 0;
         ExistLine := false;
 
-        FTPIntSetup.Get(FTPIntSetup.Integration::Landlord);
+        //FTPIntSetup.Get(FTPIntSetup.Integration::Landlord);
+        FTPIntSetup.Reset();
+        FTPIntSetup.SetRange(Integration, FTPIntSetup.Integration::Landlord);
+        FTPIntSetup.SetRange(Sequence, 0);
+        FTPIntSetup.FindSet();
+
         PurPaySetup.Get();
         PurPaySetup.TestField("Item Serv. Landlord");
 
@@ -2096,7 +2125,11 @@ codeunit 50002 "Import Excel Buffer"
         MaxRowNo := 0;
         LineNo := 0;
 
-        FTPIntSetup.Get(FTPIntSetup.Integration::"Sales Payment");
+        //FTPIntSetup.Get(FTPIntSetup.Integration::"Sales Payment");
+        FTPIntSetup.Reset();
+        FTPIntSetup.SetRange(Integration, FTPIntSetup.Integration::"Sales Payment");
+        FTPIntSetup.SetRange(Sequence, 0);
+        FTPIntSetup.FindSet();
 
         CRLF := 10;
 
@@ -2368,7 +2401,11 @@ codeunit 50002 "Import Excel Buffer"
                 if ErrorFile then begin
 
                     FTPCommunication.DoAction(Enum::"FTP Actions"::rename, FileName, FTPIntSetup.Directory, FTPIntSetup."Error Folder", '');
-                    FTPIntSetup.Get(FTPIntSetup.Integration::"Sales Payment");
+                    //FTPIntSetup.Get(FTPIntSetup.Integration::"Sales Payment");
+                    FTPIntSetup.Reset();
+                    FTPIntSetup.SetRange(Integration, FTPIntSetup.Integration::"Sales Payment");
+                    FTPIntSetup.SetRange(Sequence, 0);
+                    FTPIntSetup.FindSet();
                     if FTPIntSetup."Send Email" then
                         IntegrationEmail.SendMail(FTPIntSetup."E-mail Rejected Data", False, '', TemporaryBuffer."Excel File Name");
 
@@ -2413,7 +2450,11 @@ codeunit 50002 "Import Excel Buffer"
         MaxRowNo := 0;
         LineNo := 0;
 
-        FTPIntSetup.Get(FTPIntSetup.Integration::"Sale Apply");
+        //FTPIntSetup.Get(FTPIntSetup.Integration::"Sale Apply");
+        FTPIntSetup.Reset();
+        FTPIntSetup.SetRange(Integration, FTPIntSetup.Integration::"Sale Apply");
+        FTPIntSetup.SetRange(Sequence, 0);
+        FTPIntSetup.FindSet();
 
         CRLF := 10;
 
@@ -2740,7 +2781,11 @@ codeunit 50002 "Import Excel Buffer"
         MaxRowNo := 0;
         LineNo := 0;
 
-        FTPIntSetup.Get(FTPIntSetup.Integration::"Sales Unapply");
+        //FTPIntSetup.Get(FTPIntSetup.Integration::"Sales Unapply");
+        FTPIntSetup.Reset();
+        FTPIntSetup.SetRange(Integration, FTPIntSetup.Integration::"Sales Unapply");
+        FTPIntSetup.SetRange(Sequence, 0);
+        FTPIntSetup.FindSet();
 
         CRLF := 10;
 
@@ -3123,7 +3168,11 @@ codeunit 50002 "Import Excel Buffer"
         LineNo := 0;
         MaxCollumn := 0;
 
-        FTPIntSetup.Get(FTPIntSetup.Integration::Customer);
+        //FTPIntSetup.Get(FTPIntSetup.Integration::Customer);
+        FTPIntSetup.Reset();
+        FTPIntSetup.SetRange(Integration, FTPIntSetup.Integration::Customer);
+        FTPIntSetup.SetRange(Sequence, 0);
+        FTPIntSetup.FindSet();
 
         CRLF := 10;
 
@@ -3292,7 +3341,11 @@ codeunit 50002 "Import Excel Buffer"
         LineNo := 0;
         MaxCollumn := 0;
 
-        FTPIntSetup.Get(FTPIntSetup.Integration::Vendor);
+        //FTPIntSetup.Get(FTPIntSetup.Integration::Vendor);
+        FTPIntSetup.Reset();
+        FTPIntSetup.SetRange(Integration, FTPIntSetup.Integration::Vendor);
+        FTPIntSetup.SetRange(Sequence, 0);
+        FTPIntSetup.FindSet();
 
         CRLF := 10;
 
@@ -3490,7 +3543,11 @@ codeunit 50002 "Import Excel Buffer"
         MaxRowNo := 0;
         LineNo := 0;
 
-        FTPIntSetup.Get(Integration);
+        //FTPIntSetup.Get(Integration);
+        FTPIntSetup.Reset();
+        FTPIntSetup.SetRange(Integration, Integration);
+        FTPIntSetup.SetRange(Sequence, 0);
+        FTPIntSetup.FindSet();
 
         case Integration of
             Integration::"Purchase Payment":
@@ -4404,7 +4461,11 @@ codeunit 50002 "Import Excel Buffer"
         if IntAccEntries.FindLast() then
             LineNo := IntAccEntries."Line No.";
 
-        FTPIntSetup.Get(Integration::"Accounting Entries");
+        //FTPIntSetup.Get(Integration::"Accounting Entries");
+        FTPIntSetup.Reset();
+        FTPIntSetup.SetRange(Integration, FTPIntSetup.Integration::"Accounting Entries");
+        FTPIntSetup.SetRange(Sequence, 0);
+        FTPIntSetup.FindSet();
 
         CRLF := 10;
 

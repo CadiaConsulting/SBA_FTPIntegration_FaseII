@@ -278,7 +278,8 @@ codeunit 50013 "Integration Purchase"
 
             CalcTax(PurchaseHeader, false);
             if not ValidateCodMun(PurchaseHeader) then
-                exit;
+                if not ValidatePostAcc(PurchaseHeader) then
+                    exit;
 
             // if PurchaseHeader."CADBR Taxes Matrix Code" = 'SEM IMP' then
             //     ReleasePurchaseDocument.Run(PurchaseHeader)
@@ -609,6 +610,80 @@ codeunit 50013 "Integration Purchase"
 
     end;
 
+    [TryFunction]
+    procedure ValidatePostAcc(FromPurchaseHeader: Record "Purchase Header")
+    var
+        PurchaseHeader: Record "Purchase Header";
+        PurcLine: Record "Purchase Line";
+        TempTaxAmountLine: Record "CADBR Tax Amount Line" temporary;
+        TaxCalculate: codeunit "CADBR Tax Calculate";
+        IntegrationPurchase: Record "Integration Purchase";
+        IntPurStatus: Record "Integration Purchase";
+        TaxPostingAccts: Record "CADBR Tax Posting Accounts";
+        Text001: label 'A tax account setup for the tax %1 wasn''t found.';
+
+    begin
+
+        if PurchaseHeader.get(FromPurchaseHeader."Document Type"::Order, FromPurchaseHeader."No.") then begin
+
+            TempTaxAmountLine.Reset();
+            TempTaxAmountLine.DeleteAll();
+            TaxCalculate.CalculatePurchDoc(PurchaseHeader, TempTaxAmountLine);
+
+            PurcLine.Reset();
+            PurcLine.SetRange("Document Type", PurchaseHeader."Document Type");
+            PurcLine.SetRange("Document No.", PurchaseHeader."No.");
+            if PurcLine.FindSet() then
+                repeat
+                    TempTaxAmountLine.Reset();
+                    TempTaxAmountLine.SetRange("Document Type", PurchaseHeader."Document Type");
+                    TempTaxAmountLine.SetRange("Document No.", PurchaseHeader."No.");
+                    TempTaxAmountLine.SetRange("Document Line No.", PurcLine."Line No.");
+                    if TempTaxAmountLine.FindSet() then begin
+                        repeat
+                            TempTaxAmountLine.SetAutoCalcFields("Posting - Payable Tax", "Posting - Expense", "Posting - Tax Credit");
+
+                            if TempTaxAmountLine."Posting - Payable Tax" or TempTaxAmountLine."Posting - Expense" or TempTaxAmountLine."Posting - Tax Credit" then begin
+
+                                TaxPostingAccts.Reset;
+                                TaxPostingAccts.SetRange("Tax Identification", TempTaxAmountLine."Tax Identification");
+                                TaxPostingAccts.SetRange("Filter Type", TaxPostingAccts."filter type"::" ");
+                                TaxPostingAccts.SetRange("Filter Code", '');
+                                if not TaxPostingAccts.FindFirst then
+                                    PurchaseHeader."Posting Message" := StrSubstNo(Text001, TaxPostingAccts.GetFilter(TaxPostingAccts."Tax Identification"));
+
+                            end;
+
+                        until TempTaxAmountLine.next() = 0;
+
+                    end;
+
+                until PurcLine.Next() = 0;
+
+            if PurchaseHeader."Posting Message" <> '' then begin
+                IntegrationPurchase.Reset();
+                IntegrationPurchase.SetRange("Document No.", PurchaseHeader."No.");
+                if IntegrationPurchase.FindFirst() then begin
+
+                    IntegrationPurchase."Posting Message" := PurchaseHeader."Posting Message";
+                    IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Error";
+                    IntegrationPurchase.Modify();
+
+                    IntPurStatus.Reset();
+                    IntPurStatus.SetRange("Document No.", IntegrationPurchase."Document No.");
+                    IntPurStatus.ModifyAll("Posting Message", IntegrationPurchase."Posting Message");
+                    IntPurStatus.ModifyAll(Status, IntegrationPurchase.Status);
+
+                    PurchaseHeader."Posting Message" := IntegrationPurchase."Posting Message";
+                    PurchaseHeader.Status := PurchaseHeader.Status::Open;
+                    PurchaseHeader.Modify();
+
+
+                end;
+            end;
+        end;
+    end;
+
     procedure ValidateCodMun(FromPurchaseHeader: Record "Purchase Header"): Boolean;
     var
         PurchaseHeader: Record "Purchase Header";
@@ -638,7 +713,6 @@ codeunit 50013 "Integration Purchase"
             if not TempTaxAmountLine.IsEmpty then begin
                 TempTaxAmountLine.FindSet();
 
-                TempTaxAmountLine.findset();
                 repeat
                     case TempTaxAmountLine."Tax Identification" of
 
@@ -681,7 +755,8 @@ codeunit 50013 "Integration Purchase"
             exit(true);
     end;
 
-    procedure PurchRealse(var IntPurchase: Record "Integration Purchase")
+    procedure PurchRealse(var
+                              IntPurchase: Record "Integration Purchase")
     var
         IntegrationPurchase: Record "Integration Purchase";
         PurchHeader: Record "Purchase Header";
@@ -780,6 +855,8 @@ codeunit 50013 "Integration Purchase"
 
         if not ValidateCodMun(PurchaseHeader) then;
 
+        if not ValidatePostAcc(PurchaseHeader) then;
+
         if PurchaseHeader."Posting Message" <> '' then begin
             PurchaseHeader.Status := PurchaseHeader.Status::Open;
             PurchaseHeader.Modify();
@@ -806,6 +883,8 @@ codeunit 50013 "Integration Purchase"
 
         CalcTax(PurchaseHeader, false);
         if not ValidateCodMun(PurchaseHeader) then;
+
+        if not ValidatePostAcc(PurchaseHeader) then;
 
         if PurchaseHeader."Posting Message" <> '' then begin
             PurchaseHeader.Status := PurchaseHeader.Status::Open;
@@ -1379,7 +1458,6 @@ codeunit 50013 "Integration Purchase"
         PurchLine."CADBR Service Code" := Item."CADBR Service Code";
     end;
 
-    //aqui
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Release Purchase Document", 'OnAfterManualReleasePurchaseDoc', '', false, false)]
     local procedure ReleasePurcDoc_OnBeforeManualReleasePurchaseDoc(var PurchaseHeader: Record "Purchase Header");
     var
@@ -1420,9 +1498,12 @@ codeunit 50013 "Integration Purchase"
 
             CalcTax(PurchaseHeader, true);
             if not ValidateCodMun(PurchaseHeader) then;
+            if not ValidatePostAcc(PurchaseHeader) then;
 
-            if PurchaseHeader."Posting Message" <> '' then
-                exit;
+            if PurchaseHeader."Posting Message" <> '' then begin
+                PurchaseHeader.Status := PurchaseHeader.Status::Open;
+                PurchaseHeader.Modify();
+            end;
 
         end else
             error('Usuario %1 sem Permissão para Liberar Pedido', USERID);
@@ -1515,6 +1596,8 @@ codeunit 50013 "Integration Purchase"
         Label50009: Label 'CADBR NFe Reference key... must have a value in Header.';
         Label50010: Label 'The NF-e key series does not match the Print Series';
         Label50011: Label 'The NF-e key number does not match the Tax Nº.';
+        PrintSerie: Integer;
+        InvoiceNo: Integer;
 
 
     begin
@@ -1537,15 +1620,19 @@ codeunit 50013 "Integration Purchase"
                 if PurchaseHeader."CADBR Print Serie" = '' then
                     PurchaseHeader."Posting Message" := Label50008;
 
+            PurchaseHeader.CalcFields("CADBR Access Key");
+
             if FiscalDoc."Document Model" = '55' then
-                if PurchaseHeader."CADBR NFe Reference key" = '' then
+                if PurchaseHeader."CADBR Access Key" = '' then
                     PurchaseHeader."Posting Message" := Label50009
                 else begin
+                    Evaluate(PrintSerie, PurchaseHeader."CADBR Print Serie");
+                    Evaluate(InvoiceNo, PurchaseHeader."Vendor Invoice No.");
 
-                    if CopyStr(PurchaseHeader."CADBR NFe Reference key", 23, 3) <> PurchaseHeader."CADBR Print Serie" then
+                    if CopyStr(PurchaseHeader."CADBR Access Key", 23 + 3 - StrLen(Format(PrintSerie)), StrLen(Format(PrintSerie))) <> Format(PrintSerie) then
                         PurchaseHeader."Posting Message" := Label50010;
 
-                    if CopyStr(PurchaseHeader."CADBR NFe Reference key", 26, 9) <> PurchaseHeader."Vendor Invoice No." then
+                    if CopyStr(PurchaseHeader."CADBR Access Key", 26 + 9 - StrLen(Format(InvoiceNo)), StrLen(Format(InvoiceNo))) <> Format(InvoiceNo) then
                         PurchaseHeader."Posting Message" := Label50011;
                 end;
         end;
@@ -1595,9 +1682,14 @@ codeunit 50013 "Integration Purchase"
 
                 if PurcLine."CADBR Base Calculation Credit Code" = '' then begin
 
-                    if CSTImpostos.get(CSTImpostos."Tax Type"::PIS, PurcLine."CADBR IPI CST Code") then
+                    if CSTImpostos.get(CSTImpostos."Tax Type"::PIS, PurcLine."CADBR PIS CST Code") then
                         if CSTImpostos."Tax Credit" then
                             PurchaseHeader."Posting Message" := Label50001;
+
+                    if CSTImpostos.get(CSTImpostos."Tax Type"::COFINS, PurcLine."CADBR COFINS CST Code") then
+                        if CSTImpostos."Tax Credit" then
+                            PurchaseHeader."Posting Message" := Label50001;
+
                 end;
 
             until PurcLine.Next() = 0;
@@ -1620,6 +1712,7 @@ codeunit 50013 "Integration Purchase"
         end;
 
     end;
+
 
     var
         DimensionCode: Code[20];

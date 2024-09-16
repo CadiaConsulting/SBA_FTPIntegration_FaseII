@@ -68,6 +68,18 @@
             "enableSqlInformationDebugger": true,
             "schemaUpdateMode": "ForceSync" 
         
+        },
+        {            
+            "name": "Attach Debug Job SBA_DEV_FASE_2",
+            "request": "attach",
+            "type": "al",
+                 "tenant": "3688e59a-3259-4495-8f8b-39d3649166e4",
+            "environmentName": "SBA_DEV_FASE_2_16052024",     
+            "breakOnError": "All",            
+            "enableLongRunningSqlStatements": true,
+            "enableSqlInformationDebugger": true,
+            "breakOnNext": "WebServiceClient"
+        
         }
     ]
 }

@@ -135,7 +135,7 @@ table 50001 "FTP Integration Setup"
     }
     keys
     {
-        key(PK; "Integration")
+        key(PK; "Integration", "Integration Relation", Sequence)
         {
             Clustered = true;
         }

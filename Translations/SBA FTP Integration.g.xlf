@@ -3403,6 +3403,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ValidateIntPurchase - NamedType ItemTypeErr</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 3500082681 - NamedType 3114637384" size-unit="char" translate="yes" xml:space="preserve">
+          <source>A tax account setup for the tax %1 wasn't found.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ValidatePostAcc - NamedType Text001</note>
+        </trans-unit>
         <trans-unit id="Codeunit 338540617 - Method 2088990959 - NamedType 2716831399" size-unit="char" translate="yes" xml:space="preserve">
           <source>Create Purchase Return Order   #1#############</source>
           <note from="Developer" annotates="general" priority="2">#1 IntPurchaseReturn</note>
@@ -8853,6 +8858,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderList - Action UnderAnalysis - Property Caption</note>
         </trans-unit>
+        <trans-unit id="PageExtension 3981024632 - Action 995899470 - Method 1377591017 - NamedType 3600765675" size-unit="char" translate="yes" xml:space="preserve" al-object-target="PageExtension 3981024632">
+          <source>Under Analysis</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderList - Action UnderAnalysis - Method OnAction - NamedType Label50020</note>
+        </trans-unit>
         <trans-unit id="PageExtension 3981024632 - Control 3425279406 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3195034673">
           <source>Buy-from City</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -8887,6 +8897,11 @@
           <source>Número da NF</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderList - Control Vendor Invoice No. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 312826912 - Control 2250931496 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 526152577">
+          <source>Status SBA</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderSubForm - Control Status SBA - Property ToolTip</note>
         </trans-unit>
         <trans-unit id="PageExtension 2801933490 - Action 3327007977 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3113493751">
           <source>Delete Records</source>
@@ -9262,6 +9277,11 @@
           <source>Service Delivery City</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">TableExtension INTGenJournalLine - Field Service Delivery City - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="TableExtension 2541699474 - Field 2250931496 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 1519909599">
+          <source>Status SBA</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">TableExtension INTPurchaseLine - Field Status SBA - Property Caption</note>
         </trans-unit>
         <trans-unit id="TableExtension 2627532652 - Field 783039621 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Table 2072992664">
           <source>Cofins Credit</source>

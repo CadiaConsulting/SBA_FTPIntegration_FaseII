@@ -703,6 +703,7 @@ pageextension 50013 "INTPurchHeader" extends "Purchase Order"
                 trigger OnAction()
                 var
                     IntPurchase: Record "Integration Purchase";
+                    PurcHea: Record "Purchase Header";
                     IntegrationPurchase: Codeunit "Integration Purchase";
                     Label50020: Label 'Under Analysis';
                 begin
@@ -712,7 +713,10 @@ pageextension 50013 "INTPurchHeader" extends "Purchase Order"
 
                     CurrPage.SaveRecord();
                     CurrPage.Update();
-                    Message(Label50020);
+
+                    PurcHea.GET(rec."Document Type", rec."No.");
+                    if PurcHea."Posting Message" = '' then
+                        Message(Label50020);
 
                 end;
             }

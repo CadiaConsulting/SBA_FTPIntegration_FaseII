@@ -45,7 +45,7 @@ codeunit 50001 "FTP Communication"
         EntryNo := RESTHelper.Send();
 
         if RESTHelper.GetHttpStatusCode() <> 200 then
-            error(RESTHelper.GetResponseReasonPhrase() + ':\' + RESTHelper.GetResponseContentAsText());
+            error('FTP Error - %1 - %2 - %3' + RESTHelper.GetResponseReasonPhrase() + ':\' + RESTHelper.GetResponseContentAsText(), filename, dir, destination);
 
         if action = Enum::"FTP Actions"::download then begin
             exit(EntryNo);

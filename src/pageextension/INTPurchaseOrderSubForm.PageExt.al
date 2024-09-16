@@ -3,6 +3,16 @@ pageextension 50026 INTPurchaseOrderSubForm extends "Purchase Order Subform"
     layout
     {
         // Add changes to page layout here
+        addbefore("Bin Code")
+        {
+            field("Status SBA"; rec."Status SBA")
+            {
+                ApplicationArea = All;
+                ToolTip = 'Status SBA';
+                Editable = not CheckStatus;
+            }
+        }
+
         modify("CADBR Service Code")
         {
             Visible = true;
