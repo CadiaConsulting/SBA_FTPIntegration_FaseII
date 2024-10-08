@@ -61,25 +61,26 @@ pageextension 50017 "INTPurchaseOrderList" extends "Purchase Order List"
                 var
                     PurchaseHeader: Record "Purchase Header";
                     intPur: Record "Integration Purchase";
-                    PurchHeaderInt: Record "Purchase Header";
                 begin
                     CurrPage.SetSelectionFilter(PurchaseHeader);
-                    CurrPage.SetSelectionFilter(PurchHeaderInt);
-
-                    if PurchHeaderInt.FindSet() then
-                        repeat
-                            intPur.Reset();
-                            intPur.SetRange("Document No.", PurchHeaderInt."No.");
-                            if not intPur.IsEmpty then
-                                intPur.ModifyAll(Status, intpur.Status::Cancelled);
-
-                        until PurchHeaderInt.Next() = 0;
 
                     PurchaseHeader.SetRange("Document Type", PurchaseHeader."Document Type"::Order);
                     if not PurchaseHeader.IsEmpty then begin
                         if Confirm('You will delete %1 records, do you want to continue?', false, Format(PurchaseHeader.Count())) then begin
-                            PurchaseHeader.ModifyAll("Posting No.", '');
-                            PurchaseHeader.DeleteAll(true);
+                            if PurchaseHeader.FindSet() then
+                                repeat
+
+                                    intPur.Reset();
+                                    intPur.SetRange("Document No.", PurchaseHeader."No.");
+                                    if not intPur.IsEmpty then
+                                        intPur.ModifyAll(Status, intpur.Status::Cancelled);
+
+                                    PurchaseHeader."Posting No." := '';
+                                    PurchaseHeader.Modify();
+                                    PurchaseHeader.Delete(false);
+
+                                until PurchaseHeader.Next() = 0;
+
                         end;
                     end;
 

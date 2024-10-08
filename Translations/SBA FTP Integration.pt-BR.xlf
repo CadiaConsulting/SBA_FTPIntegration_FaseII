@@ -939,12 +939,13 @@
         </trans-unit>
         <trans-unit id="Table 2300234719 - Field 3764622026 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Excel File Name</source>
-          <target>Nome Arquivo Excel</target>
+          <target>Nome Arq. Excel - Compras</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table Integration Purchase - Field Excel File Name - Property Caption</note>
         </trans-unit>
         <trans-unit id="Table 2300234719 - Field 1448230046 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Exported Excel Purch. Tax Name</source>
+          <target>Nome Arq. Excel - Impostos s/ Compras Exported</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table Integration Purchase - Field Exported Excel Purch. Tax Name - Property Caption</note>
         </trans-unit>
@@ -1067,7 +1068,7 @@
         </trans-unit>
         <trans-unit id="Table 2300234719 - Field 2842546430 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Purch Post Excel File Name</source>
-          <target>Compras Registro Nome Arquivo Excel</target>
+          <target>Nome Arq. Excel - Postagem Compras</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table Integration Purchase - Field Purch Post Excel File Name - Property Caption</note>
         </trans-unit>
@@ -3291,13 +3292,13 @@
         </trans-unit>
         <trans-unit id="Codeunit 2259422344 - Method 146791098 - NamedType 564475717" size-unit="char" translate="yes" xml:space="preserve">
           <source>Please configure Gen. Bus. Posting Group on vendor %1.</source>
-          <target>Configure o Grupo de Postagem de Barramento Geral no fornecedor %1.</target>
+          <target>Falta Configuração Grupo Contabil Fornecedor %1.</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Landlord - Method ValidateIntPurchase - NamedType VendGenBusPostGroupErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2259422344 - Method 146791098 - NamedType 1034733534" size-unit="char" translate="yes" xml:space="preserve">
           <source>Please configure Gen. Prod. Posting Group on item %1.</source>
-          <target>Por favor, configure o Grupo de Postagem de Produção Geral no item %1.</target>
+          <target>Falta configuração Grupo Contabil no item %1.</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Landlord - Method ValidateIntPurchase - NamedType ItemGenProdPostGroupErr</note>
         </trans-unit>
@@ -3402,7 +3403,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50002</note>
         </trans-unit>
         <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 2447588868" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Origin Code. must have a value in Line.</source>
+          <source>Origin Code. must have a value in Line 1.</source>
           <target>Código de Origem. deve ter um valor na Linha</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50003</note>
@@ -3426,22 +3427,28 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50006</note>
         </trans-unit>
         <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 4191769696" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Vendor Invoice No... must have a value in Header.</source>
-          <target>Número da fatura do fornecedor... deve ter um valor no cabeçalho.</target>
+          <source>Vendor Invoice No. must have a value in Header.</source>
+          <target>Número da fatura do fornecedor. deve ter um valor no cabeçalho.</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50007</note>
         </trans-unit>
         <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 2278679845" size-unit="char" translate="yes" xml:space="preserve">
           <source>The Print series does not match the Print Series</source>
-          <target>A série Print não corresponde à série Print</target>
+          <target>Série Impressão. deve ter um valor em Cabeçalho.</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50008</note>
         </trans-unit>
         <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 2916376462" size-unit="char" translate="yes" xml:space="preserve">
-          <source>NFe Reference key... must have a value in Header.</source>
-          <target>Chave de referência NFe... deve ter um valor no Cabeçalho.</target>
+          <source>NFe Reference key. must have a value in Header.</source>
+          <target>Chave de referência NFe. deve ter um valor no Cabeçalho.</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50009</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 3509938429" size-unit="char" translate="yes" xml:space="preserve">
+          <source>NFe Reference key must have a value in Header.</source>
+          <target>Chave Acesso deve ter um valor em Cabeçalho</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50019</note>
         </trans-unit>
         <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 3341029406" size-unit="char" translate="yes" xml:space="preserve">
           <source>The NF-e key series does not match the Print Series</source>
@@ -3451,7 +3458,7 @@
         </trans-unit>
         <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 2703332789" size-unit="char" translate="yes" xml:space="preserve">
           <source>The NF-e key number does not match the Tax Nº.</source>
-          <target>O número da chave NF-e não corresponde ao Nº do Imposto.</target>
+          <target>O número da chave NF-e não corresponde ao Nº Nota fiscal do Fornecedor.</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50011</note>
         </trans-unit>
@@ -3493,13 +3500,13 @@
         </trans-unit>
         <trans-unit id="Codeunit 2300234719 - Method 146791098 - NamedType 564475717" size-unit="char" translate="yes" xml:space="preserve">
           <source>Please configure Gen. Bus. Posting Group on vendor %1.</source>
-          <target>Configure o Grupo de Postagem de Barramento Geral no fornecedor %1.</target>
+          <target>Falta Configuração Grupo Contabil Fornecedor %1.</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ValidateIntPurchase - NamedType VendGenBusPostGroupErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2300234719 - Method 146791098 - NamedType 1034733534" size-unit="char" translate="yes" xml:space="preserve">
           <source>Please configure Gen. Prod. Posting Group on item %1.</source>
-          <target>Por favor, configure o Grupo de Postagem de Produção Geral no item %1.</target>
+          <target>Falta configuração Grupo Contabil no item %1.</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ValidateIntPurchase - NamedType ItemGenProdPostGroupErr</note>
         </trans-unit>
@@ -5549,12 +5556,13 @@
         </trans-unit>
         <trans-unit id="Page 2300234719 - Control 3764622026 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Excel File Name</source>
-          <target>Nome Arquivo Excel</target>
+          <target>Nome Arq. Excel - Compras</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Control Excel File Name - Property ToolTip</note>
         </trans-unit>
         <trans-unit id="Page 2300234719 - Control 1448230046 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Exported Excel Purch. Tax Name</source>
+          <target>Nome Arq. Excel - Impostos s/ Compras Exported</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Control Exported Excel Purch. Tax Name - Property ToolTip</note>
         </trans-unit>
@@ -5671,7 +5679,7 @@
         </trans-unit>
         <trans-unit id="Page 2300234719 - Control 2842546430 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Purch Post Excel File Name</source>
-          <target>Compras Registro Nome Arquivo Excel</target>
+          <target>Nome Arq. Excel - Postagem Compras</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Control Purch Post Excel File Name - Property ToolTip</note>
         </trans-unit>
@@ -10024,11 +10032,23 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">EnumExtension INTPurcDocStatus - EnumValue Under Analysis - Property Caption</note>
         </trans-unit>
-          <trans-unit id="PageExtension 3981024632 - Action 995899470 - Method 1377591017 - NamedType 3600765675" size-unit="char" translate="yes" xml:space="preserve" al-object-target="PageExtension 3981024632">
+        <trans-unit id="PageExtension 3981024632 - Action 995899470 - Method 1377591017 - NamedType 3600765675" size-unit="char" translate="yes" xml:space="preserve" al-object-target="PageExtension 3981024632">
           <source>Under Analysis</source>
           <target>Em Analise</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTPurchaseOrderList - Action UnderAnalysis - Method OnAction - NamedType Label50020</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 3500082681 - NamedType 3114637384" size-unit="char" translate="yes" xml:space="preserve">
+          <source>A tax account setup for the tax %1 wasn't found.</source>
+          <target>Uma configuração de conta de imposto para o imposto %1 não foi encontrada.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ValidatePostAcc - NamedType Text001</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 790242938" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Payment Terms Code must have a value in Header.</source>
+          <target>Código de condições de pagamento deve ter um valor no cabeçalho.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50014</note>
         </trans-unit>
       </group>
     </body>

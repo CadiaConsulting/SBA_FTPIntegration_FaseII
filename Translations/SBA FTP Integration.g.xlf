@@ -3318,10 +3318,10 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50003</note>
         </trans-unit>
-        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 534499017" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Payment Terms Code.. must have a value in Header.</source>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 790242938" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Payment Terms Code must have a value in Header.</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50004</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50014</note>
         </trans-unit>
         <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 1172195634" size-unit="char" translate="yes" xml:space="preserve">
           <source>The document date cannot be greater than the registration date.</source>
@@ -3334,7 +3334,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50006</note>
         </trans-unit>
         <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 4191769696" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Vendor Invoice No... must have a value in Header.</source>
+          <source>Vendor Invoice No. must have a value in Header.</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50007</note>
         </trans-unit>
@@ -3343,10 +3343,10 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50008</note>
         </trans-unit>
-        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 2916376462" size-unit="char" translate="yes" xml:space="preserve">
-          <source>CADBR NFe Reference key... must have a value in Header.</source>
+        <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 3509938429" size-unit="char" translate="yes" xml:space="preserve">
+          <source>NFe Reference key must have a value in Header.</source>
           <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50009</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50019</note>
         </trans-unit>
         <trans-unit id="Codeunit 2300234719 - Method 99968997 - NamedType 3341029406" size-unit="char" translate="yes" xml:space="preserve">
           <source>The NF-e key series does not match the Print Series</source>

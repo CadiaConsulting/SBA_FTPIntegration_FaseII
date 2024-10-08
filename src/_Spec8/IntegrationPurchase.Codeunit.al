@@ -37,20 +37,25 @@ codeunit 50013 "Integration Purchase"
                     if GuiAllowed then
                         WindDialog.Open(DialogReviewPurchaseLbl);
                     repeat
-                        if IntegrationPurchase.Status <> IntegrationPurchase.Status::Reviewed then begin
-                            if GuiAllowed then
-                                WindDialog.Update(1, IntegrationPurchase."Document No.");
-                            IntegrationPurchase."Posting Message" := '';
-                            IntegrationPurchase."Municipio Code" := '';
-                            if not ValidateIntPurchase(IntegrationPurchase) then;
-                        end;
+                        //if IntegrationPurchase.Status <> IntegrationPurchase.Status::Reviewed then begin
+
+                        if GuiAllowed then
+                            WindDialog.Update(1, IntegrationPurchase."Document No.");
+                        IntegrationPurchase."Posting Message" := '';
+                        IntegrationPurchase."Municipio Code" := '';
+                        if not ValidateIntPurchase(IntegrationPurchase) then;
+
+                    //end;
                     until IntegrationPurchase.Next() = 0;
 
                     if GuiAllowed then
                         WindDialog.Close();
 
                 end;
+
             until IPByDocBuffer.Next() = 0;
+
+        Commit();
 
         CreatePurchaseByDoc();
 
@@ -70,15 +75,18 @@ codeunit 50013 "Integration Purchase"
         if GuiAllowed then
             WindDialog.Open(DialogCrePurchaseLbl);
 
-        IntegrationPurchaseBuffer.SetAutoCalcFields("Error Order");
-        if IntegrationPurchaseBuffer.FindFirst() then
+        IntegrationPurchaseBuffer.Reset();
+        if IntegrationPurchaseBuffer.FindSet() then
             repeat
+                IntegrationPurchaseBuffer.SetAutoCalcFields("Error Order");
+
                 if GuiAllowed then
                     WindDialog.Update(1, IntegrationPurchaseBuffer."Document No.");
                 if IntegrationPurchaseBuffer."Error Order" = 0 then begin
 
-
+                    RecordToCreate.Reset();
                     RecordToCreate.SetRange("Document No.", IntegrationPurchaseBuffer."Document No.");
+                    RecordToCreate.SetFilter(Status, '<>%1', RecordToCreate.Status::"Data Error");
                     if RecordToCreate.FindSet() then
                         CreatePurchaseOrder(RecordToCreate);
 
@@ -402,6 +410,7 @@ codeunit 50013 "Integration Purchase"
 
             IntegrationPurchase.Status := IntegrationPurchase.Status::Reviewed;
             IntegrationPurchase.Modify();
+
         end;
     end;
 
@@ -593,14 +602,18 @@ codeunit 50013 "Integration Purchase"
 
                             end;
                         until TempTaxAmountLine.next() = 0;
+
                     end;
+
+                    if (IPTaxes.DIRF <> 0) then
+                        IPTaxes."Order DIRF Ret" := IPTaxes.DIRF;
 
                     if IRRFExist = false then begin
                         IPTaxes."Order IRRF Ret" := IPTaxes.DIRF;
                         IPTaxes."Order Dirf Ret" := IPTaxes.DIRF;
                     end;
-                    IPTaxes.Modify();
 
+                    IPTaxes.Modify();
 
                 until IPTaxes.Next() = 0;
             end;
@@ -611,7 +624,7 @@ codeunit 50013 "Integration Purchase"
     end;
 
     [TryFunction]
-    procedure ValidatePostAcc(FromPurchaseHeader: Record "Purchase Header")
+    procedure ValidatePostAcc(var FromPurchaseHeader: Record "Purchase Header")
     var
         PurchaseHeader: Record "Purchase Header";
         PurcLine: Record "Purchase Line";
@@ -621,10 +634,12 @@ codeunit 50013 "Integration Purchase"
         IntPurStatus: Record "Integration Purchase";
         TaxPostingAccts: Record "CADBR Tax Posting Accounts";
         Text001: label 'A tax account setup for the tax %1 wasn''t found.';
+        ExitBoo: Boolean;
 
     begin
 
         if PurchaseHeader.get(FromPurchaseHeader."Document Type"::Order, FromPurchaseHeader."No.") then begin
+            PurchaseHeader."Posting Message" := '';
 
             TempTaxAmountLine.Reset();
             TempTaxAmountLine.DeleteAll();
@@ -641,16 +656,55 @@ codeunit 50013 "Integration Purchase"
                     TempTaxAmountLine.SetRange("Document Line No.", PurcLine."Line No.");
                     if TempTaxAmountLine.FindSet() then begin
                         repeat
+                            ExitBoo := false;
+
                             TempTaxAmountLine.SetAutoCalcFields("Posting - Payable Tax", "Posting - Expense", "Posting - Tax Credit");
 
                             if TempTaxAmountLine."Posting - Payable Tax" or TempTaxAmountLine."Posting - Expense" or TempTaxAmountLine."Posting - Tax Credit" then begin
 
-                                TaxPostingAccts.Reset;
-                                TaxPostingAccts.SetRange("Tax Identification", TempTaxAmountLine."Tax Identification");
-                                TaxPostingAccts.SetRange("Filter Type", TaxPostingAccts."filter type"::" ");
-                                TaxPostingAccts.SetRange("Filter Code", '');
-                                if not TaxPostingAccts.FindFirst then
-                                    PurchaseHeader."Posting Message" := StrSubstNo(Text001, TaxPostingAccts.GetFilter(TaxPostingAccts."Tax Identification"));
+                                if TempTaxAmountLine."Tax Jurisdiction Code" <> '' then begin
+                                    TaxPostingAccts.Reset;
+                                    TaxPostingAccts.SetRange("Tax Identification", TempTaxAmountLine."Tax Identification");
+                                    TaxPostingAccts.SetRange("Filter Type", TaxPostingAccts."filter type"::Jurisdiction);
+                                    TaxPostingAccts.SetRange("Filter Code", TempTaxAmountLine."Tax Jurisdiction Code");
+                                    if TaxPostingAccts.FindFirst then
+                                        ExitBoo := true;
+                                end;
+
+                                if PurchaseHeader."Pay-to Vendor No." <> '' then begin
+                                    TaxPostingAccts.Reset;
+                                    TaxPostingAccts.SetRange("Tax Identification", TempTaxAmountLine."Tax Identification");
+                                    TaxPostingAccts.SetRange("Filter Type", TaxPostingAccts."filter type"::Vend);
+                                    TaxPostingAccts.SetRange("Filter Code", PurchaseHeader."Pay-to Vendor No.");
+                                    if TaxPostingAccts.FindFirst then
+                                        ExitBoo := true;
+                                end;
+
+                                if PurcLine."Gen. Prod. Posting Group" <> '' then begin
+                                    TaxPostingAccts.Reset;
+                                    TaxPostingAccts.SetRange("Tax Identification", TempTaxAmountLine."Tax Identification");
+                                    TaxPostingAccts.SetRange("Filter Type", TaxPostingAccts."filter type"::GenProd);
+                                    TaxPostingAccts.SetRange("Filter Code", PurcLine."Gen. Prod. Posting Group");
+                                    if TaxPostingAccts.FindFirst then
+                                        ExitBoo := true;
+                                end;
+                                if PurcLine."Gen. Bus. Posting Group" <> '' then begin
+                                    TaxPostingAccts.Reset;
+                                    TaxPostingAccts.SetRange("Tax Identification", TempTaxAmountLine."Tax Identification");
+                                    TaxPostingAccts.SetRange("Filter Type", TaxPostingAccts."filter type"::GenBus);
+                                    TaxPostingAccts.SetRange("Filter Code", PurcLine."Gen. Bus. Posting Group");
+                                    if TaxPostingAccts.FindFirst then
+                                        ExitBoo := true;
+                                end;
+
+                                if ExitBoo = false then begin
+                                    TaxPostingAccts.Reset;
+                                    TaxPostingAccts.SetRange("Tax Identification", TempTaxAmountLine."Tax Identification");
+                                    TaxPostingAccts.SetRange("Filter Type", TaxPostingAccts."filter type"::" ");
+                                    TaxPostingAccts.SetRange("Filter Code", '');
+                                    if not TaxPostingAccts.FindFirst then
+                                        PurchaseHeader."Posting Message" := StrSubstNo(Text001, TaxPostingAccts.GetFilter(TaxPostingAccts."Tax Identification"));
+                                end;
 
                             end;
 
@@ -660,31 +714,13 @@ codeunit 50013 "Integration Purchase"
 
                 until PurcLine.Next() = 0;
 
-            if PurchaseHeader."Posting Message" <> '' then begin
-                IntegrationPurchase.Reset();
-                IntegrationPurchase.SetRange("Document No.", PurchaseHeader."No.");
-                if IntegrationPurchase.FindFirst() then begin
+            if PurchaseHeader."Posting Message" <> '' then
+                FromPurchaseHeader."Posting Message" := PurchaseHeader."Posting Message";
 
-                    IntegrationPurchase."Posting Message" := PurchaseHeader."Posting Message";
-                    IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Error";
-                    IntegrationPurchase.Modify();
-
-                    IntPurStatus.Reset();
-                    IntPurStatus.SetRange("Document No.", IntegrationPurchase."Document No.");
-                    IntPurStatus.ModifyAll("Posting Message", IntegrationPurchase."Posting Message");
-                    IntPurStatus.ModifyAll(Status, IntegrationPurchase.Status);
-
-                    PurchaseHeader."Posting Message" := IntegrationPurchase."Posting Message";
-                    PurchaseHeader.Status := PurchaseHeader.Status::Open;
-                    PurchaseHeader.Modify();
-
-
-                end;
-            end;
         end;
     end;
 
-    procedure ValidateCodMun(FromPurchaseHeader: Record "Purchase Header"): Boolean;
+    procedure ValidateCodMun(Var FromPurchaseHeader: Record "Purchase Header"): Boolean;
     var
         PurchaseHeader: Record "Purchase Header";
         TempTaxAmountLine: Record "CADBR Tax Amount Line" temporary;
@@ -743,9 +779,9 @@ codeunit 50013 "Integration Purchase"
                         IntPurStatus.ModifyAll("Posting Message", IntegrationPurchase."Posting Message");
                         IntPurStatus.ModifyAll(Status, IntegrationPurchase.Status);
 
-                        PurchaseHeader."Posting Message" := IntegrationPurchase."Posting Message";
-                        PurchaseHeader.Status := PurchaseHeader.Status::Open;
-                        PurchaseHeader.Modify();
+                        FromPurchaseHeader."Posting Message" := IntegrationPurchase."Posting Message";
+                        FromPurchaseHeader.Status := PurchaseHeader.Status::Open;
+                        //PurchaseHeader.Modify();
 
                         exit(false);
                     end;
@@ -759,8 +795,9 @@ codeunit 50013 "Integration Purchase"
                               IntPurchase: Record "Integration Purchase")
     var
         IntegrationPurchase: Record "Integration Purchase";
+        intPurch: Record "Integration Purchase";
         PurchHeader: Record "Purchase Header";
-
+        PurchLine: Record "Purchase Line";
     begin
 
         IntegrationPurchase.Reset();
@@ -784,7 +821,40 @@ codeunit 50013 "Integration Purchase"
                             IntegrationPurchase."Posting Message" := GetLastErrorText;
                             IntegrationPurchase.Modify();
 
-                        end;
+                            intPurch.Reset();
+                            intPurch.SetRange("Document No.", PurchHeader."No.");
+                            intPurch.ModifyAll("Posting Message", PurchHeader."Posting Message");
+                            intPurch.ModifyAll(Status, intPurch.Status::"Data Error");
+
+                            PurchHeader."Posting Message" := IntegrationPurchase."Posting Message";
+                            PurchHeader.Status := PurchHeader.Status::Open;
+                            PurchHeader.Modify();
+
+                            PurchLine.Reset();
+                            PurchLine.SetRange("Document Type", PurchHeader."Document Type");
+                            PurchLine.SetRange("Document No.", PurchHeader."No.");
+                            PurchLine.ModifyAll("Status SBA", PurchLine."Status SBA"::Open);
+
+
+                        end else begin
+
+                            if PurchHeader."Posting Message" <> '' then begin
+
+                                PurchHeader.Status := PurchHeader.Status::Open;
+                                PurchHeader.Modify();
+
+                                PurchLine.Reset();
+                                PurchLine.SetRange("Document Type", PurchHeader."Document Type");
+                                PurchLine.SetRange("Document No.", PurchHeader."No.");
+                                PurchLine.ModifyAll("Status SBA", PurchLine."Status SBA"::Open);
+
+                                intPurch.Reset();
+                                intPurch.SetRange("Document No.", PurchHeader."No.");
+                                intPurch.ModifyAll("Posting Message", PurchHeader."Posting Message");
+                                intPurch.ModifyAll(Status, intPurch.Status::"Data Error");
+
+                            end;
+                        End;
 
                     until PurchHeader.Next() = 0;
 
@@ -796,6 +866,7 @@ codeunit 50013 "Integration Purchase"
     procedure UnderAnalysis(var IntPurchase: Record "Integration Purchase")
     var
         IntegrationPurchase: Record "Integration Purchase";
+        intPurch: Record "Integration Purchase";
         PurchHeader: Record "Purchase Header";
         PurchLine: Record "Purchase Line";
         UserSetup: Record "User Setup";
@@ -830,10 +901,56 @@ codeunit 50013 "Integration Purchase"
                             PurchHeader."Posting Message" := '';
 
                             if not StatusOrderUnderAnalysis(PurchHeader) then begin
-                                IntegrationPurchase."Posting Message" := GetLastErrorText;
+                                IntegrationPurchase."Posting Message" := CopyStr(GetLastErrorText, 1, 200);
                                 IntegrationPurchase.Modify();
 
+                                intPurch.Reset();
+                                intPurch.SetRange("Document No.", PurchHeader."No.");
+                                intPurch.ModifyAll("Posting Message", PurchHeader."Posting Message");
+                                intPurch.ModifyAll(Status, intPurch.Status::"Data Error");
+
+                                PurchHeader."Posting Message" := IntegrationPurchase."Posting Message";
+                                PurchHeader.Status := PurchHeader.Status::Open;
+                                PurchHeader.Modify();
+
+                            end else begin
+
+                                if PurchHeader."Posting Message" <> '' then begin
+
+                                    PurchHeader.Status := PurchHeader.Status::Open;
+                                    PurchHeader.Modify();
+
+                                    PurchLine.SetRange("Document Type", PurchHeader."Document Type");
+                                    PurchLine.SetRange("Document No.", PurchHeader."No.");
+                                    PurchLine.SetFilter(Type, '<>%1', PurchLine.Type::" ");
+                                    PurchLine.ModifyAll("Status SBA", PurchLine."Status SBA"::Open);
+
+
+                                    intPurch.Reset();
+                                    intPurch.SetRange("Document No.", PurchHeader."No.");
+                                    intPurch.ModifyAll("Posting Message", PurchHeader."Posting Message");
+                                    intPurch.ModifyAll(Status, intPurch.Status::"Data Error");
+
+                                end else begin
+
+                                    intPurch.Reset();
+                                    intPurch.SetRange("Document No.", PurchHeader."No.");
+                                    intPurch.ModifyAll("Posting Message", PurchHeader."Posting Message");
+                                    intPurch.ModifyAll(Status, intPurch.Status::Created);
+
+                                    PurchHeader.Status := PurchHeader.Status::"Under Analysis";
+                                    PurchHeader.Modify();
+                                    PurchLine.Reset;
+
+                                    PurchLine.SetRange("Document Type", PurchHeader."Document Type");
+                                    PurchLine.SetRange("Document No.", PurchHeader."No.");
+                                    PurchLine.SetFilter(Type, '<>%1', PurchLine.Type::" ");
+                                    PurchLine.ModifyAll("Status SBA", PurchLine."Status SBA"::"Under Analysis");
+
+                                end;
+
                             end;
+
 
                         until PurchHeader.Next() = 0;
 
@@ -845,10 +962,9 @@ codeunit 50013 "Integration Purchase"
     end;
 
     [TryFunction]
-    procedure StatusOrderUnderAnalysis(PurchaseHeader: Record "Purchase Header")
+    procedure StatusOrderUnderAnalysis(Var PurchaseHeader: Record "Purchase Header")
     begin
-        PurchaseHeader.Status := PurchaseHeader.Status::"Under Analysis";
-        PurchaseHeader.Modify();
+
         CalcTax(PurchaseHeader, false);
 
         ReleasePurcDocValidate(PurchaseHeader);
@@ -857,17 +973,13 @@ codeunit 50013 "Integration Purchase"
 
         if not ValidatePostAcc(PurchaseHeader) then;
 
-        if PurchaseHeader."Posting Message" <> '' then begin
-            PurchaseHeader.Status := PurchaseHeader.Status::Open;
-            PurchaseHeader.Modify();
-        end;
-
     end;
 
     [TryFunction]
     procedure StatusOrder(PurchaseHeader: Record "Purchase Header")
     var
         PurchLine: Record "Purchase Line";
+        intPurch: Record "Integration Purchase";
     begin
         PurchaseHeader.Status := PurchaseHeader.Status::Released;
 
@@ -879,6 +991,11 @@ codeunit 50013 "Integration Purchase"
 
         PurchaseHeader.Modify();
 
+        PurchLine.Reset;
+        PurchLine.SetRange("Document Type", PurchaseHeader."Document Type");
+        PurchLine.SetRange("Document No.", PurchaseHeader."No.");
+        PurchLine.ModifyAll("Status SBA", PurchLine."Status SBA"::Released);
+
         ReleasePurcDocValidate(PurchaseHeader);
 
         CalcTax(PurchaseHeader, false);
@@ -889,6 +1006,17 @@ codeunit 50013 "Integration Purchase"
         if PurchaseHeader."Posting Message" <> '' then begin
             PurchaseHeader.Status := PurchaseHeader.Status::Open;
             PurchaseHeader.Modify();
+
+            intPurch.Reset();
+            intPurch.SetRange("Document No.", PurchaseHeader."No.");
+            intPurch.ModifyAll("Posting Message", PurchaseHeader."Posting Message");
+            intPurch.ModifyAll(Status, intPurch.Status::"Data Error");
+
+            PurchLine.Reset;
+            PurchLine.SetRange("Document Type", PurchaseHeader."Document Type");
+            PurchLine.SetRange("Document No.", PurchaseHeader."No.");
+            PurchLine.ModifyAll("Status SBA", PurchLine."Status SBA"::Open);
+
         end;
     end;
 
@@ -896,6 +1024,7 @@ codeunit 50013 "Integration Purchase"
     var
         IntegrationPurchase: Record "Integration Purchase";
         PurchHeader: Record "Purchase Header";
+        PurchLine: Record "Purchase Line";
         UserSetup: Record "User Setup";
     begin
 
@@ -922,10 +1051,21 @@ codeunit 50013 "Integration Purchase"
                         PurchHeader.Status := PurchHeader.Status::Open;
                         PurchHeader.Modify();
 
+                        PurchLine.Reset;
+                        PurchLine.SetRange("Document Type", PurchHeader."Document Type");
+                        PurchLine.SetRange("Document No.", PurchHeader."No.");
+                        PurchLine.SetFilter(Type, '<>%1', PurchLine.Type::" ");
+                        PurchLine.ModifyAll("Status SBA", PurchLine."Status SBA"::Open);
+
                     until PurchHeader.Next() = 0;
 
-                IntegrationPurchase.Status := IntegrationPurchase.Status::Created;
-                IntegrationPurchase.Modify();
+                if PurchHeader."Posting Message" <> '' then begin
+                    IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Error";
+                    IntegrationPurchase.Modify();
+                end else begin
+                    IntegrationPurchase.Status := IntegrationPurchase.Status::Created;
+                    IntegrationPurchase.Modify();
+                end;
 
             until IntegrationPurchase.Next() = 0;
         end;
@@ -975,6 +1115,9 @@ codeunit 50013 "Integration Purchase"
         IntegrationPurchaseBuffer."Excel File Name" := IntegrationPurchase."Excel File Name";
         IntegrationPurchaseBuffer."Document No." := IntegrationPurchase."Document No.";
         if IntegrationPurchaseBuffer.Insert() then;
+
+        Commit();
+
     end;
 
     local procedure FilterRecordToCreate(var RecordToCreate: Record "Integration Purchase")
@@ -1477,7 +1620,6 @@ codeunit 50013 "Integration Purchase"
         UserSetup: Record "User Setup";
         PurchLine: Record "Purchase Line";
     begin
-        //aqui
         if PurchaseHeader."Document Type" <> PurchaseHeader."Document Type"::Order then
             exit;
 
@@ -1503,7 +1645,27 @@ codeunit 50013 "Integration Purchase"
             if PurchaseHeader."Posting Message" <> '' then begin
                 PurchaseHeader.Status := PurchaseHeader.Status::Open;
                 PurchaseHeader.Modify();
+
+                PurchLine.Reset;
+                PurchLine.SetRange("Document Type", PurchaseHeader."Document Type");
+                PurchLine.SetRange("Document No.", PurchaseHeader."No.");
+                PurchLine.SetFilter(Type, '<>%1', PurchLine.Type::" ");
+                PurchLine.ModifyAll("Status SBA", PurchLine."Status SBA"::Open);
+
+                IntegrationPurchase.Reset();
+                IntegrationPurchase.SetRange("Document No.", PurchaseHeader."No.");
+                IntegrationPurchase.ModifyAll("Posting Message", PurchaseHeader."Posting Message");
+                IntegrationPurchase.ModifyAll(Status, IntegrationPurchase.Status::"Data Error");
+
+            end else begin
+
+                IntegrationPurchase.Reset();
+                IntegrationPurchase.SetRange("Document No.", PurchaseHeader."No.");
+                IntegrationPurchase.ModifyAll("Posting Message", PurchaseHeader."Posting Message");
+                IntegrationPurchase.ModifyAll(Status, IntegrationPurchase.Status::Created);
+
             end;
+
 
         end else
             error('Usuario %1 sem Permissão para Liberar Pedido', USERID);
@@ -1588,12 +1750,12 @@ codeunit 50013 "Integration Purchase"
         Label50001: Label 'PIS/COFINS Credit Calculation Base Code. must have a value in Line';
         Label50002: Label 'Unit Cost. Direct Excl. CUBA must have a value in Line';
         Label50003: Label 'Origin Code. must have a value in Line 1.';
-        Label50004: Label 'Payment Terms Code.. must have a value in Header.';
+        Label50014: Label 'Payment Terms Code must have a value in Header.';
         Label50005: Label 'The document date cannot be greater than the registration date.';
         Label50006: Label 'Payment.-a Address. must have a value in Header.';
-        Label50007: Label 'Vendor Invoice No... must have a value in Header.';
+        Label50007: Label 'Vendor Invoice No. must have a value in Header.';
         Label50008: Label 'The Print series does not match the Print Series';
-        Label50009: Label 'CADBR NFe Reference key... must have a value in Header.';
+        Label50019: Label 'NFe Reference key must have a value in Header.';
         Label50010: Label 'The NF-e key series does not match the Print Series';
         Label50011: Label 'The NF-e key number does not match the Tax Nº.';
         PrintSerie: Integer;
@@ -1604,7 +1766,7 @@ codeunit 50013 "Integration Purchase"
         PurchSetup.Get;
 
         if PurchaseHeader."Payment Terms Code" = '' then
-            PurchaseHeader."Posting Message" := Label50004;
+            PurchaseHeader."Posting Message" := Label50014;
 
         if PurchaseHeader."Document Date" > PurchaseHeader."Posting Date" then
             PurchaseHeader."Posting Message" := Label50005;
@@ -1624,7 +1786,7 @@ codeunit 50013 "Integration Purchase"
 
             if FiscalDoc."Document Model" = '55' then
                 if PurchaseHeader."CADBR Access Key" = '' then
-                    PurchaseHeader."Posting Message" := Label50009
+                    PurchaseHeader."Posting Message" := Label50019
                 else begin
                     Evaluate(PrintSerie, PurchaseHeader."CADBR Print Serie");
                     Evaluate(InvoiceNo, PurchaseHeader."Vendor Invoice No.");
@@ -1677,7 +1839,7 @@ codeunit 50013 "Integration Purchase"
                 if PurcLine."CADBR Origin Code" = '' then
                     PurchaseHeader."Posting Message" := Label50003;
 
-                if PurcLine."Unit Cost" = 0 then
+                if PurcLine."Direct Unit Cost" = 0 then
                     PurchaseHeader."Posting Message" := Label50002;
 
                 if PurcLine."CADBR Base Calculation Credit Code" = '' then begin
@@ -1693,23 +1855,6 @@ codeunit 50013 "Integration Purchase"
                 end;
 
             until PurcLine.Next() = 0;
-
-
-        if PurchaseHeader."Posting Message" <> '' then begin
-
-            intPurch.Reset();
-            intPurch.SetRange("Document No.", PurchaseHeader."No.");
-            intPurch.ModifyAll("Posting Message", PurchaseHeader."Posting Message");
-            intPurch.ModifyAll(Status, intPurch.Status::"Data Error");
-
-        end else begin
-
-            intPurch.Reset();
-            intPurch.SetRange("Document No.", PurchaseHeader."No.");
-            intPurch.ModifyAll("Posting Message", PurchaseHeader."Posting Message");
-            intPurch.ModifyAll(Status, intPurch.Status::Created);
-
-        end;
 
     end;
 

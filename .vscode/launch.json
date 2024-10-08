@@ -81,5 +81,18 @@
             "breakOnNext": "WebServiceClient"
         
         }
+        ,
+        {            
+            "name": "Attach Debug Job SBA_UAT_FASE_2_17052024",
+            "request": "attach",
+            "type": "al",
+            "tenant": "3688e59a-3259-4495-8f8b-39d3649166e4",
+            "environmentName": "SBA_UAT_FASE_2_17052024",     
+            "breakOnError": "All",            
+            "enableLongRunningSqlStatements": true,
+            "enableSqlInformationDebugger": true,
+            "breakOnNext": "Background"
+        
+        }
     ]
 }

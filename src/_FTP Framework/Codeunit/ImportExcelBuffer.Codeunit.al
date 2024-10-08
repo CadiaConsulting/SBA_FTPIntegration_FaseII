@@ -314,11 +314,13 @@ codeunit 50002 "Import Excel Buffer"
                             Evaluate(IntegrationSales."Item No.", GetValueAtCell(RowNo, 22))
                         else
                             if item.get(GetValueAtCell(RowNo, 22)) then begin
+                                Evaluate(IntegrationSales."Item No.", GetValueAtCell(RowNo, 22));
                                 IntegrationSales.Status := IntegrationSales.Status::"Data Excel Error";
                                 IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
                                   IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Item No."), 1, 50),
                                   'Maximum 20 characters', GetValueAtCell(RowNo, 22), IntegrationSales."Excel File Name")
                             end else begin
+                                Evaluate(IntegrationSales."Item No.", GetValueAtCell(RowNo, 22));
                                 IntegrationSales.Status := IntegrationSales.Status::"Data Error";
                                 IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Sales Order",
                                   IntegrationSales."No.", IntegrationSales."Line No.", CopyStr(IntegrationSales.FieldCaption("Item No."), 1, 50),

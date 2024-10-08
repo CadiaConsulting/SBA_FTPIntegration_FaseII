@@ -6,9 +6,8 @@ tableextension 50009 INTPurchaseLine extends "Purchase Line"
         field(50000; "Status SBA"; Enum "Purchase Document Status")
         {
             Caption = 'Status SBA';
-            FieldClass = FlowField;
+            FieldClass = Normal;
             Editable = false;
-            CalcFormula = Lookup("Purchase Header".Status WHERE("No." = FIELD("Document No."), "Document Type" = field("Document Type")));
         }
     }
 }

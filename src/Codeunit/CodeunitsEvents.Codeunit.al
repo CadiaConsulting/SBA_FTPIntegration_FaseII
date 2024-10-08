@@ -188,12 +188,6 @@ codeunit 50017 "Codeunits Events"
 
         PurchaseHeader."Posting No." := '';
 
-        intPur.Reset();
-        intPur.SetRange("Document No.", PurchaseHeader."No.");
-        if not intPur.IsEmpty then
-            intPur.ModifyAll(Status, intpur.Status::Cancelled);
-
-
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Release Purchase Document", 'OnAfterManualReopenPurchaseDoc', '', false, false)]
@@ -237,7 +231,7 @@ codeunit 50017 "Codeunits Events"
                 VendorLedEntry.SetRange("Document No.", GenJournalLine."Document No.");
                 if VendorLedEntry.FindFirst() then
                     Error(
-                        ErrorInfo.Create(StrSubstNo(Text50005, GenJournalLine."Document No.", GenJournalLine."Document No.")));
+                        ErrorInfo.Create(StrSubstNo(Text50005, GenJournalLine."Document No.", GenJournalLine."Account No.")));
 
                 VendorLedEntry.Reset();
                 VendorLedEntry.SetRange("Vendor No.", GenJournalLine."Account No.");
@@ -249,6 +243,36 @@ codeunit 50017 "Codeunits Events"
             end;
         end;
 
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Release Purchase Document", 'OnAfterReleasePurchaseDoc', '', false, false)]
+    local procedure Codeunit_414_OnAfterReleaseSalesDoc(var PurchaseHeader: Record "Purchase Header"; PreviewMode: Boolean; var LinesWereModified: Boolean)
+    var
+        PurchLine: Record "Purchase Line";
+    begin
+
+        if PurchaseHeader.Status = PurchaseHeader.Status::Released then begin
+            PurchLine.Reset;
+            PurchLine.SetRange("Document Type", PurchaseHeader."Document Type");
+            PurchLine.SetRange("Document No.", PurchaseHeader."No.");
+            PurchLine.SetFilter(Type, '<>%1', PurchLine.Type::" ");
+            PurchLine.ModifyAll("Status SBA", PurchLine."Status SBA"::Released);
+        end;
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Release Purchase Document", 'OnAfterReopenPurchaseDoc', '', false, false)]
+    local procedure Codeunit_411_OnAfterReopenSalesDoc(var PurchaseHeader: Record "Purchase Header"; PreviewMode: Boolean)
+    var
+        PurchLine: Record "Purchase Line";
+    begin
+
+        if PurchaseHeader.Status = PurchaseHeader.Status::Open then begin
+            PurchLine.Reset;
+            PurchLine.SetRange("Document Type", PurchaseHeader."Document Type");
+            PurchLine.SetRange("Document No.", PurchaseHeader."No.");
+            PurchLine.SetFilter(Type, '<>%1', PurchLine.Type::" ");
+            PurchLine.ModifyAll("Status SBA", PurchLine."Status SBA"::Open);
+        end;
     end;
 
 }

@@ -9,7 +9,6 @@ pageextension 50026 INTPurchaseOrderSubForm extends "Purchase Order Subform"
             {
                 ApplicationArea = All;
                 ToolTip = 'Status SBA';
-                Editable = not CheckStatus;
             }
         }
 
