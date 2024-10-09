@@ -54,12 +54,12 @@
         },
         {
              
-            "name": "SBA_UAT_30072024",
+            "name": "SBA_UAT_FASE_2_30092024",
             "request": "launch",
             "type": "al",
             "environmentType":"Sandbox"   ,
             "tenant": "3688e59a-3259-4495-8f8b-39d3649166e4",
-            "environmentName": "SBA_UAT_30072024",
+            "environmentName": "SBA_UAT_FASE_2_30092024",
             "startupObjectId": 50000,
             "startupObjectType": "Page",
             "breakOnError": true,

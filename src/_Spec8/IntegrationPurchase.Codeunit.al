@@ -17,6 +17,7 @@ codeunit 50013 "Integration Purchase"
         IntegrationPurchase.SetFilter(Status, '%1|%2|%3', IntegrationPurchase.Status::Imported,
                                                        IntegrationPurchase.Status::"Data Error",
                                                        IntegrationPurchase.Status::Reviewed);
+        IntegrationPurchase.SetFilter("Errors Import Excel", '%1', 0);
         if not IntegrationPurchase.IsEmpty then begin
             IntegrationPurchase.FindSet();
             repeat
@@ -57,7 +58,7 @@ codeunit 50013 "Integration Purchase"
 
         Commit();
 
-        CreatePurchaseByDoc();
+        if CreatePurchaseByDoc() then;
 
         if GuiAllowed then
             WindDialog.Close();
@@ -65,7 +66,7 @@ codeunit 50013 "Integration Purchase"
             Message('Começou em %1 e terminou em %2', StartTime, CurrentDateTime);
     end;
 
-    local procedure CreatePurchaseByDoc()
+    local procedure CreatePurchaseByDoc(): Boolean;
     var
         RecordToCreate: Record "Integration Purchase";
         MarkAllDataErrorLbl: label 'The document has data errors in other fields.';
@@ -1570,6 +1571,13 @@ codeunit 50013 "Integration Purchase"
         IsHandled := booIsHandled;
     end;
 
+    // [EventSubscriber(ObjectType::Table, database::"Purchase Header", 'OnValidateVATBaseAmountPercOnBeforeUpdatePurchAmountLines', '', false, false)]
+    // local procedure OnValidateVATBaseAmountPercOnBeforeUpdatePurchAmountLines(var IsHandled: Boolean)
+    // begin
+    //     IsHandled := true;
+    // end;
+
+
     [EventSubscriber(ObjectType::Table, Database::"Purchase Line", 'OnAfterModifyEvent', '', false, false)]
     local procedure OnAfterModifyEvent_PurchaseLine(RunTrigger: Boolean; var Rec: Record "Purchase Line"; var xRec: Record "Purchase Line")
     var
@@ -1599,17 +1607,6 @@ codeunit 50013 "Integration Purchase"
 
     begin
         PurchLine."CADBR Service Code" := Item."CADBR Service Code";
-    end;
-
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Release Purchase Document", 'OnAfterManualReleasePurchaseDoc', '', false, false)]
-    local procedure ReleasePurcDoc_OnBeforeManualReleasePurchaseDoc(var PurchaseHeader: Record "Purchase Header");
-    var
-        intPurch: Codeunit "Integration Purchase";
-        UserSetup: Record "User Setup";
-        PurchLine: Record "Purchase Line";
-    begin
-
-
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Release Purchase Document", 'OnAfterManualReleasePurchaseDoc', '', false, false)]

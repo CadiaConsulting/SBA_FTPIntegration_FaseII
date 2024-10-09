@@ -77,7 +77,7 @@ pageextension 50017 "INTPurchaseOrderList" extends "Purchase Order List"
 
                                     PurchaseHeader."Posting No." := '';
                                     PurchaseHeader.Modify();
-                                    PurchaseHeader.Delete(false);
+                                    PurchaseHeader.Delete(true);
 
                                 until PurchaseHeader.Next() = 0;
 

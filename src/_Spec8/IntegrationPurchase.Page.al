@@ -579,6 +579,31 @@ page 50013 "Integration Purchase"
 
                 end;
             }
+
+            action(DeleteLines)
+            {
+                ApplicationArea = All;
+                Caption = 'Delete Purchase Lines';
+                Image = PostDocument;
+                ToolTip = 'Delete Purchase Lines';
+                //Visible = false;
+                trigger OnAction();
+                var
+                    PurchaseLine: Record "Purchase Line";
+                    PurHead: Record "Purchase Header";
+                begin
+                    PurchaseLine.reset;
+                    if PurchaseLine.FindSet() then
+                        repeat
+                            if not PurHead.Get(PurchaseLine."Document Type", PurchaseLine."Document No.") then
+                                PurchaseLine.Delete();
+
+                        until PurchaseLine.Next() = 0;
+
+                    CurrPage.Update();
+
+                end;
+            }
         }
     }
     var

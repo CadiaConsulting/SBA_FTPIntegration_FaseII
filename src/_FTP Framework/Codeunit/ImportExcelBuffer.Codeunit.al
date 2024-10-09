@@ -952,9 +952,19 @@ codeunit 50002 "Import Excel Buffer"
 
                         end;
 
-                        if ValidateDecimal(GetValueAtCell(RowNo, 14)) then
-                            IntegrationPurchase."Direct Unit Cost Excl. Vat" := GlobalDecimalYes
-                        else begin
+                        if ValidateDecimal(GetValueAtCell(RowNo, 14)) then begin
+
+                            if GlobalDecimalYes <> 0 then
+                                IntegrationPurchase."Direct Unit Cost Excl. Vat" := GlobalDecimalYes
+                            else begin
+                                IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Excel Error";
+                                IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Order",
+                                IntegrationPurchase."Document No.", IntegrationPurchase."Line No.", CopyStr(IntegrationPurchase.FieldCaption("Direct Unit Cost Excl. Vat"), 1, 50),
+                                CopyStr('Não pode Valor Zera', 1, 250), GetValueAtCell(RowNo, 14), IntegrationPurchase."Excel File Name");
+
+                            end;
+
+                        end else begin
                             IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Excel Error";
                             IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Order",
                             IntegrationPurchase."Document No.", IntegrationPurchase."Line No.", CopyStr(IntegrationPurchase.FieldCaption("Direct Unit Cost Excl. Vat"), 1, 50),
@@ -1207,6 +1217,8 @@ codeunit 50002 "Import Excel Buffer"
                     FTPCommunication.DoAction(Enum::"FTP Actions"::rename, FileName, FTPIntSetup.Directory, FTPIntSetup."Imported Folder", '');
 
             until FTPDir.Next() = 0;
+
+        Commit();
 
     end;
 

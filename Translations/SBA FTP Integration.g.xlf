@@ -5628,6 +5628,16 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Action DeleteEntries - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Page 2300234719 - Action 4289051840 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Delete Purchase Lines</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Action DeleteLines - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 2300234719 - Action 4289051840 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Delete Purchase Lines</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Action DeleteLines - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Page 2300234719 - Action 2930931643 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Export Excel Purchase Tax</source>
           <note from="Developer" annotates="general" priority="2"></note>

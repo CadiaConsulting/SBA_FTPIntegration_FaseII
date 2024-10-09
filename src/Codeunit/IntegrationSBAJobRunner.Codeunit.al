@@ -56,26 +56,39 @@ codeunit 50009 "Integration SBA Job Runner"
 
                 if FTPSetup.Integration = FTPSetup.Integration::Purchase then begin
 
-                    if FTPSetup."Import Excel" then
+                    if FTPSetup."Import Excel" then begin
                         ImportExcelBuffer.ImportExcelPurchase();
+                        Commit();
+                    end;
 
-                    if FTPSetup."Create Order" then
+                    if FTPSetup."Create Order" then begin
                         IntegrationPurchase.CreatePurchase(IntPurch);
+                        Commit();
+                    end;
 
                 end;
 
                 if FTPSetup.Integration = FTPSetup.Integration::"Purchase Tax Validation" then begin
-                    if FTPSetup."Export Excel" then
-                        ImportExcelBuffer.ExportExcelPurchaseTax();
 
-                    if FTPSetup."Import Purch Post" then
-                        ImportExcelBuffer.ImportExcelPurchasePost();
+                    if FTPSetup."Export Excel" then begin
+                        ImportExcelBuffer.ExportExcelPurchaseTax();
+                        Commit();
+                    end;
+
                 end;
 
                 if FTPSetup.Integration = FTPSetup.Integration::"Purchase Posting" then begin
 
-                    if FTPSetup."Post Order\Journal" then
+                    if FTPSetup."Import Purch Post" then begin
+                        ImportExcelBuffer.ImportExcelPurchasePost();
+                        Commit();
+                    end;
+
+                    if FTPSetup."Post Order\Journal" then begin
                         IntegrationPurchase.PostPurchase(IntPurch);
+                        Commit();
+                    end;
+
                 end;
 
 
