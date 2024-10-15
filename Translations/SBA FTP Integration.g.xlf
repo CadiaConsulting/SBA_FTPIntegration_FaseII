@@ -898,6 +898,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table Integration Purchase - Field Doc. URL - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Table 2300234719 - Field 525755722 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Document Errors Import Excel</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table Integration Purchase - Field Document Errors Import Excel - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Table 2300234719 - Field 486908828 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Document No.</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -5363,6 +5368,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Control Doc. URL - Property ToolTip</note>
         </trans-unit>
+        <trans-unit id="Page 2300234719 - Control 525755722 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Document Error Import Excel</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page Integration Purchase - Control Document Errors Import Excel - Property ToolTip</note>
+        </trans-unit>
         <trans-unit id="Page 2300234719 - Control 486908828 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Document No.</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -7967,16 +7977,6 @@
           <source>Specifies the value of the Integrated field.</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentsFromBC - Control Integrated - Property ToolTip</note>
-        </trans-unit>
-        <trans-unit id="Page 79103387 - Control 2704330142 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Specifies the value of the Journal Batch Name field.</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentsFromBC - Control Journal Batch Name - Property ToolTip</note>
-        </trans-unit>
-        <trans-unit id="Page 79103387 - Control 3684440170 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Specifies the value of the Journal Template Name field.</source>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentsFromBC - Control Journal Template Name - Property ToolTip</note>
         </trans-unit>
         <trans-unit id="Page 79103387 - Control 3585257271 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Specifies the value of the Line Errors field.</source>

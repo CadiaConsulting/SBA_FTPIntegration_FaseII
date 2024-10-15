@@ -17,7 +17,7 @@ codeunit 50013 "Integration Purchase"
         IntegrationPurchase.SetFilter(Status, '%1|%2|%3', IntegrationPurchase.Status::Imported,
                                                        IntegrationPurchase.Status::"Data Error",
                                                        IntegrationPurchase.Status::Reviewed);
-        IntegrationPurchase.SetFilter("Errors Import Excel", '%1', 0);
+        IntegrationPurchase.SetFilter("Document Errors Import Excel", '%1', 0);
         if not IntegrationPurchase.IsEmpty then begin
             IntegrationPurchase.FindSet();
             repeat
@@ -302,6 +302,8 @@ codeunit 50013 "Integration Purchase"
 
             IntPurStatus.Reset();
             IntPurStatus.SetRange("Document No.", IntegrationPurchase."Document No.");
+            if IntegrationPurchase.Status = IntegrationPurchase.Status::Reviewed then
+                IntPurStatus.ModifyAll(Status, IntPurStatus.Status::Created);
             IntPurStatus.ModifyAll("Posting Message", PurchaseHeader."Posting Message");
 
         end;

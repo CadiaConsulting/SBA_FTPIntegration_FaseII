@@ -12,16 +12,6 @@ page 50073 "IntPurchPaymentsFromBC"
         {
             repeater(General)
             {
-                field("Journal Template Name"; Rec."Journal Template Name")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Journal Template Name field.';
-                }
-                field("Journal Batch Name"; Rec."Journal Batch Name")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Journal Batch Name field.';
-                }
                 field("Line No."; Rec."Line No.")
                 {
                     ApplicationArea = All;

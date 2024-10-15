@@ -42,8 +42,6 @@ table 50073 "IntPurchPaymentsFromBC"
         field(7; "Document Type"; Enum "Gen. Journal Document Type")
         {
             Caption = 'Document Type';
-            InitValue = Payment;
-            ValuesAllowed = Payment;
         }
 
         field(8; "Document No."; Code[20])

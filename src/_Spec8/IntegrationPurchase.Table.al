@@ -209,6 +209,14 @@ table 50013 "Integration Purchase"
                                                         "Document No." = field("Document No."),
                                                         "Line No." = field("Line No.")));
         }
+        field(111; "Document Errors Import Excel"; Integer)
+        {
+            Caption = 'Document Errors Import Excel';
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = count(IntegrationErros where("Integration Type" = filter(2),
+                                                        "Document No." = field("Document No.")));
+        }
         field(115; "Excel File Name"; text[200])
         {
             Caption = 'Excel File Name';

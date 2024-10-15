@@ -305,6 +305,11 @@ page 50013 "Integration Purchase"
                     ApplicationArea = All;
                     ToolTip = 'Error Import Excel';
                 }
+                field("Document Errors Import Excel"; rec."Document Errors Import Excel")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Document Error Import Excel';
+                }
                 field("Excel File Name"; rec."Excel File Name")
                 {
                     ApplicationArea = All;

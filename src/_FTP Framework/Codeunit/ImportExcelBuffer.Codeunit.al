@@ -960,7 +960,7 @@ codeunit 50002 "Import Excel Buffer"
                                 IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Excel Error";
                                 IntegrationErros.InsertErros(IntegrationErros."Integration Type"::"Purchase Order",
                                 IntegrationPurchase."Document No.", IntegrationPurchase."Line No.", CopyStr(IntegrationPurchase.FieldCaption("Direct Unit Cost Excl. Vat"), 1, 50),
-                                CopyStr('Não pode Valor Zera', 1, 250), GetValueAtCell(RowNo, 14), IntegrationPurchase."Excel File Name");
+                                CopyStr('Não pode Valor Zero', 1, 250), GetValueAtCell(RowNo, 14), IntegrationPurchase."Excel File Name");
 
                             end;
 
