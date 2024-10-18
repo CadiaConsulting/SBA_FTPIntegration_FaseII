@@ -2253,6 +2253,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchPayment - Field Journal Batch Name - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Table 308713983 - Field 3586807204 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Journal Line No.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchPayment - Field Journal Line No. - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Table 308713983 - Field 3684440170 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Journal Template Name</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -2823,6 +2828,161 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchPaymentUnapply - Field WiteOffAmount - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Table 3716537195 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Integration Purchase Void Payment</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 1622979514 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Account No.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Account No. - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 3699788827 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Account Type</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Account Type - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 636392376 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Amount</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Amount - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 2899774127 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Applies-to Doc. No.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Applies-to Doc. No. - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 2865137134 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Applies-to Doc. Type</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Applies-to Doc. Type - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 1891586249 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Description</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Bal. Account No. - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 824028820 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Bal. Account Type</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Bal. Account Type - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 3461834954 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Description</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Description - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 2692434323 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Dimension 1</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Dimension 1 - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 310556878 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Dimension 2</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Dimension 2 - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 3967827557 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Dimension 3</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Dimension 3 - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 779344472 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Dimension 4</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Dimension 4 - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 141647855 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Dimension 5</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Dimension 5 - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 2054737706 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Dimension 6</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Dimension 6 - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 1417041089 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Dimension 7</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Dimension 7 - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 4136736580 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Dimension 8</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Dimension 8 - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 486908828 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Document No.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Document No. - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 2363328873 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Document Type</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Document Type - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 3592100787 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Errors Import Excel</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Errors Import Excel - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 3764622026 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Excel File Name</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Excel File Name - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 1527563463 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>External Document No.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field External Document No. - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 2704330142 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Journal Batch Name</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Journal Batch Name - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 3684440170 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Journal Template Name</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Journal Template Name - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 3585257271 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Line Errors</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Line Errors - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 3320823955 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Line No.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Line No. - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 3710982960 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Posting Date</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Posting Date - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 3066042533 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Posting Message</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Posting Message - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 513339096 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Status </source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Status - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 563463347 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Tax Paid</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field Tax Paid - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 3716537195 - Field 1113845824 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>WiteOffAmount</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table IntPurchVoidPayment - Field WiteOffAmount - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Table 4134644754 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Integration Sales Credit Memo</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -3067,6 +3227,11 @@
           <source>Secondary Key for table '%1' on field '%2' is missing. This is a programming error.</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Import Excel Buffer - Method ImportExcelPaymentPurchaseJournal - NamedType MissingKeyReplicationCounterErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1853925422 - Method 3831029474 - NamedType 2409892602" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Secondary Key for table '%1' on field '%2' is missing. This is a programming error.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Import Excel Buffer - Method ImportExcelPaymentVoidPurchaseJournal - NamedType MissingKeyReplicationCounterErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 1853925422 - Method 4059760835 - NamedType 4041393448" size-unit="char" translate="yes" xml:space="preserve">
           <source>The Posting date cannot be empty.</source>
@@ -3647,6 +3812,36 @@
           <source>Does not exist a closed %1 %2 of vendor %2 with amount %4.</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntPurchPaymentUnapply - Method CheckLedgerEntries - NamedType OpenDocAmountErrorLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3716537195 - Method 3829821075 - NamedType 3511077009" size-unit="char" translate="yes" xml:space="preserve">
+          <source>the Bank Account %1 does not exist.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntPurchVoidPayment - Method CheckBankAccount - NamedType BankAccountError</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3716537195 - Method 1784335613 - NamedType 3556237831" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Journal Batch %1 does not exist.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntPurchVoidPayment - Method CheckJournalBatch - NamedType JournalBatchError</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3716537195 - Method 3178867961 - NamedType 1660313055" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Journal Template %1 does not exist.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntPurchVoidPayment - Method CheckJournalTemplate - NamedType JournalTempError</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3716537195 - Method 1608686094 - NamedType 3368093184" size-unit="char" translate="yes" xml:space="preserve">
+          <source>the Vendor %1, does not exist.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntPurchVoidPayment - Method CheckVendor - NamedType VendorError</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3716537195 - Method 3559727300 - NamedType 2183943038" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Pagamento não localizado para Desaplicação do Cliente %1 - Tipo de documento %2 - Documento %3 - Aplicação %4</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntPurchVoidPayment - Method UnapplyPaymentVoidJournal - NamedType TextLabel0001</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3716537195 - Method 3559727300 - NamedType 270853187" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Pagamento já Desaplicado do Cliente %1 - Tipo de documento %2 - Documento %3 - Aplicação %4</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntPurchVoidPayment - Method UnapplyPaymentVoidJournal - NamedType TextLabel0002</note>
         </trans-unit>
         <trans-unit id="Codeunit 4134644754 - Method 2770195675 - NamedType 4097909610" size-unit="char" translate="yes" xml:space="preserve">
           <source>Create Sales Return Order   #1#############</source>
@@ -7353,6 +7548,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPayment - NamedType PostJornalLbl</note>
         </trans-unit>
+        <trans-unit id="Page 308713983 - NamedType 756355773" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Lines were Update Amount Entry</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPayment - NamedType UpdateAmountEntryLbl</note>
+        </trans-unit>
         <trans-unit id="Page 308713983 - Control 1622979514 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Specifies the value of the Account No. field.</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -7472,6 +7672,11 @@
           <source>Specifies the value of the Journal Batch Name field.</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPayment - Control Journal Batch Name - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 308713983 - Control 3586807204 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Journal Line No. field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPayment - Control Journal Line No. - Property ToolTip</note>
         </trans-unit>
         <trans-unit id="Page 308713983 - Control 3684440170 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Specifies the value of the Journal Template Name field.</source>
@@ -7612,6 +7817,16 @@
           <source>Post Journal</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPayment - Action PostJournal - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 308713983 - Action 652102843 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Update Amount Entry</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPayment - Action UpdateAmountEntry - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 308713983 - Action 652102843 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Update Amount Entry</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPayment - Action UpdateAmountEntry - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 308713983 - Action 1936001480 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
           <source>Vendor Card</source>
@@ -7852,6 +8067,256 @@
           <source>Vendor Ledger Entry</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentApply - Action VendorLedgerEntry - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Integration Purchase Payment Posted</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - NamedType 2903909583" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Lines were Copied to Journal</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - NamedType CopyToJournalLbl</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - NamedType 963655688" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Excel file was imported</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - NamedType ImportMessageLbl</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - NamedType 1573448402" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The joranl was posted</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - NamedType PostJornalLbl</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 1622979514 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Account No. field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Account No. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 3699788827 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Account Type field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Account Type - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 636392376 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Amount field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Amount - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 3382586748 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Amount Entry</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Amount Entry - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 2899774127 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Applies-to Doc. No. field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Applies-to Doc. No. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 2865137134 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Applies-to Doc. Type field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Applies-to Doc. Type - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 1891586249 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Description field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Bal. Account No. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 824028820 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Bal. Account Type field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Bal. Account Type - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 3461834954 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Description field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Description - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 3076690291 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Different Amount</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Different Amount - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 2692434323 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Shortcut Dimension 1 Code field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Dimension 1 - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 310556878 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Shortcut Dimension 2 Code field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Dimension 2 - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 3967827557 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Shortcut Dimension 3 Code field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Dimension 3 - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 779344472 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Shortcut Dimension 4 Code field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Dimension 4 - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 141647855 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Shortcut Dimension 5 Code field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Dimension 5 - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 2054737706 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Shortcut Dimension 6 Code field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Dimension 6 - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 1417041089 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Shortcut Dimension 7 Code field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Dimension 7 - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 4136736580 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Shortcut Dimension 8 Code field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Dimension 8 - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 486908828 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Document No. field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Document No. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 2363328873 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Document Type field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Document Type - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 3592100787 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Errors Import Excel field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Errors Import Excel - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 3764622026 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Excel File Name field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Excel File Name - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 1527563463 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the External Document No. field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control External Document No. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 2704330142 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Journal Batch Name field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Journal Batch Name - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 3684440170 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Journal Template Name field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Journal Template Name - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 3585257271 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Error Order field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Line Errors - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 3320823955 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Line No. field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Line No. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 1785769355 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Order CSRF Ret</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Order CSRF Ret - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 3334595792 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Order DIRF Ret</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Order DIRF Ret - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 3063726654 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Order INSS Ret</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Order INSS Ret - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 3128300030 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Order IRRF Ret</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Order IRRF Ret - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 1672537696 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Order ISS Ret</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Order ISS Ret - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 2530570725 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Order PO Total</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Order PO Total - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 2513255504 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Permitir Dif. Aplicação</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Permitir Dif. Aplicação - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 3710982960 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Posting Date field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Posting Date - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 3066042533 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Posting Message field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Posting Message - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 513339096 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Status  field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control Status - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Control 1113845824 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the WiteOffAmount field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Control WiteOffAmount - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Action 1732083938 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Bank Card</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Action Bank - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Action 1732083938 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Bank Card</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Action Bank - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Action 3961762325 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Payment Journal</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Action PaymentJournal - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Action 3961762325 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Payment Journal</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Action PaymentJournal - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Action 1936001480 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Vendor Card</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Action Vendor - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Action 1936001480 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Vendor Card</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Action Vendor - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Action 4104438143 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Vendor Ledger Entry</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Action VendorLedgerEntry - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3369170400 - Action 4104438143 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Vendor Ledger Entry</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentPosted - Action VendorLedgerEntry - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 79103387 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Integration Payments from BC</source>
@@ -8262,6 +8727,281 @@
           <source>Vendor Ledger Entry</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPaymentUnapply - Action VendorLedgerEntry - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Integration Purchase Void Payment</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - NamedType 2903909583" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Lines were Copied to Journal</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - NamedType CopyToJournalLbl</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - NamedType 963655688" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Excel file was imported</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - NamedType ImportMessageLbl</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - NamedType 1573448402" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The joranl was posted</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - NamedType PostJornalLbl</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - NamedType 1538659129" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Unapply</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - NamedType Unapply</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 1622979514 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Account No. field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Account No. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 3699788827 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Account Type field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Account Type - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 636392376 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Amount field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Amount - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 2899774127 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Applies-to Doc. No. field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Applies-to Doc. No. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 2865137134 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Applies-to Doc. Type field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Applies-to Doc. Type - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 1891586249 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Description field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Bal. Account No. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 824028820 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Bal. Account Type field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Bal. Account Type - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 3461834954 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Description field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Description - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 2692434323 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Shortcut Dimension 1 Code field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Dimension 1 - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 310556878 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Shortcut Dimension 2 Code field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Dimension 2 - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 3967827557 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Shortcut Dimension 3 Code field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Dimension 3 - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 779344472 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Shortcut Dimension 4 Code field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Dimension 4 - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 141647855 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Shortcut Dimension 5 Code field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Dimension 5 - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 2054737706 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Shortcut Dimension 6 Code field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Dimension 6 - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 1417041089 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Shortcut Dimension 7 Code field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Dimension 7 - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 4136736580 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Shortcut Dimension 8 Code field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Dimension 8 - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 486908828 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Document No. field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Document No. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 2363328873 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Document Type field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Document Type - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 3592100787 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Errors Import Excel field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Errors Import Excel - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 3764622026 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Excel File Name field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Excel File Name - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 1527563463 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the External Document No. field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control External Document No. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 2704330142 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Journal Batch Name field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Journal Batch Name - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 3684440170 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Journal Template Name field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Journal Template Name - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 3585257271 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Error Order field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Line Errors - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 3320823955 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Line No. field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Line No. - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 3710982960 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Posting Date field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Posting Date - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 3066042533 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Posting Message field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Posting Message - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 513339096 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Status  field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Status - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 563463347 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the Tax Paid field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control Tax Paid - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Control 1113845824 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Specifies the value of the WiteOffAmount field.</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Control WiteOffAmount - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Action 1732083938 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Bank Card</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Action Bank - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Action 1732083938 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Bank Card</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Action Bank - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Action 1110170814 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Clear Error Message</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Action ClearErrorMessage - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Action 1110170814 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Clear Error Message</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Action ClearErrorMessage - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Action 2597382465 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Copy lines to Jornal</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Action CopyToJournal - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Action 2597382465 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Copy To Journal</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Action CopyToJournal - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Action 3713480317 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Delete Entries</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Action DeleteEntries - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Action 3713480317 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Delete Entries</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Action DeleteEntries - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Action 2212959633 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>General Journal</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Action GeneralJournal - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Action 2212959633 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>General Journal</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Action GeneralJournal - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Action 1147532894 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Import Excel Purchase Void Payment</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Action ImportExcel - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Action 1147532894 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Import Excel Purchase Void Payment</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Action ImportExcel - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Action 2926267923 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Post Jornal</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Action PostJournal - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Action 2926267923 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Post Journal</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Action PostJournal - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Action 3559727300 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Unapply Payment Void Journal</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Action UnapplyPaymentVoidJournal - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Action 3559727300 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Unapply Payment Void Journal</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Action UnapplyPaymentVoidJournal - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Action 1936001480 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Vendor Card</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Action Vendor - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Action 1936001480 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Vendor Card</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Action Vendor - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Action 4104438143 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Vendor Ledger Entry</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Action VendorLedgerEntry - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 3716537195 - Action 4104438143 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Vendor Ledger Entry</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchVoidPayment - Action VendorLedgerEntry - Property Caption</note>
         </trans-unit>
         <trans-unit id="Page 4134644754 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Integration Sales Credit Memo</source>
@@ -8683,10 +9423,20 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension IntCADBRTaxBRMngrRC - Action PaymentJournalInt - Property Caption</note>
         </trans-unit>
+        <trans-unit id="PageExtension 2807289801 - Action 2518855515 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3500708443">
+          <source>Integration Purchase Payment Posted</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension IntCADBRTaxBRMngrRC - Action PaymentJournalIntPosted - Property Caption</note>
+        </trans-unit>
         <trans-unit id="PageExtension 2807289801 - Action 563648865 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3500708443">
           <source>Integration Purchase Payment Unapply</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension IntCADBRTaxBRMngrRC - Action PaymentUnApplyJournalInt - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 2807289801 - Action 2156855977 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3500708443">
+          <source>Integration Purchase Void Payment</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension IntCADBRTaxBRMngrRC - Action PaymentVoidJournal - Property Caption</note>
         </trans-unit>
         <trans-unit id="PageExtension 2807289801 - Action 3643181605 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 3500708443">
           <source>Purchase Documents</source>
@@ -9068,10 +9818,20 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTRBusinessMngrRoleCenter - Action PaymentJournalInt - Property Caption</note>
         </trans-unit>
+        <trans-unit id="PageExtension 904312498 - Action 2518855515 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2458191494">
+          <source>Integration Purchase Payment Posted</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTRBusinessMngrRoleCenter - Action PaymentJournalIntPosted - Property Caption</note>
+        </trans-unit>
         <trans-unit id="PageExtension 904312498 - Action 563648865 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2458191494">
           <source>Integration Purchase Payment Unapply</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTRBusinessMngrRoleCenter - Action PaymentUnApplyJournalInt - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PageExtension 904312498 - Action 2156855977 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2458191494">
+          <source>Integration Purchase Void Payment</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">PageExtension INTRBusinessMngrRoleCenter - Action PaymentVoidJournal - Property Caption</note>
         </trans-unit>
         <trans-unit id="PageExtension 904312498 - Action 3643181605 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve" al-object-target="Page 2458191494">
           <source>Purchase Documents</source>
@@ -9688,6 +10448,11 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Enum Integration Import Status - EnumValue Reviewed - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Enum 863328713 - EnumValue 1538659129 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Unapply</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Enum Integration Import Status - EnumValue Unapply - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Enum 863328713 - EnumValue 1397721846 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Under Analysis</source>
           <note from="Developer" annotates="general" priority="2"></note>
@@ -9772,6 +10537,11 @@
           <source>Purchase Unapply</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Enum IntegrationErrosType - EnumValue Purchase Unapply - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Enum 1128192089 - EnumValue 2143569511 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Purchase Void Payment</source>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Enum IntegrationErrosType - EnumValue Purchase Void Payment - Property Caption</note>
         </trans-unit>
         <trans-unit id="Enum 1128192089 - EnumValue 327003600 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Sales Apply</source>

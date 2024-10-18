@@ -1,10 +1,6 @@
-/// <summary>
-/// Table IntegrationPurchasePayment (ID 50070).
-/// NGS
-/// </summary>
-table 50070 "IntPurchPayment"
+table 50078 "IntPurchVoidPayment"
 {
-    Caption = 'Integration Purchase Payment';
+    Caption = 'Integration Purchase Void Payment';
     DataClassification = ToBeClassified;
 
     fields
@@ -20,7 +16,6 @@ table 50070 "IntPurchPayment"
         field(3; "Line No."; Integer)
         {
             Caption = 'Line No.';
-            Editable = false;
         }
         field(4; "Account Type"; Enum "Gen. Journal Account Type")
         {
@@ -116,21 +111,6 @@ table 50070 "IntPurchPayment"
         {
             Caption = 'External Document No.';
         }
-        field(25; "Journal Line No."; Integer)
-        {
-            Caption = 'Journal Line No.';
-            Editable = false;
-        }
-
-        field(26; "Amount Entry"; Decimal)
-        {
-            Caption = 'Amount Entry';
-        }
-
-        field(27; "Different Amount"; Boolean)
-        {
-            Caption = 'Different Amount';
-        }
         field(98; Status; enum "Integration Import Status")
         {
             Caption = 'Status ';
@@ -144,7 +124,7 @@ table 50070 "IntPurchPayment"
             Caption = 'Line Errors';
             Editable = false;
             FieldClass = FlowField;
-            CalcFormula = count(IntPurchPayment where("Excel File Name" = field("Excel File Name"),
+            CalcFormula = count(IntPurchVoidPayment where("Excel File Name" = field("Excel File Name"),
                                                             "Status" = filter(2 | 6)));
         }
         field(110; "Errors Import Excel"; Integer)
@@ -152,7 +132,7 @@ table 50070 "IntPurchPayment"
             Caption = 'Errors Import Excel';
             Editable = false;
             FieldClass = FlowField;
-            CalcFormula = count(IntegrationErros where("Integration Type" = filter(9),
+            CalcFormula = count(IntegrationErros where("Integration Type" = filter(16),
                                                         "Excel File Name" = field("Excel File Name")));
         }
         field(115; "Excel File Name"; text[200])
@@ -161,63 +141,11 @@ table 50070 "IntPurchPayment"
             Editable = false;
         }
 
-        field(150; "Order IRRF Ret"; Decimal)
+        field(257; "Tax Paid"; Boolean)
         {
-            Caption = 'Order IRRF Ret';
-        }
-        field(151; "Order CSRF Ret"; Decimal)
-        {
-            Caption = 'Order CSRF Ret';
-        }
-        field(152; "Order INSS Ret"; Decimal)
-        {
-            Caption = 'Order INSS Ret';
-        }
-        field(153; "Order ISS Ret"; Decimal)
-        {
-            Caption = 'Order ISS Ret';
+            Caption = 'Tax Paid';
         }
 
-        field(156; "Order DIRF Ret"; Decimal)
-        {
-            Caption = 'Order DIRF Ret';
-        }
-        field(157; "Order PO Total"; Decimal)
-        {
-            Caption = 'Order PO Total';
-        }
-        field(200; "Not Dif. Impostos"; Boolean)
-        {
-            Caption = 'Not Dif. Impostos';
-            Editable = false;
-        }
-        field(201; "Permitir Dif. Aplicação"; Boolean)
-        {
-            Caption = 'Permitir Dif. Aplicação';
-
-        }
-
-        field(250; "Tax % Order IRRF Ret"; Decimal)
-        {
-            Caption = 'Tax % Order IRRF Ret';
-        }
-        field(251; "Tax % Order CSRF Ret"; Decimal)
-        {
-            Caption = 'Tax % Order CSRF Ret';
-        }
-        field(252; "Tax % Order INSS Ret"; Decimal)
-        {
-            Caption = 'Tax % Order INSS Ret';
-        }
-        field(253; "Tax % Order ISS Ret"; Decimal)
-        {
-            Caption = 'Tax % Order ISS Ret';
-        }
-
-        field(256; "Tax % Order DIRF Ret"; Decimal)
-        {
-            Caption = 'Tax % Order DIRF Ret';
-        }
     }
     keys
     {

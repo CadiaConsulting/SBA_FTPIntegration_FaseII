@@ -20,12 +20,12 @@
         },
         {
              
-            "name": "FASE II",
+            "name": "Dev FASE II",
             "request": "launch",
             "type": "al",
             "environmentType":"Sandbox"   ,
             "tenant": "3688e59a-3259-4495-8f8b-39d3649166e4",
-            "environmentName": "SBA_DEV_FASE_2_16052024",
+            "environmentName": "SBA_DEV_FASE_2_15102024",
             "startupObjectId": 22,
             "startupObjectType": "Page",
             "breakOnError": true,

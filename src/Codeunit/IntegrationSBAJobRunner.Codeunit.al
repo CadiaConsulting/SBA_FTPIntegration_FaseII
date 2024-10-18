@@ -21,6 +21,8 @@ codeunit 50009 "Integration SBA Job Runner"
         IntPurchPaymentApply: codeunit IntPurchPaymentApply;
         IntPurchPaymentUnapply: Codeunit IntPurchPaymentUnapply;
         IntPurchPaymentsFromBC: Codeunit IntPurchPaymentsFromBC;
+        IntPurchVoidPay: Record IntPurchVoidPayment;
+        IntPurchVoidPayment: Codeunit IntPurchVoidPayment;
 
     begin
         Rec.TestField("Parameter String");
@@ -103,17 +105,19 @@ codeunit 50009 "Integration SBA Job Runner"
 
                 if FTPSetup.Integration = FTPSetup.Integration::"Purchase Payment" then begin
                     if FTPSetup."Import Excel" then begin
-                        ImportExcelBuffer.ImportExcelPaymentPurchaseJournal(FTPIntegrationType::"Purchase Apply");
+                        ImportExcelBuffer.ImportExcelPaymentPurchaseJournal(FTPIntegrationType::"Purchase Payment");
                         Commit();
-                        IntPurchPayment.Run();
                     end;
 
                     if FTPSetup."Copy to Journal" then begin
                         IntPurchPayment.CheckData(IntPurchPay);
+                        Commit();
                     end;
 
                     if FTPSetup."Post Order\Journal" then begin
-                        IntPurchPayment.CheckData(IntPurchPay);
+                        if IntPurchPayment.PostPaymentJournal(IntPurchPay) then;
+                        Commit();
+                        if IntPurchPayment.DeletePaymentJournal(IntPurchPay) then;
                     end;
 
                 end;
@@ -127,6 +131,27 @@ codeunit 50009 "Integration SBA Job Runner"
                     if FTPSetup."Export Excel" then
                         IntPurchPaymentsFromBC.ExportExcelIntPurchPaymentsFromBC();
 
+                end;
+
+                if FTPSetup.Integration = FTPSetup.Integration::"Purchase Void Payment" then begin
+
+                    if FTPSetup."Import Excel" then begin
+                        ImportExcelBuffer.ImportExcelPaymentVoidPurchaseJournal(FTPIntegrationType::"Purchase Void Payment");
+                        Commit();
+
+                        if IntPurchVoidPayment.UnapplyPaymentVoidJournal(IntPurchVoidPay) then;
+                        Commit();
+                    end;
+
+                    if FTPSetup."Copy to Journal" then begin
+                        if IntPurchVoidPayment.CheckData(IntPurchVoidPay) then;
+                        Commit();
+                    end;
+
+                    if FTPSetup."Post Order\Journal" then begin
+                        if IntPurchVoidPayment.PostPaymentJournal(IntPurchVoidPay) then;
+                        Commit();
+                    end;
                 end;
 
 

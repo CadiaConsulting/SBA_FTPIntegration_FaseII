@@ -46,5 +46,9 @@ enum 50010 "Integration Import Status"
     {
         Caption = 'Cancelled';
     }
+    value(11; "Unapply")
+    {
+        Caption = 'Unapply';
+    }
 
 }

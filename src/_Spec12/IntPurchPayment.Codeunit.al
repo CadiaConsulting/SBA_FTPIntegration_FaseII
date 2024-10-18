@@ -10,6 +10,27 @@ codeunit 50070 "IntPurchPayment"
         CallPostJournal
     end;
 
+    procedure IntPurchPaymentUpdateAmountEntry(): Boolean
+    var
+        VLE: Record "Vendor Ledger Entry";
+        IPP: Record IntPurchPayment;
+    begin
+
+        IPP.Reset();
+        IPP.SetFilter(Status, '<>%1', IPP.Status::Posted);
+        if IPP.FindSet() then
+            repeat
+                VLE.Reset();
+                VLE.SetRange("Document No.", IPP."Applies-to Doc. No.");
+                if VLE.FindFirst() then begin
+                    VLE.calcfields("Remaining Amount");
+                    ipp."Amount Entry" := ABS(VLE."Remaining Amount");
+                    ipp.Modify();
+
+                end;
+
+            until IPP.Next() = 0;
+    end;
 
     procedure CheckData(var IntPurchPayment: Record IntPurchPayment)
     var
@@ -26,7 +47,11 @@ codeunit 50070 "IntPurchPayment"
                 if ValidateIntPurchPaymentData(RecordTocheck) then
                     CreatePaymentJournal(RecordTocheck)
                 else begin
-                    FTPIntSetup.Get(FTPIntSetup.Integration::"Purchase Payment");
+
+                    FTPIntSetup.Reset();
+                    FTPIntSetup.SetRange(Integration, FTPIntSetup.Integration::"Purchase Payment");
+                    FTPIntSetup.SetRange(Sequence, 0);
+                    FTPIntSetup.FindSet();
                     if FTPIntSetup."Send Email" then
                         IntegrationEmail.SendMail(FTPIntSetup."E-mail Rejected Data", True, RecordTocheck."Posting Message", RecordTocheck."Excel File Name");
                 end;
@@ -211,11 +236,22 @@ codeunit 50070 "IntPurchPayment"
     local procedure CreatePaymentJournal(var RecordToPost: Record IntPurchPayment)
     var
         GenJournalLine: Record "Gen. Journal Line";
+        GJL: Record "Gen. Journal Line";
         VendorLedEntry: Record "Vendor Ledger Entry";
         GenJnlPostLine: Codeunit "Gen. Jnl.-Post Line";
         CADBRPayTaxMgt: Codeunit "CADBR Payment Tax Mgt";
-
+        LineNo: Integer;
     begin
+        GJL.Reset();
+        GJL.SetRange("Journal Template Name", RecordToPost."Journal Template Name");
+        GJL.SetRange("Journal Batch Name", RecordToPost."Journal Batch Name");
+        if GJL.FindLast() then
+            LineNo := GJL."Line No." + 10000
+        else
+            LineNo := 10000;
+
+        RecordToPost."Journal Line No." := LineNo;
+        RecordToPost.Modify();
 
         GenJournalLine.Reset();
         GenJournalLine.InitNewLine(RecordToPost."Posting Date", RecordToPost."Posting Date", RecordToPost."Posting Date",
@@ -224,7 +260,7 @@ codeunit 50070 "IntPurchPayment"
 
         GenJournalLine."Journal Template Name" := RecordToPost."Journal Template Name";
         GenJournalLine."Journal Batch Name" := RecordToPost."Journal Batch Name";
-        GenJournalLine."Line No." := RecordToPost."Line No.";
+        GenJournalLine."Line No." := RecordToPost."Journal Line No.";
         GenJournalLine."Account Type" := RecordToPost."Account Type";
         GenJournalLine."Account No." := RecordToPost."Account No.";
 
@@ -273,14 +309,36 @@ codeunit 50070 "IntPurchPayment"
 
         GenJournalLine.Insert();
 
-        //CADBRPayTaxMgt.CalculatePaymentJnl(RecordToPost."Journal Template Name", RecordToPost."Journal Batch Name");
-
         //Insere Impostos
         InsertTaxJournal(RecordToPost, GenJournalLine);
 
-        //GenJnlPostLine.RunWithCheck(GenJournalLine);
-        //RecordToPost.Status := RecordToPost.Status::Posted;
-        //RecordToPost.Modify();
+    end;
+
+    procedure DeletePaymentJournal(var RecordToPost: Record IntPurchPayment): Boolean
+    var
+        GJL: Record "Gen. Journal Line";
+        IntPurchPayment: Record IntPurchPayment;
+    begin
+        RecordToPost.CopyFilters(IntPurchPayment);
+        if not RecordToPost.IsEmpty then
+            if RecordToPost.FindSet() then begin
+
+                GJL.Reset();
+                GJL.SetRange("Journal Template Name", RecordToPost."Journal Template Name");
+                GJL.SetRange("Journal Batch Name", RecordToPost."Journal Batch Name");
+                if GJL.FindSet() then
+                    repeat
+                        IntPurchPayment.Reset();
+                        IntPurchPayment.SetRange("Journal Line No.", GJL."Line No.");
+                        IntPurchPayment.SetRange("Document No.", GJL."Document No.");
+                        IntPurchPayment.SetRange(Status, IntPurchPayment.Status::Posted);
+                        if IntPurchPayment.FindSet() then
+                            GJL.Delete();
+
+                    Until GJL.Next() = 0;
+
+
+            end;
 
     end;
 
@@ -379,20 +437,18 @@ codeunit 50070 "IntPurchPayment"
             GenJourTax.Insert();
         end;
 
-
-
     end;
 
-    procedure PostPaymentJournal(IntPurchPayment: Record IntPurchPayment)
+    procedure PostPaymentJournal(var IntPurchPayment: Record IntPurchPayment): Boolean;
     var
         GenJournalLine: Record "Gen. Journal Line";
         PostIntPurchPayment: Record IntPurchPayment;
         GenJnlPostBatch: Codeunit "Gen. Jnl.-Post Batch";
     begin
+
+        PostIntPurchPayment.Reset();
         PostIntPurchPayment.SetCurrentKey("Excel File Name", "Journal Template Name", "Journal Batch Name", Status);
-        PostIntPurchPayment.SetRange("Excel File Name", IntPurchPayment."Excel File Name");
-        PostIntPurchPayment.SetRange("Journal Template Name", IntPurchPayment."Journal Template Name");
-        PostIntPurchPayment.SetRange("Journal Batch Name", IntPurchPayment."Journal Batch Name");
+        PostIntPurchPayment.CopyFilters(IntPurchPayment);
         PostIntPurchPayment.SetRange(Status, PostIntPurchPayment.Status::Created);
         if not PostIntPurchPayment.IsEmpty then begin
             PostIntPurchPayment.FindSet();
@@ -403,6 +459,7 @@ codeunit 50070 "IntPurchPayment"
                 GenJnlPostBatch.Run(GenJournalLine);
                 PostIntPurchPayment.ModifyAll(Status, PostIntPurchPayment.Status::Posted);
             end;
+            //aqui
         end;
     end;
 
@@ -469,9 +526,8 @@ codeunit 50070 "IntPurchPayment"
     var
         IntPurchPayment: Record IntPurchPayment;
     begin
-
-
         if Result then begin
+
             IntPurchPayment.Reset();
             IntPurchPayment.setrange("Journal Template Name", GenJournalLine."Journal Template Name");
             IntPurchPayment.setrange("Journal Batch Name", GenJournalLine."Journal Batch Name");
@@ -482,6 +538,7 @@ codeunit 50070 "IntPurchPayment"
                 IntPurchPayment.Modify();
 
             end;
+
         end;
 
     end;

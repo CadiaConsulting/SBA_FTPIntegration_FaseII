@@ -323,6 +323,8 @@ codeunit 50013 "Integration Purchase"
 
         if PurchaseHeader.get(PurchaseHeader."Document Type"::Order, IntegrationPurchase."document No.") then begin
             PurchaseHeader."Posting No." := PurchaseHeader."No.";
+            PurchaseHeader.Invoice := true;
+            PurchaseHeader.Receive := true;
             PurchaseHeader.Modify();
 
             PurchPost.Run(PurchaseHeader);

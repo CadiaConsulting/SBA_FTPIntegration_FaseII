@@ -112,6 +112,12 @@ pageextension 50020 "INTRBusinessMngrRoleCenter" extends "Business Manager Role 
                                 ApplicationArea = all;
                                 RunObject = page IntPurchPayment;
                             }
+                            action(PaymentJournalIntPosted)
+                            {
+                                Caption = 'Integration Purchase Payment Posted';
+                                ApplicationArea = all;
+                                RunObject = page IntPurchPaymentPosted;
+                            }
                             action(PaymentApplyJournalInt)
                             {
                                 Caption = 'Integration Purchase Payment Apply';
@@ -123,6 +129,12 @@ pageextension 50020 "INTRBusinessMngrRoleCenter" extends "Business Manager Role 
                                 Caption = 'Integration Purchase Payment Unapply';
                                 ApplicationArea = all;
                                 RunObject = page IntPurchPaymentUnApply;
+                            }
+                            action(PaymentVoidJournal)
+                            {
+                                Caption = 'Integration Purchase Void Payment';
+                                ApplicationArea = all;
+                                RunObject = page IntPurchVoidPayment;
                             }
                         }
                     }

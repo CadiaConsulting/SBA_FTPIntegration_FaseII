@@ -1,14 +1,13 @@
 /// <summary>
-/// Page "IntegrationPurchasePayment" (ID 50070).
+/// Page "IntegrationPurchasePayment" (ID 50079).
 /// NGS
 /// </summary>
-page 50070 "IntPurchPayment"
+page 50079 "IntPurchVoidPayment"
 {
     ApplicationArea = All;
-    Caption = 'Integration Purchase Payment';
+    Caption = 'Integration Purchase Void Payment';
     PageType = List;
-    SourceTable = IntPurchPayment;
-    SourceTableView = where(Status = filter(Imported | Created | "Data Error" | Reviewed | "On Hold" | "Data Excel Error" | "Layout Error" | "Exported" | "Under Analysis"));
+    SourceTable = IntPurchVoidPayment;
     UsageCategory = Lists;
 
     layout
@@ -45,11 +44,6 @@ page 50070 "IntPurchPayment"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Journal Batch Name field.';
                 }
-                field("Journal Line No."; Rec."Journal Line No.")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Journal Line No. field.';
-                }
                 field("Line No."; Rec."Line No.")
                 {
                     ApplicationArea = All;
@@ -79,6 +73,21 @@ page 50070 "IntPurchPayment"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Document No. field.';
+                }
+                field("Applies-to Doc. No."; Rec."Applies-to Doc. No.")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Applies-to Doc. No. field.';
+                }
+                field("External Document No."; Rec."External Document No.")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the External Document No. field.';
+                }
+                field("Tax Paid"; Rec."Tax Paid")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Tax Paid field.';
                 }
                 field(Description; Rec.Description)
                 {
@@ -150,64 +159,6 @@ page 50070 "IntPurchPayment"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Applies-to Doc. Type field.';
                 }
-                field("Applies-to Doc. No."; Rec."Applies-to Doc. No.")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Applies-to Doc. No. field.';
-                }
-                field("External Document No."; Rec."External Document No.")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the External Document No. field.';
-                }
-                field("Order CSRF Ret"; rec."Order CSRF Ret")
-                {
-                    ApplicationArea = all;
-                    ToolTip = 'Order CSRF Ret';
-                }
-                field("Order DIRF Ret"; rec."Order DIRF Ret")
-                {
-                    ApplicationArea = ALL;
-                    ToolTip = 'Order DIRF Ret';
-                }
-                field("Order INSS Ret"; rec."Order INSS Ret")
-                {
-                    ApplicationArea = all;
-                    ToolTip = 'Order INSS Ret';
-                }
-                field("Order IRRF Ret"; rec."Order IRRF Ret")
-                {
-                    ApplicationArea = all;
-                    ToolTip = 'Order IRRF Ret';
-                }
-                field("Order ISS Ret"; rec."Order ISS Ret")
-                {
-                    ApplicationArea = all;
-                    ToolTip = 'Order ISS Ret';
-                }
-                field("Order PO Total"; rec."Order PO Total")
-                {
-                    ApplicationArea = all;
-                    ToolTip = 'Order PO Total';
-                    Visible = false;
-                }
-                field("Amount Entry"; rec."Amount Entry")
-                {
-                    ApplicationArea = all;
-                    ToolTip = 'Amount Entry';
-                }
-
-                field("Permitir Dif. Aplicação"; rec."Permitir Dif. Aplicação")
-                {
-                    ApplicationArea = all;
-                    ToolTip = 'Permitir Dif. Aplicação';
-                }
-                field("Different Amount"; rec."Different Amount")
-                {
-                    ApplicationArea = all;
-                    ToolTip = 'Different Amount';
-                }
-
                 field("Posting Message"; Rec."Posting Message")
                 {
                     ApplicationArea = All;
@@ -228,23 +179,40 @@ page 50070 "IntPurchPayment"
             action(ImportExcel)
             {
                 ApplicationArea = All;
-                Caption = 'Import Excel Purchase Payment';
+                Caption = 'Import Excel Purchase Void Payment';
                 Image = CreateDocument;
-                ToolTip = 'Import Excel Purchase Payment';
+                ToolTip = 'Import Excel Purchase Void Payment';
 
                 trigger OnAction();
                 var
                     ImportExcelBuffer: codeunit "Import Excel Buffer";
                     FTPIntegrationType: Enum "FTP Integration Type";
                 begin
-                    ImportExcelBuffer.ImportExcelPaymentPurchaseJournal(FTPIntegrationType::"Purchase Payment");
+                    ImportExcelBuffer.ImportExcelPaymentVoidPurchaseJournal(FTPIntegrationType::"Purchase Void Payment");
 
                     CurrPage.SaveRecord();
                     CurrPage.Update();
                     Message(ImportMessageLbl);
                 end;
             }
+            action(UnapplyPaymentVoidJournal)
+            {
+                ApplicationArea = All;
+                Caption = 'Unapply Payment Void Journal';
+                Image = PostDocument;
+                ToolTip = 'Unapply Payment Void Journal';
 
+                trigger OnAction();
+                var
+                    IntPurchVoidPay: Record IntPurchVoidPayment;
+                begin
+                    CurrPage.SetSelectionFilter(IntPurchVoidPay);
+                    IntPurchVoidPay.CopyFilters(Rec);
+                    IntPurchVoidPayment.UnapplyPaymentVoidJournal(IntPurchVoidPay);
+                    CurrPage.Update();
+                    Message(Unapply);
+                end;
+            }
             action(CopyToJournal)
             {
                 ApplicationArea = All;
@@ -254,11 +222,11 @@ page 50070 "IntPurchPayment"
 
                 trigger OnAction();
                 var
-                    IntPurchPay: Record IntPurchPayment;
+                    IntPurchVoidPay: Record IntPurchVoidPayment;
                 begin
-                    CurrPage.SetSelectionFilter(IntPurchPay);
-                    IntPurchPay.CopyFilters(Rec);
-                    IntPurchPayment.CheckData(IntPurchPay);
+                    CurrPage.SetSelectionFilter(IntPurchVoidPay);
+                    IntPurchVoidPay.CopyFilters(Rec);
+                    IntPurchVoidPayment.CheckData(IntPurchVoidPay);
                     CurrPage.Update();
                     Message(CopyToJournalLbl);
                 end;
@@ -272,35 +240,12 @@ page 50070 "IntPurchPayment"
                 ToolTip = 'Post Jornal';
 
                 trigger OnAction();
-                var
-                    IntPurchPay: Record IntPurchPayment;
                 begin
-                    CurrPage.SetSelectionFilter(IntPurchPay);
-                    IntPurchPay.CopyFilters(Rec);
-                    if IntPurchPayment.PostPaymentJournal(IntPurchPay) then;
-                    Commit();
-                    if IntPurchPayment.DeletePaymentJournal(IntPurchPay) then;
+                    IntPurchVoidPayment.PostPaymentJournal(Rec);
                     CurrPage.Update();
                     Message(PostJornalLbl);
                 end;
             }
-            action(UpdateAmountEntry)
-            {
-                ApplicationArea = All;
-                Caption = 'Update Amount Entry';
-                Image = PostDocument;
-                ToolTip = 'Update Amount Entry';
-
-                trigger OnAction();
-
-                begin
-
-                    IntPurchPayment.IntPurchPaymentUpdateAmountEntry();
-                    CurrPage.Update();
-                    Message(UpdateAmountEntryLbl);
-                end;
-            }
-
             action(Bank)
             {
                 ApplicationArea = All;
@@ -354,12 +299,12 @@ page 50070 "IntPurchPayment"
                     end;
                 end;
             }
-            action(PaymentJournal)
+            action(GeneralJournal)
             {
                 ApplicationArea = All;
-                Caption = 'Payment Journal';
-                Image = PaymentJournal;
-                ToolTip = 'Payment Journal';
+                Caption = 'General Journal';
+                Image = GeneralLedger;
+                ToolTip = 'General Journal';
 
                 trigger OnAction();
                 var
@@ -367,7 +312,7 @@ page 50070 "IntPurchPayment"
                 begin
                     GenJournalLine."Journal Template Name" := rec."Journal Template Name";
                     GenJournalLine."Journal Batch Name" := rec."Journal Batch Name";
-                    PAGE.Run(PAGE::"Payment Journal", GenJournalLine);
+                    PAGE.Run(PAGE::"General Journal", GenJournalLine);
                 end;
             }
             action(DeleteEntries)
@@ -379,11 +324,11 @@ page 50070 "IntPurchPayment"
 
                 trigger OnAction();
                 var
-                    IntAc: Record IntPurchPayment;
+                    Void: Record IntPurchVoidPayment;
                 begin
-                    CurrPage.SetSelectionFilter(IntAc);
-                    IntAc.CopyFilters(Rec);
-                    IntAc.DeleteAll();
+                    CurrPage.SetSelectionFilter(Void);
+                    Void.CopyFilters(Rec);
+                    Void.DeleteAll();
                     CurrPage.Update();
 
                 end;
@@ -398,13 +343,13 @@ page 50070 "IntPurchPayment"
 
                 trigger OnAction();
                 var
-                    IntAc: Record IntPurchPayment;
+                    Void: Record IntPurchVoidPayment;
                 begin
-                    CurrPage.SetSelectionFilter(IntAc);
-                    IntAc.CopyFilters(Rec);
-                    IntAc.SetRange(Status, IntAc.Status::"Data Error");
-                    IntAc.ModifyAll("Posting Message", '');
-                    IntAc.ModifyAll(Status, IntAc.Status::Imported);
+                    CurrPage.SetSelectionFilter(Void);
+                    Void.CopyFilters(Rec);
+                    Void.SetRange(Status, Void.Status::"Data Error");
+                    Void.ModifyAll("Posting Message", '');
+                    Void.ModifyAll(Status, Void.Status::Imported);
 
                     CurrPage.Update();
 
@@ -413,9 +358,9 @@ page 50070 "IntPurchPayment"
         }
     }
     var
-        IntPurchPayment: codeunit IntPurchPayment;
+        IntPurchVoidPayment: Codeunit IntPurchVoidPayment;
         ImportMessageLbl: Label 'The Excel file was imported';
         PostJornalLbl: Label 'The joranl was posted';
         CopyToJournalLbl: Label 'Lines were Copied to Journal';
-        UpdateAmountEntryLbl: Label 'Lines were Update Amount Entry';
+        Unapply: Label 'Unapply';
 }

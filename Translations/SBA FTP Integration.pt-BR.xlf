@@ -1060,12 +1060,6 @@
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Table Integration Purchase - Field Posting Date - Property Caption</note>
         </trans-unit>
-        <trans-unit id="Table 2300234719 - Field 3066042533 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Posting Message</source>
-          <target>Mensagem de Erro</target>
-          <note from="Developer" annotates="general" priority="2"></note>
-          <note from="Xliff Generator" annotates="general" priority="3">Table Integration Purchase - Field Posting Message - Property Caption</note>
-        </trans-unit>
         <trans-unit id="Table 2300234719 - Field 2842546430 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Purch Post Excel File Name</source>
           <target>Nome Arq. Excel - Postagem Compras</target>

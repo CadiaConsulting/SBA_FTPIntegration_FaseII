@@ -130,6 +130,12 @@ pageextension 50021 "IntCADBRTaxBRMngrRC" extends "CADBR Tax BR Manager RC"
                                 ApplicationArea = all;
                                 RunObject = page IntPurchPayment;
                             }
+                            action(PaymentJournalIntPosted)
+                            {
+                                Caption = 'Integration Purchase Payment Posted';
+                                ApplicationArea = all;
+                                RunObject = page IntPurchPaymentPosted;
+                            }
                             action(PaymentApplyJournalInt)
                             {
                                 Caption = 'Integration Purchase Payment Apply';
@@ -141,6 +147,12 @@ pageextension 50021 "IntCADBRTaxBRMngrRC" extends "CADBR Tax BR Manager RC"
                                 Caption = 'Integration Purchase Payment Unapply';
                                 ApplicationArea = all;
                                 RunObject = page IntPurchPaymentUnApply;
+                            }
+                            action(PaymentVoidJournal)
+                            {
+                                Caption = 'Integration Purchase Void Payment';
+                                ApplicationArea = all;
+                                RunObject = page IntPurchVoidPayment;
                             }
                         }
                     }

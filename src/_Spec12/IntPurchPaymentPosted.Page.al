@@ -2,14 +2,15 @@
 /// Page "IntegrationPurchasePayment" (ID 50070).
 /// NGS
 /// </summary>
-page 50070 "IntPurchPayment"
+page 50077 "IntPurchPaymentPosted"
 {
     ApplicationArea = All;
-    Caption = 'Integration Purchase Payment';
+    Caption = 'Integration Purchase Payment Posted';
     PageType = List;
     SourceTable = IntPurchPayment;
-    SourceTableView = where(Status = filter(Imported | Created | "Data Error" | Reviewed | "On Hold" | "Data Excel Error" | "Layout Error" | "Exported" | "Under Analysis"));
+    SourceTableView = where(Status = filter(Posted | Cancelled));
     UsageCategory = Lists;
+    Editable = false;
 
     layout
     {
@@ -44,11 +45,6 @@ page 50070 "IntPurchPayment"
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Journal Batch Name field.';
-                }
-                field("Journal Line No."; Rec."Journal Line No.")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Journal Line No. field.';
                 }
                 field("Line No."; Rec."Line No.")
                 {
@@ -196,7 +192,6 @@ page 50070 "IntPurchPayment"
                     ApplicationArea = all;
                     ToolTip = 'Amount Entry';
                 }
-
                 field("Permitir Dif. Aplicação"; rec."Permitir Dif. Aplicação")
                 {
                     ApplicationArea = all;
@@ -225,82 +220,59 @@ page 50070 "IntPurchPayment"
     {
         area(Processing)
         {
-            action(ImportExcel)
-            {
-                ApplicationArea = All;
-                Caption = 'Import Excel Purchase Payment';
-                Image = CreateDocument;
-                ToolTip = 'Import Excel Purchase Payment';
+            // action(ImportExcel)
+            // {
+            //     ApplicationArea = All;
+            //     Caption = 'Import Excel Purchase Payment';
+            //     Image = CreateDocument;
+            //     ToolTip = 'Import Excel Purchase Payment';
 
-                trigger OnAction();
-                var
-                    ImportExcelBuffer: codeunit "Import Excel Buffer";
-                    FTPIntegrationType: Enum "FTP Integration Type";
-                begin
-                    ImportExcelBuffer.ImportExcelPaymentPurchaseJournal(FTPIntegrationType::"Purchase Payment");
+            //     trigger OnAction();
+            //     var
+            //         ImportExcelBuffer: codeunit "Import Excel Buffer";
+            //         FTPIntegrationType: Enum "FTP Integration Type";
+            //     begin
+            //         ImportExcelBuffer.ImportExcelPaymentPurchaseJournal(FTPIntegrationType::"Purchase Payment");
 
-                    CurrPage.SaveRecord();
-                    CurrPage.Update();
-                    Message(ImportMessageLbl);
-                end;
-            }
+            //         CurrPage.SaveRecord();
+            //         CurrPage.Update();
+            //         Message(ImportMessageLbl);
+            //     end;
+            // }
 
-            action(CopyToJournal)
-            {
-                ApplicationArea = All;
-                Caption = 'Copy To Journal';
-                Image = PostDocument;
-                ToolTip = 'Copy lines to Jornal';
+            // action(CopyToJournal)
+            // {
+            //     ApplicationArea = All;
+            //     Caption = 'Copy To Journal';
+            //     Image = PostDocument;
+            //     ToolTip = 'Copy lines to Jornal';
 
-                trigger OnAction();
-                var
-                    IntPurchPay: Record IntPurchPayment;
-                begin
-                    CurrPage.SetSelectionFilter(IntPurchPay);
-                    IntPurchPay.CopyFilters(Rec);
-                    IntPurchPayment.CheckData(IntPurchPay);
-                    CurrPage.Update();
-                    Message(CopyToJournalLbl);
-                end;
-            }
+            //     trigger OnAction();
+            //     var
+            //         IntPurchPay: Record IntPurchPayment;
+            //     begin
+            //         CurrPage.SetSelectionFilter(IntPurchPay);
+            //         IntPurchPay.CopyFilters(Rec);
+            //         IntPurchPayment.CheckData(IntPurchPay);
+            //         CurrPage.Update();
+            //         Message(CopyToJournalLbl);
+            //     end;
+            // }
 
-            action(PostJournal)
-            {
-                ApplicationArea = All;
-                Caption = 'Post Journal';
-                Image = PostDocument;
-                ToolTip = 'Post Jornal';
+            // action(PostJournal)
+            // {
+            //     ApplicationArea = All;
+            //     Caption = 'Post Journal';
+            //     Image = PostDocument;
+            //     ToolTip = 'Post Jornal';
 
-                trigger OnAction();
-                var
-                    IntPurchPay: Record IntPurchPayment;
-                begin
-                    CurrPage.SetSelectionFilter(IntPurchPay);
-                    IntPurchPay.CopyFilters(Rec);
-                    if IntPurchPayment.PostPaymentJournal(IntPurchPay) then;
-                    Commit();
-                    if IntPurchPayment.DeletePaymentJournal(IntPurchPay) then;
-                    CurrPage.Update();
-                    Message(PostJornalLbl);
-                end;
-            }
-            action(UpdateAmountEntry)
-            {
-                ApplicationArea = All;
-                Caption = 'Update Amount Entry';
-                Image = PostDocument;
-                ToolTip = 'Update Amount Entry';
-
-                trigger OnAction();
-
-                begin
-
-                    IntPurchPayment.IntPurchPaymentUpdateAmountEntry();
-                    CurrPage.Update();
-                    Message(UpdateAmountEntryLbl);
-                end;
-            }
-
+            //     trigger OnAction();
+            //     begin
+            //         IntPurchPayment.PostPaymentJournal(Rec);
+            //         CurrPage.Update();
+            //         Message(PostJornalLbl);
+            //     end;
+            // }
             action(Bank)
             {
                 ApplicationArea = All;
@@ -370,46 +342,46 @@ page 50070 "IntPurchPayment"
                     PAGE.Run(PAGE::"Payment Journal", GenJournalLine);
                 end;
             }
-            action(DeleteEntries)
-            {
-                ApplicationArea = All;
-                Caption = 'Delete Entries';
-                Image = PostDocument;
-                ToolTip = 'Delete Entries';
+            // action(DeleteEntries)
+            // {
+            //     ApplicationArea = All;
+            //     Caption = 'Delete Entries';
+            //     Image = PostDocument;
+            //     ToolTip = 'Delete Entries';
 
-                trigger OnAction();
-                var
-                    IntAc: Record IntPurchPayment;
-                begin
-                    CurrPage.SetSelectionFilter(IntAc);
-                    IntAc.CopyFilters(Rec);
-                    IntAc.DeleteAll();
-                    CurrPage.Update();
+            //     trigger OnAction();
+            //     var
+            //         IntAc: Record IntPurchPayment;
+            //     begin
+            //         CurrPage.SetSelectionFilter(IntAc);
+            //         IntAc.CopyFilters(Rec);
+            //         IntAc.DeleteAll();
+            //         CurrPage.Update();
 
-                end;
-            }
+            //     end;
+            // }
 
-            action(ClearErrorMessage)
-            {
-                ApplicationArea = All;
-                Caption = 'Clear Error Message';
-                Image = ClearLog;
-                ToolTip = 'Clear Error Message';
+            // action(ClearErrorMessage)
+            // {
+            //     ApplicationArea = All;
+            //     Caption = 'Clear Error Message';
+            //     Image = ClearLog;
+            //     ToolTip = 'Clear Error Message';
 
-                trigger OnAction();
-                var
-                    IntAc: Record IntPurchPayment;
-                begin
-                    CurrPage.SetSelectionFilter(IntAc);
-                    IntAc.CopyFilters(Rec);
-                    IntAc.SetRange(Status, IntAc.Status::"Data Error");
-                    IntAc.ModifyAll("Posting Message", '');
-                    IntAc.ModifyAll(Status, IntAc.Status::Imported);
+            //     trigger OnAction();
+            //     var
+            //         IntAc: Record IntPurchPayment;
+            //     begin
+            //         CurrPage.SetSelectionFilter(IntAc);
+            //         IntAc.CopyFilters(Rec);
+            //         IntAc.SetRange(Status, IntAc.Status::"Data Error");
+            //         IntAc.ModifyAll("Posting Message", '');
+            //         IntAc.ModifyAll(Status, IntAc.Status::Imported);
 
-                    CurrPage.Update();
+            //         CurrPage.Update();
 
-                end;
-            }
+            //     end;
+            // }
         }
     }
     var
@@ -417,5 +389,4 @@ page 50070 "IntPurchPayment"
         ImportMessageLbl: Label 'The Excel file was imported';
         PostJornalLbl: Label 'The joranl was posted';
         CopyToJournalLbl: Label 'Lines were Copied to Journal';
-        UpdateAmountEntryLbl: Label 'Lines were Update Amount Entry';
 }

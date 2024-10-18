@@ -63,5 +63,9 @@ enum 50014 "IntegrationErrosType"
     {
         Caption = 'Landlord';
     }
+    value(16; "Purchase Void Payment")
+    {
+        Caption = 'Purchase Void Payment';
+    }
 
 }
