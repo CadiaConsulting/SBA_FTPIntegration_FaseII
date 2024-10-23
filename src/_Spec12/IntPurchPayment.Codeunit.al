@@ -70,6 +70,7 @@ codeunit 50070 "IntPurchPayment"
         CheckBankAccount(RecordToCheck);
         ValidateDimensions(RecordToCheck);
         PrepareTempVendLedgEntry(RecordToCheck);
+        CheckTax(RecordToCheck);
 
         if not RecordToCheck."Permitir Dif. Aplicação" then
             if RecordToCheck."Amount Entry" < (RecordToCheck."Order CSRF Ret" + RecordToCheck."Order DIRF Ret" + RecordToCheck.Amount) then
@@ -519,6 +520,130 @@ codeunit 50070 "IntPurchPayment"
             repeat
                 PostPaymentJournal(FileToProcessTMP);
             until FileToProcessTMP.Next() = 0;
+    end;
+
+    local procedure CheckTax(var RecordToCheck: Record IntPurchPayment): Boolean
+    var
+        intPurc: Record "Integration Purchase";
+        IntPurcPay: Record IntPurchPayment;
+        VatEntry: Record "VAT Entry";
+        TotDirectUnit: Decimal;
+    begin
+
+        TotDirectUnit := 0;
+        intPurc.reset();
+        intPurc.SetRange("Document No.", RecordToCheck."Document No.");
+        if intPurc.FindSet() then begin
+            repeat
+                TotDirectUnit += intPurc."Direct Unit Cost Excl. Vat" * intPurc.Quantity;
+            until intPurc.Next() = 0;
+
+        end;
+        intPurc.reset();
+        intPurc.SetRange("Document No.", RecordToCheck."Document No.");
+        if intPurc.FindFirst() then begin
+            if intPurc.Status = intPurc.Status::Posted then begin
+
+                RecordToCheck."Order IRRF Ret" := intPurc."Order IRRF Ret";
+                if intPurc."Order IRRF Ret" <> 0 then begin
+
+                    VatEntry.Reset();
+                    VatEntry.Setrange("Document No.", intPurc."Document No.");
+                    VatEntry.SETRANGE("CADBR Tax Identification", VatEntry."CADBR Tax Identification"::IRRF);
+                    if VatEntry.FindFirst() then
+                        if VatEntry.Base <> 0 then
+                            RecordToCheck."Order IRRF Ret" := 0;
+                end;
+
+                RecordToCheck."Order CSRF Ret" := intPurc."Order CSRF Ret";
+
+                if intPurc."Order CSRF Ret" <> 0 then begin
+
+                    VatEntry.Reset();
+                    VatEntry.Setrange("Document No.", intPurc."Document No.");
+                    VatEntry.SETRANGE("CADBR Tax Identification", VatEntry."CADBR Tax Identification"::PCC);
+                    if VatEntry.FindFirst() then
+                        if VatEntry.Base <> 0 then
+                            RecordToCheck."Order CSRF Ret" := 0;
+
+                    IntPurcPay.Reset();
+                    IntPurcPay.SetCurrentKey("Excel File Name", "Journal Template Name", "Journal Batch Name", Status);
+                    IntPurcPay.SetRange("Applies-to Doc. No.", RecordToCheck."Applies-to Doc. No.");
+                    if IntPurcPay.FindFirst() then begin
+                        RecordToCheck."Order CSRF Ret" := 0;
+                    end;
+
+                end;
+
+                RecordToCheck."Order INSS Ret" := intPurc."Order INSS Ret";
+                if intPurc."Order inss Ret" <> 0 then begin
+
+                    VatEntry.Reset();
+                    VatEntry.Setrange("Document No.", intPurc."Document No.");
+                    VatEntry.SETRANGE("CADBR Tax Identification", VatEntry."CADBR Tax Identification"::"INSS Ret.");
+                    if VatEntry.FindFirst() then
+                        if VatEntry.Base <> 0 then
+                            RecordToCheck."Order INSS Ret" := 0;
+
+                end;
+
+                RecordToCheck."Order ISS Ret" := intPurc."Order ISS Ret";
+                if intPurc."Order iss Ret" <> 0 then begin
+
+                    VatEntry.Reset();
+                    VatEntry.Setrange("Document No.", intPurc."Document No.");
+                    VatEntry.SETRANGE("CADBR Tax Identification", VatEntry."CADBR Tax Identification"::"ISS Ret.");
+                    if VatEntry.FindFirst() then
+                        if VatEntry.Base <> 0 then
+                            RecordToCheck."Order ISS Ret" := 0;
+
+                end;
+
+                RecordToCheck."Order DIRF Ret" := intPurc."Order DIRF Ret";
+                if intPurc."Order DIRF Ret" <> 0 then begin
+
+                    VatEntry.Reset();
+                    VatEntry.Setrange("Document No.", intPurc."Document No.");
+                    VatEntry.SETRANGE("CADBR Tax Identification", VatEntry."CADBR Tax Identification"::IRRF);
+                    if VatEntry.FindFirst() then
+                        if VatEntry.Base <> 0 then
+                            RecordToCheck."Order DIRF Ret" := 0;
+
+                    IntPurcPay.Reset();
+                    IntPurcPay.SetCurrentKey("Excel File Name", "Journal Template Name", "Journal Batch Name", Status);
+
+                    IntPurcPay.SetRange("Applies-to Doc. No.", RecordToCheck."Applies-to Doc. No.");
+                    if IntPurcPay.FindFirst() then begin
+                        RecordToCheck."Order DIRF Ret" := 0;
+                    end;
+
+                end;
+
+                RecordToCheck."Order PO Total" := TotDirectUnit;
+
+                RecordToCheck."Tax % Order IRRF Ret" := intPurc."Tax % Order IRRF Ret";
+
+                RecordToCheck."Tax % Order CSRF Ret" := intPurc."Tax % Order CSRF Ret";
+
+                RecordToCheck."Tax % Order INSS Ret" := intPurc."Tax % Order INSS Ret";
+
+                RecordToCheck."Tax % Order ISS Ret" := intPurc."Tax % Order ISS Ret";
+
+                RecordToCheck."Tax % Order DIRF Ret" := intPurc."Tax % Order DIRF Ret";
+
+            end else if intPurc.Status = intPurc.Status::Cancelled then begin
+
+                RecordToCheck.Status := RecordToCheck.Status::"Data Error";
+                RecordToCheck."Posting Message" := 'A Ordem de compra consta como Cancelada. Favor verificar.';
+
+            end else begin
+
+                RecordToCheck.Status := RecordToCheck.Status::"Data Error";
+                RecordToCheck."Posting Message" := 'A Ordem de compra ainda não foi registrada.';
+
+            end;
+        end;
+
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Gen. Jnl.-Post Batch", 'OnAfterPostGenJournalLine', '', false, false)]

@@ -138,7 +138,9 @@ codeunit 50009 "Integration SBA Job Runner"
                     if FTPSetup."Import Excel" then begin
                         ImportExcelBuffer.ImportExcelPaymentVoidPurchaseJournal(FTPIntegrationType::"Purchase Void Payment");
                         Commit();
+                    end;
 
+                    if FTPSetup.Unapply then begin
                         if IntPurchVoidPayment.UnapplyPaymentVoidJournal(IntPurchVoidPay) then;
                         Commit();
                     end;

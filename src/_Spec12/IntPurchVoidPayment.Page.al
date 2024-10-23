@@ -49,6 +49,11 @@ page 50079 "IntPurchVoidPayment"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Line No. field.';
                 }
+                field("Journal Line No."; Rec."Journal Line No.")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Journal Line No. field.';
+                }
                 field("Account Type"; Rec."Account Type")
                 {
                     ApplicationArea = All;
@@ -109,10 +114,15 @@ page 50079 "IntPurchVoidPayment"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Amount field.';
                 }
-                field(WiteOffAmount; Rec.WiteOffAmount)
+                field("Tax Amount"; Rec."Tax Amount")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the WiteOffAmount field.';
+                    ToolTip = 'Specifies the value of the Tax Amount field.';
+                }
+                field("Tax Account No."; Rec."Tax Account No.")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Tax Account No. field.';
                 }
                 field("Dimension 1"; Rec."Dimension 1")
                 {

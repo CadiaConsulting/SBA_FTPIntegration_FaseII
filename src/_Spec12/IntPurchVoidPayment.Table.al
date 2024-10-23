@@ -55,9 +55,9 @@ table 50078 "IntPurchVoidPayment"
         {
             Caption = 'Amount';
         }
-        field(13; WiteOffAmount; Decimal)
+        field(13; "Tax Amount"; Decimal)
         {
-            Caption = 'WiteOffAmount';
+            Caption = 'Tax Amount';
         }
         field(14; "Dimension 1"; Code[20])
         {
@@ -110,6 +110,15 @@ table 50078 "IntPurchVoidPayment"
         field(24; "External Document No."; Code[35])
         {
             Caption = 'External Document No.';
+        }
+        field(25; "Tax Account No."; Code[20])
+        {
+            Caption = 'Tax Account No.';
+        }
+        field(26; "Journal Line No."; Integer)
+        {
+            Caption = 'Journal Line No.';
+            Editable = false;
         }
         field(98; Status; enum "Integration Import Status")
         {

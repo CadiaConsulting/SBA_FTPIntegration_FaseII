@@ -4235,11 +4235,37 @@ codeunit 50002 "Import Excel Buffer"
                             VLE.SetRange("Document No.", IntegrationFieldRef.Value);
                             VLE.SetRange(Open, false);
                             VLE.SetFilter("CADBR Tax Jurisdiction Code", '<>%1', '');
-                            VLE.SetFilter("Amount", '<%1', 0);
+                            //VLE.SetFilter("Amount", '<%1', 0);
                             if VLE.FindFirst() then begin
 
                                 IntegrationFieldRef := IntegrationRef.Field(257);
                                 IntegrationFieldRef.Value := true;
+                            end;
+
+                            //VendorValue
+                            IntegrationFieldRef := IntegrationRef.Field(23);
+                            VLE.Reset();
+                            VLE.SetRange("Document No.", IntegrationFieldRef.Value);
+                            VLE.SetFilter("CADBR Tax Jurisdiction Code", '<>%1', '');
+                            IntegrationFieldRef := IntegrationRef.Field(24);
+                            VLE.SetRange("SBA Applies-to Doc. No.", IntegrationFieldRef.Value);
+                            if VLE.FindFirst() then begin
+                                vle.CalcFields(Amount);
+
+                                IntegrationFieldRef := IntegrationRef.Field(13);
+                                IntegrationFieldRef.Value := VLE.Amount;
+                                IntegrationFieldRef := IntegrationRef.Field(25);
+                                IntegrationFieldRef.Value := VLE."Vendor No.";
+                            end;
+
+                            //VendorValue
+                            IntegrationFieldRef := IntegrationRef.Field(23);
+                            VLE.Reset();
+                            VLE.SetRange("Document No.", IntegrationFieldRef.Value);
+                            if not VLE.FindFirst() then begin
+                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'It cannot be empty.', TextValue, FileName);
+                                IntegrationFieldRef := IntegrationRef.Field(98);
+                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
                             end;
 
                             if ExistLine then
@@ -5010,107 +5036,126 @@ codeunit 50002 "Import Excel Buffer"
                                 intPurc.reset();
                                 intPurc.SetRange("Document No.", IntegrationFieldRef.Value);
                                 if intPurc.FindFirst() then begin
+                                    if intPurc.Status = intPurc.Status::Posted then begin
+                                        IntegrationFieldRef := IntegrationRef.Field(150);
+                                        IntegrationFieldRef.Value := intPurc."Order IRRF Ret";
+                                        if intPurc."Order IRRF Ret" <> 0 then begin
 
-                                    IntegrationFieldRef := IntegrationRef.Field(150);
-                                    IntegrationFieldRef.Value := intPurc."Order IRRF Ret";
-                                    if intPurc."Order IRRF Ret" <> 0 then begin
-
-                                        VatEntry.Reset();
-                                        VatEntry.Setrange("Document No.", intPurc."Document No.");
-                                        VatEntry.SETRANGE("CADBR Tax Identification", VatEntry."CADBR Tax Identification"::IRRF);
-                                        if VatEntry.FindFirst() then
-                                            if VatEntry.Base <> 0 then
-                                                IntegrationFieldRef.Value := 0;
-                                    end;
-
-                                    IntegrationFieldRef := IntegrationRef.Field(151);
-                                    IntegrationFieldRef.Value := intPurc."Order CSRF Ret";
-
-                                    if intPurc."Order CSRF Ret" <> 0 then begin
-
-                                        VatEntry.Reset();
-                                        VatEntry.Setrange("Document No.", intPurc."Document No.");
-                                        VatEntry.SETRANGE("CADBR Tax Identification", VatEntry."CADBR Tax Identification"::PCC);
-                                        if VatEntry.FindFirst() then
-                                            if VatEntry.Base <> 0 then
-                                                IntegrationFieldRef.Value := 0;
-
-                                        IntPurcPay.Reset();
-                                        IntPurcPay.SetCurrentKey("Excel File Name", "Journal Template Name", "Journal Batch Name", Status);
-                                        IntegrationFieldRef := IntegrationRef.Field(23);
-                                        IntPurcPay.SetRange("Applies-to Doc. No.", IntegrationFieldRef.Value);
-                                        if IntPurcPay.FindFirst() then begin
-                                            IntegrationFieldRef := IntegrationRef.Field(151);
-                                            IntegrationFieldRef.Value := 0;
+                                            VatEntry.Reset();
+                                            VatEntry.Setrange("Document No.", intPurc."Document No.");
+                                            VatEntry.SETRANGE("CADBR Tax Identification", VatEntry."CADBR Tax Identification"::IRRF);
+                                            if VatEntry.FindFirst() then
+                                                if VatEntry.Base <> 0 then
+                                                    IntegrationFieldRef.Value := 0;
                                         end;
 
-                                    end;
+                                        IntegrationFieldRef := IntegrationRef.Field(151);
+                                        IntegrationFieldRef.Value := intPurc."Order CSRF Ret";
 
-                                    IntegrationFieldRef := IntegrationRef.Field(152);
-                                    IntegrationFieldRef.Value := intPurc."Order INSS Ret";
-                                    if intPurc."Order inss Ret" <> 0 then begin
+                                        if intPurc."Order CSRF Ret" <> 0 then begin
 
-                                        VatEntry.Reset();
-                                        VatEntry.Setrange("Document No.", intPurc."Document No.");
-                                        VatEntry.SETRANGE("CADBR Tax Identification", VatEntry."CADBR Tax Identification"::"INSS Ret.");
-                                        if VatEntry.FindFirst() then
-                                            if VatEntry.Base <> 0 then
+                                            VatEntry.Reset();
+                                            VatEntry.Setrange("Document No.", intPurc."Document No.");
+                                            VatEntry.SETRANGE("CADBR Tax Identification", VatEntry."CADBR Tax Identification"::PCC);
+                                            if VatEntry.FindFirst() then
+                                                if VatEntry.Base <> 0 then
+                                                    IntegrationFieldRef.Value := 0;
+
+                                            IntPurcPay.Reset();
+                                            IntPurcPay.SetCurrentKey("Excel File Name", "Journal Template Name", "Journal Batch Name", Status);
+                                            IntegrationFieldRef := IntegrationRef.Field(23);
+                                            IntPurcPay.SetRange("Applies-to Doc. No.", IntegrationFieldRef.Value);
+                                            if IntPurcPay.FindFirst() then begin
+                                                IntegrationFieldRef := IntegrationRef.Field(151);
                                                 IntegrationFieldRef.Value := 0;
+                                            end;
 
-                                    end;
-
-                                    IntegrationFieldRef := IntegrationRef.Field(153);
-                                    IntegrationFieldRef.Value := intPurc."Order ISS Ret";
-                                    if intPurc."Order iss Ret" <> 0 then begin
-
-                                        VatEntry.Reset();
-                                        VatEntry.Setrange("Document No.", intPurc."Document No.");
-                                        VatEntry.SETRANGE("CADBR Tax Identification", VatEntry."CADBR Tax Identification"::"ISS Ret.");
-                                        if VatEntry.FindFirst() then
-                                            if VatEntry.Base <> 0 then
-                                                IntegrationFieldRef.Value := 0;
-
-                                    end;
-
-                                    IntegrationFieldRef := IntegrationRef.Field(156);
-                                    IntegrationFieldRef.Value := intPurc."Order DIRF Ret";
-                                    if intPurc."Order DIRF Ret" <> 0 then begin
-
-                                        VatEntry.Reset();
-                                        VatEntry.Setrange("Document No.", intPurc."Document No.");
-                                        VatEntry.SETRANGE("CADBR Tax Identification", VatEntry."CADBR Tax Identification"::IRRF);
-                                        if VatEntry.FindFirst() then
-                                            if VatEntry.Base <> 0 then
-                                                IntegrationFieldRef.Value := 0;
-
-                                        IntPurcPay.Reset();
-                                        IntPurcPay.SetCurrentKey("Excel File Name", "Journal Template Name", "Journal Batch Name", Status);
-                                        IntegrationFieldRef := IntegrationRef.Field(23);
-                                        IntPurcPay.SetRange("Applies-to Doc. No.", IntegrationFieldRef.Value);
-                                        if IntPurcPay.FindFirst() then begin
-                                            IntegrationFieldRef := IntegrationRef.Field(156);
-                                            IntegrationFieldRef.Value := 0;
                                         end;
 
+                                        IntegrationFieldRef := IntegrationRef.Field(152);
+                                        IntegrationFieldRef.Value := intPurc."Order INSS Ret";
+                                        if intPurc."Order inss Ret" <> 0 then begin
+
+                                            VatEntry.Reset();
+                                            VatEntry.Setrange("Document No.", intPurc."Document No.");
+                                            VatEntry.SETRANGE("CADBR Tax Identification", VatEntry."CADBR Tax Identification"::"INSS Ret.");
+                                            if VatEntry.FindFirst() then
+                                                if VatEntry.Base <> 0 then
+                                                    IntegrationFieldRef.Value := 0;
+
+                                        end;
+
+                                        IntegrationFieldRef := IntegrationRef.Field(153);
+                                        IntegrationFieldRef.Value := intPurc."Order ISS Ret";
+                                        if intPurc."Order iss Ret" <> 0 then begin
+
+                                            VatEntry.Reset();
+                                            VatEntry.Setrange("Document No.", intPurc."Document No.");
+                                            VatEntry.SETRANGE("CADBR Tax Identification", VatEntry."CADBR Tax Identification"::"ISS Ret.");
+                                            if VatEntry.FindFirst() then
+                                                if VatEntry.Base <> 0 then
+                                                    IntegrationFieldRef.Value := 0;
+
+                                        end;
+
+                                        IntegrationFieldRef := IntegrationRef.Field(156);
+                                        IntegrationFieldRef.Value := intPurc."Order DIRF Ret";
+                                        if intPurc."Order DIRF Ret" <> 0 then begin
+
+                                            VatEntry.Reset();
+                                            VatEntry.Setrange("Document No.", intPurc."Document No.");
+                                            VatEntry.SETRANGE("CADBR Tax Identification", VatEntry."CADBR Tax Identification"::IRRF);
+                                            if VatEntry.FindFirst() then
+                                                if VatEntry.Base <> 0 then
+                                                    IntegrationFieldRef.Value := 0;
+
+                                            IntPurcPay.Reset();
+                                            IntPurcPay.SetCurrentKey("Excel File Name", "Journal Template Name", "Journal Batch Name", Status);
+                                            IntegrationFieldRef := IntegrationRef.Field(23);
+                                            IntPurcPay.SetRange("Applies-to Doc. No.", IntegrationFieldRef.Value);
+                                            if IntPurcPay.FindFirst() then begin
+                                                IntegrationFieldRef := IntegrationRef.Field(156);
+                                                IntegrationFieldRef.Value := 0;
+                                            end;
+
+                                        end;
+
+                                        IntegrationFieldRef := IntegrationRef.Field(157);
+                                        IntegrationFieldRef.Value := TotDirectUnit;
+
+                                        IntegrationFieldRef := IntegrationRef.Field(250);
+                                        IntegrationFieldRef.Value := intPurc."Tax % Order IRRF Ret";
+
+                                        IntegrationFieldRef := IntegrationRef.Field(251);
+                                        IntegrationFieldRef.Value := intPurc."Tax % Order CSRF Ret";
+
+                                        IntegrationFieldRef := IntegrationRef.Field(252);
+                                        IntegrationFieldRef.Value := intPurc."Tax % Order INSS Ret";
+
+                                        IntegrationFieldRef := IntegrationRef.Field(253);
+                                        IntegrationFieldRef.Value := intPurc."Tax % Order ISS Ret";
+
+                                        IntegrationFieldRef := IntegrationRef.Field(256);
+                                        IntegrationFieldRef.Value := intPurc."Tax % Order DIRF Ret";
+
+
+                                    end else if intPurc.Status = intPurc.Status::Cancelled then begin
+                                        IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Existe mais de 1 linha com o mesmo documento Aplicado que ultrapassa o Valor pendente', TextValue, FileName);
+
+                                        IntegrationFieldRef := IntegrationRef.Field(98);
+                                        IntegrationFieldRef.Value := IntegrationImportStatus::"Data Error";
+                                        IntegrationFieldRef := IntegrationRef.Field(99);
+                                        IntegrationFieldRef.Value := 'A Ordem de compra consta como Cancelada. Favor verificar.';
+
+                                    end else begin
+                                        IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Existe mais de 1 linha com o mesmo documento Aplicado que ultrapassa o Valor pendente', TextValue, FileName);
+
+                                        IntegrationFieldRef := IntegrationRef.Field(98);
+                                        IntegrationFieldRef.Value := IntegrationImportStatus::"Data Error";
+                                        IntegrationFieldRef := IntegrationRef.Field(99);
+                                        IntegrationFieldRef.Value := 'A Ordem de compra ainda não foi registrada.';
+
                                     end;
-
-                                    IntegrationFieldRef := IntegrationRef.Field(157);
-                                    IntegrationFieldRef.Value := TotDirectUnit;
-
-                                    IntegrationFieldRef := IntegrationRef.Field(250);
-                                    IntegrationFieldRef.Value := intPurc."Tax % Order IRRF Ret";
-
-                                    IntegrationFieldRef := IntegrationRef.Field(251);
-                                    IntegrationFieldRef.Value := intPurc."Tax % Order CSRF Ret";
-
-                                    IntegrationFieldRef := IntegrationRef.Field(252);
-                                    IntegrationFieldRef.Value := intPurc."Tax % Order INSS Ret";
-
-                                    IntegrationFieldRef := IntegrationRef.Field(253);
-                                    IntegrationFieldRef.Value := intPurc."Tax % Order ISS Ret";
-
-                                    IntegrationFieldRef := IntegrationRef.Field(256);
-                                    IntegrationFieldRef.Value := intPurc."Tax % Order DIRF Ret";
 
                                 end;
 

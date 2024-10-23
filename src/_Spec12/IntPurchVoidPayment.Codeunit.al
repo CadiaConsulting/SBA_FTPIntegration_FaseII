@@ -10,7 +10,6 @@ codeunit 50079 "IntPurchVoidPayment"
         CallPostJournal
     end;
 
-
     procedure CheckData(var IntPurchVoidPayment: Record IntPurchVoidPayment): Boolean;
     var
         RecordTocheck: Record IntPurchVoidPayment;
@@ -23,9 +22,15 @@ codeunit 50079 "IntPurchVoidPayment"
         if not RecordTocheck.IsEmpty then begin
             RecordTocheck.FindSet();
             repeat
-                if ValidateIntPurchVoidPaymentData(RecordTocheck) then
-                    CreatePaymentJournal(RecordTocheck)
-                else begin
+                if ValidateIntPurchVoidPaymentData(RecordTocheck) then begin
+                    CreatePaymentJournal(RecordTocheck);
+
+                    if (RecordTocheck."Tax Paid" = false) and (RecordTocheck."Tax Amount" <> 0) then begin
+                        CreatePaymentTaxAJournal(RecordTocheck);
+                        CreatePaymentTaxBJournal(RecordTocheck);
+                    end;
+
+                end else begin
 
                     FTPIntSetup.Reset();
                     FTPIntSetup.SetRange(Integration, FTPIntSetup.Integration::"Purchase Void Payment");
@@ -160,8 +165,21 @@ codeunit 50079 "IntPurchVoidPayment"
         VendorLedEntry: Record "Vendor Ledger Entry";
         GenJnlPostLine: Codeunit "Gen. Jnl.-Post Line";
         CADBRPayTaxMgt: Codeunit "CADBR Payment Tax Mgt";
+        GJL: Record "Gen. Journal Line";
+        LineNo: Integer;
 
     begin
+
+        GJL.Reset();
+        GJL.SetRange("Journal Template Name", RecordToPost."Journal Template Name");
+        GJL.SetRange("Journal Batch Name", RecordToPost."Journal Batch Name");
+        if GJL.FindLast() then
+            LineNo := GJL."Line No." + 10000
+        else
+            LineNo := 10000;
+
+        RecordToPost."Journal Line No." := LineNo;
+        RecordToPost.Modify();
 
         GenJournalLine.Reset();
         GenJournalLine.InitNewLine(RecordToPost."Posting Date", RecordToPost."Posting Date", RecordToPost."Posting Date",
@@ -170,17 +188,172 @@ codeunit 50079 "IntPurchVoidPayment"
 
         GenJournalLine."Journal Template Name" := RecordToPost."Journal Template Name";
         GenJournalLine."Journal Batch Name" := RecordToPost."Journal Batch Name";
-        GenJournalLine."Line No." := RecordToPost."Line No.";
+        GenJournalLine."Line No." := RecordToPost."Journal Line No.";
         GenJournalLine."Account Type" := RecordToPost."Account Type";
         GenJournalLine."Account No." := RecordToPost."Account No.";
 
         //Valor
-        GenJournalLine.VALIDATE(Amount, -RecordToPost."Amount");
+        GenJournalLine.VALIDATE(Amount, RecordToPost."Amount");
 
         GenJournalLine."Applies-to Doc. No." := RecordToPost."Applies-to Doc. No.";
         GenJournalLine."Applies-to Doc. Type" := RecordToPost."Applies-to Doc. Type"::Payment;
         GenJournalLine."Bal. Account No." := RecordToPost."Bal. Account No.";
         GenJournalLine."Bal. Account Type" := RecordToPost."Bal. Account Type";
+        GenJournalLine."Document No." := RecordToPost."Document No.";
+        GenJournalLine."Document Type" := RecordToPost."Document Type";
+
+        if RecordToPost."Applies-to Doc. No." <> '' then begin
+            VendorLedEntry.Reset();
+            VendorLedEntry.SetCurrentKey("Document No.");
+            VendorLedEntry.SetRange("Document No.", RecordToPost."Applies-to Doc. No.");
+            if VendorLedEntry.FindFirst() then
+                if VendorLedEntry."External Document No." <> '' then
+                    GenJournalLine."External Document No." := VendorLedEntry."External Document No."
+                else
+                    GenJournalLine."External Document No." := VendorLedEntry."Document No.";
+
+        end;
+
+        if RecordToPost."Dimension 1" <> '' then
+            GenJournalLine.Validate("Shortcut Dimension 1 Code", RecordToPost."Dimension 1");
+        if RecordToPost."Dimension 2" <> '' then
+            GenJournalLine.Validate("Shortcut Dimension 2 Code", RecordToPost."Dimension 2");
+        if RecordToPost."Dimension 3" <> '' then
+            GenJournalLine.ValidateShortcutDimCode(3, RecordToPost."Dimension 3");
+        if RecordToPost."Dimension 4" <> '' then
+            GenJournalLine.ValidateShortcutDimCode(4, RecordToPost."Dimension 4");
+        if RecordToPost."Dimension 5" <> '' then
+            GenJournalLine.ValidateShortcutDimCode(5, RecordToPost."Dimension 5");
+        if RecordToPost."Dimension 6" <> '' then
+            GenJournalLine.ValidateShortcutDimCode(6, RecordToPost."Dimension 6");
+        if RecordToPost."Dimension 7" <> '' then
+            GenJournalLine.ValidateShortcutDimCode(7, RecordToPost."Dimension 7");
+        if RecordToPost."Dimension 8" <> '' then
+            GenJournalLine.ValidateShortcutDimCode(7, RecordToPost."Dimension 8");
+
+        RecordToPost.Status := RecordToPost.Status::Created;
+        RecordToPost.Modify();
+
+        GenJournalLine.Insert();
+
+    end;
+
+    local procedure CreatePaymentTaxAJournal(var RecordToPost: Record IntPurchVoidPayment)
+    var
+        GenJournalLine: Record "Gen. Journal Line";
+        VendorLedEntry: Record "Vendor Ledger Entry";
+        GenJnlPostLine: Codeunit "Gen. Jnl.-Post Line";
+        CADBRPayTaxMgt: Codeunit "CADBR Payment Tax Mgt";
+        GJL: Record "Gen. Journal Line";
+        LineNo: Integer;
+    begin
+        GJL.Reset();
+        GJL.SetRange("Journal Template Name", RecordToPost."Journal Template Name");
+        GJL.SetRange("Journal Batch Name", RecordToPost."Journal Batch Name");
+        if GJL.FindLast() then
+            LineNo := GJL."Line No." + 10000
+        else
+            LineNo := 10000;
+
+        RecordToPost."Journal Line No." := LineNo;
+        RecordToPost.Modify();
+
+        GenJournalLine.Reset();
+        GenJournalLine.InitNewLine(RecordToPost."Posting Date", RecordToPost."Posting Date", RecordToPost."Posting Date",
+                                     RecordToPost.Description, RecordToPost."dimension 1",
+                                     RecordToPost."dimension 2", 0, '');
+
+        GenJournalLine."Journal Template Name" := RecordToPost."Journal Template Name";
+        GenJournalLine."Journal Batch Name" := RecordToPost."Journal Batch Name";
+        GenJournalLine."Line No." := RecordToPost."Journal Line No.";
+        GenJournalLine."Account Type" := RecordToPost."Account Type";
+        GenJournalLine."Account No." := RecordToPost."Account No.";
+
+        //Valor
+        GenJournalLine.VALIDATE(Amount, RecordToPost."Tax Amount");
+
+        GenJournalLine."Applies-to Doc. No." := RecordToPost."Applies-to Doc. No.";
+        //GenJournalLine."Applies-to Doc. Type" := RecordToPost."Applies-to Doc. Type"::Payment;
+        //GenJournalLine."Bal. Account No." := RecordToPost."Bal. Account No.";
+        //GenJournalLine."Bal. Account Type" := RecordToPost."Bal. Account Type";
+        GenJournalLine."Document No." := RecordToPost."Document No.";
+        GenJournalLine."Document Type" := RecordToPost."Document Type";
+
+        if RecordToPost."Applies-to Doc. No." <> '' then begin
+            VendorLedEntry.Reset();
+            VendorLedEntry.SetCurrentKey("Document No.");
+            VendorLedEntry.SetRange("Document No.", RecordToPost."Applies-to Doc. No.");
+            if VendorLedEntry.FindFirst() then
+                if VendorLedEntry."External Document No." <> '' then
+                    GenJournalLine."External Document No." := VendorLedEntry."External Document No."
+                else
+                    GenJournalLine."External Document No." := VendorLedEntry."Document No.";
+
+        end;
+
+        if RecordToPost."Dimension 1" <> '' then
+            GenJournalLine.Validate("Shortcut Dimension 1 Code", RecordToPost."Dimension 1");
+        if RecordToPost."Dimension 2" <> '' then
+            GenJournalLine.Validate("Shortcut Dimension 2 Code", RecordToPost."Dimension 2");
+        if RecordToPost."Dimension 3" <> '' then
+            GenJournalLine.ValidateShortcutDimCode(3, RecordToPost."Dimension 3");
+        if RecordToPost."Dimension 4" <> '' then
+            GenJournalLine.ValidateShortcutDimCode(4, RecordToPost."Dimension 4");
+        if RecordToPost."Dimension 5" <> '' then
+            GenJournalLine.ValidateShortcutDimCode(5, RecordToPost."Dimension 5");
+        if RecordToPost."Dimension 6" <> '' then
+            GenJournalLine.ValidateShortcutDimCode(6, RecordToPost."Dimension 6");
+        if RecordToPost."Dimension 7" <> '' then
+            GenJournalLine.ValidateShortcutDimCode(7, RecordToPost."Dimension 7");
+        if RecordToPost."Dimension 8" <> '' then
+            GenJournalLine.ValidateShortcutDimCode(7, RecordToPost."Dimension 8");
+
+        RecordToPost.Status := RecordToPost.Status::Created;
+        RecordToPost.Modify();
+
+        GenJournalLine.Insert();
+
+    end;
+
+    local procedure CreatePaymentTaxBJournal(var RecordToPost: Record IntPurchVoidPayment)
+    var
+        GenJournalLine: Record "Gen. Journal Line";
+        VendorLedEntry: Record "Vendor Ledger Entry";
+        GenJnlPostLine: Codeunit "Gen. Jnl.-Post Line";
+        CADBRPayTaxMgt: Codeunit "CADBR Payment Tax Mgt";
+        GJL: Record "Gen. Journal Line";
+        LineNo: Integer;
+    begin
+
+        GJL.Reset();
+        GJL.SetRange("Journal Template Name", RecordToPost."Journal Template Name");
+        GJL.SetRange("Journal Batch Name", RecordToPost."Journal Batch Name");
+        if GJL.FindLast() then
+            LineNo := GJL."Line No." + 10000
+        else
+            LineNo := 10000;
+
+        RecordToPost."Journal Line No." := LineNo;
+        RecordToPost.Modify();
+
+        GenJournalLine.Reset();
+        GenJournalLine.InitNewLine(RecordToPost."Posting Date", RecordToPost."Posting Date", RecordToPost."Posting Date",
+                                     RecordToPost.Description, RecordToPost."dimension 1",
+                                     RecordToPost."dimension 2", 0, '');
+
+        GenJournalLine."Journal Template Name" := RecordToPost."Journal Template Name";
+        GenJournalLine."Journal Batch Name" := RecordToPost."Journal Batch Name";
+        GenJournalLine."Line No." := RecordToPost."Journal Line No.";
+        GenJournalLine."Account Type" := RecordToPost."Account Type";
+        GenJournalLine."Account No." := RecordToPost."Tax Account No.";
+
+        //Valor
+        GenJournalLine.VALIDATE(Amount, Abs(RecordToPost."Tax Amount"));
+
+        GenJournalLine."Applies-to Doc. No." := RecordToPost."Applies-to Doc. No.";
+        //GenJournalLine."Applies-to Doc. Type" := RecordToPost."Applies-to Doc. Type"::Payment;
+        //GenJournalLine."Bal. Account No." := RecordToPost."Bal. Account No.";
+        //GenJournalLine."Bal. Account Type" := RecordToPost."Bal. Account Type";
         GenJournalLine."Document No." := RecordToPost."Document No.";
         GenJournalLine."Document Type" := RecordToPost."Document Type";
 
@@ -324,6 +497,7 @@ codeunit 50079 "IntPurchVoidPayment"
         PaymentLedgerEntry: Record "Vendor Ledger Entry";
         DetailedVendorLedgEntry: Record "Detailed Vendor Ledg. Entry";
         VendEntryApplyPostedEntries: Codeunit "VendEntry-Apply Posted Entries";
+        VLE: Record "Vendor Ledger Entry";
         TextLabel0001: Label 'Pagamento não localizado para Desaplicação do Cliente %1 - Tipo de documento %2 - Documento %3 - Aplicação %4';
         TextLabel0002: Label 'Pagamento já Desaplicado do Cliente %1 - Tipo de documento %2 - Documento %3 - Aplicação %4';
     begin
@@ -334,6 +508,39 @@ codeunit 50079 "IntPurchVoidPayment"
         if not RecordTocheck.IsEmpty then begin
             RecordTocheck.FindSet();
             repeat
+
+                VLE.Reset();
+                VLE.SetRange("Document No.", RecordTocheck."Applies-to Doc. No.");
+                VLE.SetFilter("CADBR Tax Jurisdiction Code", '<>%1', '');
+                VLE.SetRange("SBA Applies-to Doc. No.", RecordTocheck."External Document No.");
+                if VLE.FindFirst() then begin
+                    vle.CalcFields(Amount);
+
+                    RecordTocheck."Tax Amount" := VLE.Amount;
+                    RecordTocheck."Tax Account No." := VLE."Vendor No.";
+                end;
+
+                PaymentLedgerEntry.Reset();
+                PaymentLedgerEntry.SetCurrentKey("Vendor No.", "Document Type", "Document No.", Open);
+                PaymentLedgerEntry.SetRange("Vendor No.", RecordTocheck."Account No.");
+                PaymentLedgerEntry.SetRange("Document Type", RecordTocheck."Document Type"::" ");
+                PaymentLedgerEntry.SetRange("Document No.", RecordTocheck."Applies-to Doc. No.");
+                PaymentLedgerEntry.SetRange("SBA Applies-to Doc. No.", RecordTocheck."External Document No.");
+                if PaymentLedgerEntry.FindFirst() then begin
+
+                    DetailedVendorLedgEntry.Reset();
+                    DetailedVendorLedgEntry.SetCurrentKey("Vendor Ledger Entry No.", "Entry Type", Unapplied);
+                    DetailedVendorLedgEntry.SetRange("Vendor Ledger Entry No.", PaymentLedgerEntry."Entry No.");
+                    DetailedVendorLedgEntry.SetRange("Entry Type", DetailedVendorLedgEntry."Entry Type"::Application);
+                    DetailedVendorLedgEntry.SetRange(Unapplied, false);
+                    if DetailedVendorLedgEntry.FindFirst() then begin
+                        ClearLastError();
+
+                        UnapplyPayTaxVoid(RecordTocheck, DetailedVendorLedgEntry);
+                        RecordTocheck."Posting Message" := GetLastErrorText();
+                    end;
+
+                end;
 
                 PaymentLedgerEntry.Reset();
                 PaymentLedgerEntry.SetCurrentKey("Vendor No.", "Document Type", "Document No.", Open);
@@ -351,9 +558,8 @@ codeunit 50079 "IntPurchVoidPayment"
                 DetailedVendorLedgEntry.SetRange("Entry Type", DetailedVendorLedgEntry."Entry Type"::Application);
                 DetailedVendorLedgEntry.SetRange(Unapplied, false);
                 if not DetailedVendorLedgEntry.FindFirst() then
-                    RecordTocheck."Posting Message" := StrSubstNo(TextLabel0001, RecordTocheck."Account No.", RecordTocheck."Document Type"::Payment,
+                    RecordTocheck."Posting Message" := StrSubstNo(TextLabel0002, RecordTocheck."Account No.", RecordTocheck."Document Type"::Payment,
                                                                   RecordTocheck."Applies-to Doc. No.", RecordTocheck."External Document No.");
-
 
                 Clear(ApplyUnapplyParameters);
                 GLSetup.GetRecordOnce();
@@ -365,10 +571,15 @@ codeunit 50079 "IntPurchVoidPayment"
                     GenJnlBatch.Get(GLSetup."Apply Jnl. Template Name", GLSetup."Apply Jnl. Batch Name");
                 end;
 
-                ApplyUnapplyParameters."Document No." := RecordTocheck."Applies-to Doc. No.";
-                ApplyUnapplyParameters."Posting Date" := RecordTocheck."Posting Date";
+                ClearLastError();
+                if RecordTocheck."Posting Message" = '' then
+                    UnapplyPayTaxVoid(RecordTocheck, DetailedVendorLedgEntry);
 
-                VendEntryApplyPostedEntries.PostUnApplyVendor(DetailedVendorLedgEntry, ApplyUnapplyParameters);
+
+                if RecordTocheck."Tax Paid" = true then
+                    ApplyPayTaxVoid(RecordTocheck);
+
+                RecordTocheck."Posting Message" := GetLastErrorText();
 
                 if RecordTocheck."Posting Message" <> '' then
                     RecordTocheck.Status := RecordTocheck.Status::"Data Error"
@@ -377,8 +588,86 @@ codeunit 50079 "IntPurchVoidPayment"
 
                 RecordTocheck.Modify();
 
+                Commit();
+
             until RecordTocheck.Next() = 0;
 
+        end;
+    end;
+
+    [TryFunction]
+    procedure UnapplyPayTaxVoid(var RecordTocheck: Record IntPurchVoidPayment; var DetailedVendorLedgEntry: Record "Detailed Vendor Ledg. Entry")
+    var
+        ApplyUnapplyParameters: Record "Apply Unapply Parameters";
+        GLSetup: Record "General Ledger Setup";
+        GenJnlBatch: Record "Gen. Journal Batch";
+        PaymentLedgerEntry: Record "Vendor Ledger Entry";
+        VendEntryApplyPostedEntries: Codeunit "VendEntry-Apply Posted Entries";
+    begin
+
+        ApplyUnapplyParameters."Document No." := RecordTocheck."Applies-to Doc. No.";
+        ApplyUnapplyParameters."Posting Date" := DetailedVendorLedgEntry."Posting Date";
+
+        VendEntryApplyPostedEntries.PostUnApplyVendor(DetailedVendorLedgEntry, ApplyUnapplyParameters);
+
+    end;
+
+    [TryFunction]
+    local procedure ApplyPayTaxVoid(var RecordToAplly: Record IntPurchVoidPayment)
+    var
+        PaymentLedger: Record "Vendor Ledger Entry";
+        DocumentLedger: Record "Vendor Ledger Entry";
+        ApplyID: Text;
+        ApplicationDate: Date;
+        GLSetup: Record "General Ledger Setup";
+        ApplyUnapplyParameters: Record "Apply Unapply Parameters";
+        VendEntryApplyPostedEntries: Codeunit "VendEntry-Apply Posted Entries";
+        VendEntrySetApplID: Codeunit "Vend. Entry-SetAppl.ID";
+    begin
+        ApplyID := 'INTPAYMENT' + FORMAT(CURRENTDATETIME, 0, '<Year><Month,2><Day,2><Hours24,2><Minutes,2><Seconds,2><Thousands>');
+        ApplyID := CopyStr(ApplyID, 1, MaxStrLen(PaymentLedger."Applies-to ID"));
+
+        DocumentLedger.Reset();
+        DocumentLedger.SetCurrentKey("Vendor No.", "Document Type", "Document No.", Open);
+        DocumentLedger.SetRange("Vendor No.", RecordToAplly."Account No.");
+        DocumentLedger.SetRange("Document Type", RecordToAplly."Document Type"::" ");
+        DocumentLedger.SetRange("Document No.", RecordToAplly."Applies-to Doc. No.");
+        DocumentLedger.SetRange("SBA Applies-to Doc. No.", RecordToAplly."External Document No.");
+        if not DocumentLedger.IsEmpty then begin
+            DocumentLedger.FindSet();
+
+            PaymentLedger.Reset();
+            PaymentLedger.SetCurrentKey("Vendor No.", "Document Type", "Document No.", Open);
+            PaymentLedger.SetRange("Vendor No.", RecordToAplly."Account No.");
+            //PaymentLedger.SetRange("Document Type", RecordToFilter."Document Type");
+            PaymentLedger.SetRange("Document No.", RecordToAplly."External Document No.");
+            PaymentLedger.SetRange(Open, true);
+            if not PaymentLedger.IsEmpty then begin
+                PaymentLedger.FindSet();
+                PaymentLedger.CalcFields(Amount);
+                DocumentLedger.CalcFields(Amount);
+                DocumentLedger."Applying Entry" := true;
+                DocumentLedger."Applies-to ID" := ApplyID;
+                PaymentLedger."Applies-to ID" := ApplyID;
+                DocumentLedger.CalcFields("Remaining Amount");
+                DocumentLedger.Validate("Amount to Apply", DocumentLedger."Remaining Amount");
+                Codeunit.Run(Codeunit::"Vend. Entry-Edit", DocumentLedger);
+                Commit();
+                VendEntrySetApplID.SetApplId(PaymentLedger, DocumentLedger, ApplyID);
+                ApplicationDate := VendEntryApplyPostedEntries.GetApplicationDate(DocumentLedger);
+
+                GLSetup.Get();
+                if GLSetup."Journal Templ. Name Mandatory" then begin
+                    GLSetup.TestField("Apply Jnl. Template Name");
+                    GLSetup.TestField("Apply Jnl. Batch Name");
+                    ApplyUnapplyParameters."Journal Template Name" := GLSetup."Apply Jnl. Template Name";
+                    ApplyUnapplyParameters."Journal Batch Name" := GLSetup."Apply Jnl. Batch Name";
+                end;
+
+                VendEntryApplyPostedEntries.Apply(DocumentLedger, ApplyUnapplyParameters);
+
+
+            end;
         end;
     end;
 

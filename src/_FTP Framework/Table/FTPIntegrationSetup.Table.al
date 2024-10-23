@@ -130,6 +130,11 @@ table 50001 "FTP Integration Setup"
             Caption = 'Copy to Journal';
             DataClassification = CustomerContent;
         }
+        field(208; "Unapply"; Boolean)
+        {
+            Caption = 'Unapply';
+            DataClassification = CustomerContent;
+        }
 
 
     }

@@ -131,6 +131,11 @@ page 50000 "FTP Integration Setup"
                     ApplicationArea = All;
                     Caption = 'Copy to Journal';
                 }
+                field(Unapply; Rec.Unapply)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Unapply';
+                }
 
             }
 
