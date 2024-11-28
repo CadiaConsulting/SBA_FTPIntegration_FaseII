@@ -13,6 +13,7 @@ codeunit 50001 "FTP Communication"
         act: Text;
         EntryNo: BigInteger;
     begin
+        ClearLastError();
 
         FTPSetup.Get();
         FTPSetup.TestField("URL Azure");

@@ -1278,7 +1278,11 @@ codeunit 50002 "Import Excel Buffer"
                     TempExcelBuffer.AddColumn(IntPurchase."Order PIS Credit", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
                     TempExcelBuffer.AddColumn(IntPurchase."Order Cofins Credit", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
                     TempExcelBuffer.AddColumn(IntPurchase."Order DIRF Ret", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Number);
-                    TempExcelBuffer.AddColumn(IntPurchase.Rejected, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+                    if IntPurchase.Rejected = false then
+                        TempExcelBuffer.AddColumn('2', false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text)
+                    else
+                        TempExcelBuffer.AddColumn('1', false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
+
                     TempExcelBuffer.AddColumn(IntPurchase.Status, false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
                     TempExcelBuffer.AddColumn(IntPurchase."Posting Message", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
                     TempExcelBuffer.AddColumn(IntPurchase."Reason Description", false, '', false, false, false, '', TempExcelBuffer."Cell Type"::Text);
@@ -1432,13 +1436,10 @@ codeunit 50002 "Import Excel Buffer"
                                 IPSaveRejected.FindSet();
                                 repeat
 
-                                    if GlobalLanguage = 1046 then
-                                        Evaluate(IPSaveRejected.Rejected, GetValueAtCell(RowNo, 2))
+                                    if GetValueAtCell(RowNo, 2) = '2' then
+                                        IPSaveRejected.Rejected := false
                                     else
-                                        if GetValueAtCell(RowNo, 2) = 'Não' then
-                                            IPSaveRejected.Rejected := false
-                                        else
-                                            IPSaveRejected.Rejected := true;
+                                        IPSaveRejected.Rejected := true;
 
                                     IPSaveRejected."Release to Post" := not IPSaveRejected.Rejected;
                                     IPSaveRejected."Purch Post Excel File Name" := copystr(Filename, 1, 200);
@@ -3526,6 +3527,7 @@ codeunit 50002 "Import Excel Buffer"
         VatEntry: Record "VAT Entry";
         FTPCommunication: codeunit "FTP Communication";
         IntPurcPay: Record IntPurchVoidPayment;
+        UserSetup: codeunit "User Setup Management";
         ret: Text;
         lines: List of [Text];
         line: Text;
@@ -3544,12 +3546,14 @@ codeunit 50002 "Import Excel Buffer"
         ErrorFile: Boolean;
         ExistingLineNo: Integer;
         ExistLine: Boolean;
+        ExistLineExcel: Boolean;
         ReplicationKeyIndex: Integer;
         MissingKeyReplicationCounterErr: Label 'Secondary Key for table ''%1'' on field ''%2'' is missing. This is a programming error.';
         IntegrationEmail: Codeunit "Integration Email";
         DocNo: Text;
         TotDirectUnit: Decimal;
         DecimalValueTot: Decimal;
+        ErrorDate: Text;
 
     begin
         RowNo := 0;
@@ -3629,72 +3633,120 @@ codeunit 50002 "Import Excel Buffer"
                     IntegrationFieldRef.value := CopyStr(FileName, 1, IntegrationFieldRef.Length);
                     IntegrationErros.InsertErros(IntegrationErrosType, '', LineNo, '', 'Layout Error', '', FileName);
                     IntegrationRef.Insert();
-                end
-                else
-                    for RowNo := 2 to MaxRowNo do begin
+                end else begin
 
-                        Clear(LineNo);
-                        clear(ExistingLineNo);
-                        clear(ExistLine);
-                        Clear(DocNo);
+                    clear(ExistingLineNo);
+                    clear(ExistLine);
+                    Clear(DocNo);
+                    Clear(ExistLineExcel);
 
-                        Evaluate(LineNo, GetValueAtCell(RowNo, 3));
-                        DocNo := GetValueAtCell(RowNo, 8);
-                        SearchRef.CurrentKeyIndex(2);
+                    SearchRef.Reset();
+                    SearchFieldRef := SearchRef.Field(115);
+                    SearchFieldRef.SetRange(FileName);
+                    if SearchRef.FindFirst() then begin
 
-                        SearchFieldRef := SearchRef.Field(1);
-                        SearchFieldRef.SetRange(GetValueAtCell(RowNo, 1));
-                        SearchFieldRef := SearchRef.Field(2);
-                        SearchFieldRef.SetRange(GetValueAtCell(RowNo, 2));
                         SearchFieldRef := SearchRef.Field(3);
-                        SearchFieldRef.SetRange(LineNo);
-                        SearchFieldRef := SearchRef.Field(8);
-                        SearchFieldRef.SetRange(GetValueAtCell(RowNo, 8));
-                        if SearchRef.FindFirst() then begin
-                            SearchFieldRef := SearchRef.Field(3);
-                            ExistingLineNo := SearchFieldRef.Value;
-                            ExistLine := true;
-                        end;
+                        ExistingLineNo := SearchFieldRef.Value;
+                        ExistLine := true;
+                        ExistLineExcel := true;
+                        ErrorFile := true;
+
+                        IntegrationRef.Init();
+
+                        //"Journal Batch Name"
+                        Clear(TextValue);
+                        TextValue := GetValueAtCell(RowNo, 1);
+                        IntegrationFieldRef := IntegrationRef.Field(1);
+                        IntegrationFieldRef.Value := TextValue;
+
+                        //"Journal Batch Name"
+                        IntegrationFieldRef := IntegrationRef.Field(2);
+                        IntegrationFieldRef.Value := 'ERRO' + DelChr(Format(Time), '=', ':');
+
+                        //Line No.
+                        IntegrationFieldRef := IntegrationRef.Field(3);
+                        IntegrationFieldRef.Value := 1;
 
                         //"Journal Template Name"
-                        ColNo := 1;
-                        Clear(TextValue);
-                        TextValue := GetValueAtCell(RowNo, ColNo);
-                        TextValue := TextValue.Trim();
+                        IntegrationFieldRef := IntegrationRef.Field(99);
+                        IntegrationFieldRef.Value := 'Errors-' + format(LineNo);
 
-                        if StrLen(TextValue) <= 10 then begin
+                        IntegrationFieldRef := IntegrationRef.Field(98);
+                        IntegrationFieldRef.Value := IntegrationImportStatus::"Layout Error";
 
-                            if ExistLine then begin
-                                IntegrationRef.Get(SearchRef.RecordId);
+                        IntegrationFieldRef := IntegrationRef.Field(99);
+                        IntegrationFieldRef.Value := 'Arquivo ja Importado anteriormente!';
+
+                        IntegrationFieldRef := IntegrationRef.Field(115);
+                        IntegrationFieldRef.value := CopyStr(FileName, 1, IntegrationFieldRef.Length);
+                        IntegrationErros.InsertErros(IntegrationErrosType, '', LineNo, '', 'Layout Error', '', FileName);
+                        IntegrationRef.Insert();
+
+                    end;
+
+                    if ErrorFile = false then
+                        for RowNo := 2 to MaxRowNo do begin
+
+                            Clear(DocNo);
+                            Clear(LineNo);
+                            Evaluate(LineNo, GetValueAtCell(RowNo, 3));
+                            clear(ExistingLineNo);
+                            clear(ExistLine);
+                            Clear(DocNo);
+
+                            DocNo := GetValueAtCell(RowNo, 8);
+                            SearchRef.CurrentKeyIndex(2);
+
+                            //"Journal Template Name"
+                            ColNo := 1;
+                            Clear(TextValue);
+                            TextValue := GetValueAtCell(RowNo, ColNo);
+                            TextValue := TextValue.Trim();
+
+                            if StrLen(TextValue) > 10 then begin
+
+                                IntegrationRef.Init();
+
+                                //"Journal Batch Name"
+                                Clear(TextValue);
+                                TextValue := GetValueAtCell(RowNo, 1);
+                                IntegrationFieldRef := IntegrationRef.Field(2);
+                                IntegrationFieldRef.Value := TextValue;
+
+                                //Line No.
+                                IntegrationFieldRef := IntegrationRef.Field(3);
+                                IntegrationFieldRef.Value := LineNo;
 
                                 //Status
                                 IntegrationFieldRef := IntegrationRef.Field(98);
-                                CompareIntImportStatus := IntegrationFieldRef.Value;
-                                if CompareIntImportStatus = IntegrationImportStatus::Posted then begin
-                                    ExistLine := false;
-                                    //posting Message
-                                    IntegrationFieldRef := IntegrationRef.Field(99);
-                                    IntegrationFieldRef.Value := 'Duplicate ' + copystr(Filename, 1, 200);
-                                    IntegrationRef.Modify();
+                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
 
-                                end
-                                else begin
-                                    ExistLine := true;
-                                    //Status
-                                    IntegrationFieldRef := IntegrationRef.Field(98);
-                                    IntegrationFieldRef.Value := IntegrationImportStatus::Imported;
-                                    IntegrationFieldRef := IntegrationRef.Field(115);
-                                    IntegrationFieldRef.value := CopyStr(FileName, 1, IntegrationFieldRef.Length);
-                                end;
+                                //"Excel File Name"
+                                IntegrationFieldRef := IntegrationRef.Field(115);
+                                IntegrationFieldRef.value := CopyStr(FileName, 1, IntegrationFieldRef.Length);
 
-                            end
-                            else begin
-                                ExistLine := false;
+                                //"Journal Template Name"
+                                IntegrationFieldRef := IntegrationRef.Field(99);
+                                IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
+
+                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 10 characters', TextValue, FileName);
+                                ErrorFile := true;
+                                IntegrationRef.Insert();
+
+                            end;
+
+                            if (ErrorFile = false) then begin
 
                                 IntegrationRef.Init();
 
                                 //"Journal Template Name"
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                IntegrationFieldRef := IntegrationRef.Field(1);
+                                IntegrationFieldRef.Value := TextValue;
+
+                                //"Journal Batch Name"
+                                Clear(TextValue);
+                                TextValue := GetValueAtCell(RowNo, 2);
+                                IntegrationFieldRef := IntegrationRef.Field(2);
                                 IntegrationFieldRef.Value := TextValue;
 
                                 //Line No.
@@ -3708,575 +3760,590 @@ codeunit 50002 "Import Excel Buffer"
                                 //"Excel File Name"
                                 IntegrationFieldRef := IntegrationRef.Field(115);
                                 IntegrationFieldRef.value := CopyStr(FileName, 1, IntegrationFieldRef.Length);
-                            end;
 
-                        end else begin
-                            IntegrationRef.Init();
-
-                            //Line No.
-                            IntegrationFieldRef := IntegrationRef.Field(3);
-                            IntegrationFieldRef.Value := LineNo;
-
-                            //Status
-                            IntegrationFieldRef := IntegrationRef.Field(98);
-                            IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
-
-                            //"Excel File Name"
-                            IntegrationFieldRef := IntegrationRef.Field(115);
-                            IntegrationFieldRef.value := CopyStr(FileName, 1, IntegrationFieldRef.Length);
-
-                            //"Journal Template Name"
-                            IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                            IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
-
-                            IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 10 characters', TextValue, FileName);
-                            ErrorFile := true;
-                        end;
-
-                        if not (CompareIntImportStatus = IntegrationImportStatus::Posted) then begin
-                            //"Journal Batch Name"
-                            ColNo := 2;
-                            Clear(TextValue);
-                            TextValue := GetValueAtCell(RowNo, ColNo);
-                            TextValue := TextValue.Trim();
-
-                            if (StrLen(TextValue) <= 10) then begin
-                                //"Journal Batch Name"
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := TextValue;
-
-                            end else begin
-                                //Status
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
 
                                 //"Journal Batch Name"
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
+                                ColNo := 2;
+                                Clear(TextValue);
+                                TextValue := GetValueAtCell(RowNo, ColNo);
+                                TextValue := TextValue.Trim();
 
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 10 characters', TextValue, FileName);
-                                ErrorFile := true;
-                            end;
+                                if (StrLen(TextValue) <= 10) then begin
+                                    //"Journal Batch Name"
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := TextValue;
 
-                            //"Account No."
-                            ColNo := 5;
-                            Clear(TextValue);
-                            TextValue := GetValueAtCell(RowNo, ColNo);
-                            TextValue := TextValue.Trim();
+                                end else begin
+                                    //Status
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
 
-                            if (StrLen(TextValue) <= 20) then begin
+                                    //"Journal Batch Name"
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
+
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 10 characters', TextValue, FileName);
+                                    ErrorFile := true;
+                                end;
+
                                 //"Account No."
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := TextValue;
+                                ColNo := 5;
+                                Clear(TextValue);
+                                TextValue := GetValueAtCell(RowNo, ColNo);
+                                TextValue := TextValue.Trim();
 
-                            end else begin
-                                //Status
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                if (StrLen(TextValue) <= 20) then begin
+                                    //"Account No."
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := TextValue;
 
-                                //"Account No."
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
+                                end else begin
+                                    //Status
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
 
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
-                                ErrorFile := true;
-                            end;
+                                    //"Account No."
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
 
-                            //"Posting Date"
-                            ColNo := 6;
-                            Clear(DateValue);
-                            if ValidateDate(GetValueAtCell(RowNo, ColNo)) then begin
-                                //"Posting Date"
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := GlobalDateYes;
-                            end else begin
-                                //Status
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
+                                    ErrorFile := true;
+                                end;
 
                                 //"Posting Date"
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                //IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
+                                ColNo := 6;
+                                Clear(DateValue);
+                                if ValidateDate(GetValueAtCell(RowNo, ColNo)) then begin
+                                    //"Posting Date"
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := GlobalDateYes;
+                                end else begin
+                                    //Status
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
 
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, ColNo), FileName);
-                                ErrorFile := true;
-                            end;
+                                    //"Posting Date"
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    //IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
 
-                            //Document Type
-                            ColNo := 7;
-                            Clear(TextValue);
-                            TextValue := GetValueAtCell(RowNo, ColNo);
-                            TextValue := TextValue.Trim();
-
-                            if TextValue = 'Blank' then
-                                TextValue := ' ';
-
-                            IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                            if not evaluate(IntegrationFieldRef, TextValue) then begin
-                                //Status
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, ColNo), FileName);
+                                    ErrorFile := true;
+                                end;
 
                                 //Document Type
+                                ColNo := 7;
+                                Clear(TextValue);
+                                TextValue := GetValueAtCell(RowNo, ColNo);
+                                TextValue := TextValue.Trim();
+
+                                if TextValue = 'Blank' then
+                                    TextValue := ' ';
+
                                 IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                if not evaluate(IntegrationFieldRef, TextValue) then begin
+                                    //Status
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
 
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
-                                ErrorFile := true;
-                            end;
+                                    //Document Type
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
+                                    ErrorFile := true;
+                                end;
 
 
-                            //"Document No."
-                            ColNo := 8;
-                            Clear(TextValue);
-                            TextValue := GetValueAtCell(RowNo, ColNo);
-                            TextValue := TextValue.Trim();
-
-                            if (StrLen(TextValue) <= 20) then begin
                                 //"Document No."
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := TextValue;
+                                ColNo := 8;
+                                Clear(TextValue);
+                                TextValue := GetValueAtCell(RowNo, ColNo);
+                                TextValue := TextValue.Trim();
 
-                            end else begin
-                                //Status
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                if (StrLen(TextValue) <= 20) then begin
+                                    //"Document No."
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := TextValue;
 
-                                //"Document No."
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
+                                end else begin
+                                    //Status
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
 
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
-                                ErrorFile := true;
-                            end;
+                                    //"Document No."
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
 
-                            //Description
-                            ColNo := 9;
-                            Clear(TextValue);
-                            TextValue := GetValueAtCell(RowNo, ColNo);
-                            TextValue := TextValue.Trim();
-
-                            if (StrLen(TextValue) <= 100) then begin
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
+                                    ErrorFile := true;
+                                end;
 
                                 //Description
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := TextValue;
+                                ColNo := 9;
+                                Clear(TextValue);
+                                TextValue := GetValueAtCell(RowNo, ColNo);
+                                TextValue := TextValue.Trim();
 
-                            end else begin
-                                //Status
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                if (StrLen(TextValue) <= 100) then begin
 
-                                //Description
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
+                                    //Description
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := TextValue;
 
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 100 characters', TextValue, FileName);
-                                ErrorFile := true;
-                            end;
+                                end else begin
+                                    //Status
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
 
-                            //Bal. Account Type
-                            ColNo := 10;
-                            Clear(TextValue);
-                            TextValue := GetValueAtCell(RowNo, ColNo);
-                            TextValue := TextValue.Trim();
+                                    //Description
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
 
-                            if GlobalLanguage <> 1046 then begin
-                                if TextValue <> 'BANK ACCOUNT' then
-                                    TextValue := 'BANK ACCOUNT';
-                            end else
-                                if TextValue <> 'Banco' then
-                                    TextValue := 'Banco';
-
-                            IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                            if not evaluate(IntegrationFieldRef, TextValue) then begin
-                                //Status
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 100 characters', TextValue, FileName);
+                                    ErrorFile := true;
+                                end;
 
                                 //Bal. Account Type
+                                ColNo := 10;
+                                Clear(TextValue);
+                                TextValue := GetValueAtCell(RowNo, ColNo);
+                                TextValue := TextValue.Trim();
+
+                                if GlobalLanguage <> 1046 then begin
+                                    if TextValue <> 'BANK ACCOUNT' then
+                                        TextValue := 'BANK ACCOUNT';
+                                end else
+                                    if TextValue <> 'Banco' then
+                                        TextValue := 'Banco';
+
                                 IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                if not evaluate(IntegrationFieldRef, TextValue) then begin
+                                    //Status
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
 
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Bal. Account Type Error', TextValue, FileName);
-                                ErrorFile := true;
-                            end;
+                                    //Bal. Account Type
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
 
-                            //"Bal. Account No."
-                            ColNo := 11;
-                            Clear(TextValue);
-                            TextValue := GetValueAtCell(RowNo, ColNo);
-                            TextValue := TextValue.Trim();
-
-                            if (StrLen(TextValue) <= 20) then begin
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Bal. Account Type Error', TextValue, FileName);
+                                    ErrorFile := true;
+                                end;
 
                                 //"Bal. Account No."
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := TextValue;
+                                ColNo := 11;
+                                Clear(TextValue);
+                                TextValue := GetValueAtCell(RowNo, ColNo);
+                                TextValue := TextValue.Trim();
 
-                            end else begin
-                                //Status
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                if (StrLen(TextValue) <= 20) then begin
 
-                                //"Bal. Account No."
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
+                                    //"Bal. Account No."
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := TextValue;
 
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
-                                ErrorFile := true;
-                            end;
+                                end else begin
+                                    //Status
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
 
-                            //Amount
-                            ColNo := 12;
-                            Clear(DecimalValue);
-                            if ValidateDecimal(GetValueAtCell(RowNo, ColNo)) then begin
+                                    //"Bal. Account No."
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
+
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
+                                    ErrorFile := true;
+                                end;
+
                                 //Amount
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := GlobalDecimalYes;
-                            end
-                            else begin
-                                //Status
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
-                                //Amount
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                ColNo := 12;
+                                Clear(DecimalValue);
+                                if ValidateDecimal(GetValueAtCell(RowNo, ColNo)) then begin
+                                    //Amount
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := GlobalDecimalYes;
+                                end
+                                else begin
+                                    //Status
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                    //Amount
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
 
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, ColNo), FileName);
-                                ErrorFile := true;
-                            end;
-
-                            //Shortcut Dimension 1 Code
-                            ColNo := 14;
-                            Clear(TextValue);
-                            TextValue := GetValueAtCell(RowNo, ColNo);
-                            TextValue := TextValue.Trim();
-
-                            if (StrLen(TextValue) <= 20) then begin
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), CopyStr(GetLastErrorText(), 1, 250), GetValueAtCell(RowNo, ColNo), FileName);
+                                    ErrorFile := true;
+                                end;
 
                                 //Shortcut Dimension 1 Code
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := TextValue;
+                                ColNo := 14;
+                                Clear(TextValue);
+                                TextValue := GetValueAtCell(RowNo, ColNo);
+                                TextValue := TextValue.Trim();
 
-                            end else begin
-                                //Status
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                if (StrLen(TextValue) <= 20) then begin
 
-                                //Shortcut Dimension 1 Code
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
+                                    //Shortcut Dimension 1 Code
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := TextValue;
 
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
-                                ErrorFile := true;
-                            end;
+                                end else begin
+                                    //Status
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
 
-                            //Shortcut Dimension 2 Code
-                            ColNo := 15;
-                            Clear(TextValue);
-                            TextValue := GetValueAtCell(RowNo, ColNo);
-                            TextValue := TextValue.Trim();
+                                    //Shortcut Dimension 1 Code
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
 
-                            if (StrLen(TextValue) <= 20) then begin
-
-                                //Shortcut Dimension 2 Code
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := TextValue;
-
-                            end else begin
-                                //Status
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
+                                    ErrorFile := true;
+                                end;
 
                                 //Shortcut Dimension 2 Code
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
+                                ColNo := 15;
+                                Clear(TextValue);
+                                TextValue := GetValueAtCell(RowNo, ColNo);
+                                TextValue := TextValue.Trim();
 
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
-                                ErrorFile := true;
-                            end;
+                                if (StrLen(TextValue) <= 20) then begin
 
-                            //Shortcut Dimension 3 Code
-                            ColNo := 16;
-                            Clear(TextValue);
-                            TextValue := GetValueAtCell(RowNo, ColNo);
-                            TextValue := TextValue.Trim();
+                                    //Shortcut Dimension 2 Code
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := TextValue;
 
-                            if (StrLen(TextValue) <= 20) then begin
+                                end else begin
+                                    //Status
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+
+                                    //Shortcut Dimension 2 Code
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
+
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
+                                    ErrorFile := true;
+                                end;
 
                                 //Shortcut Dimension 3 Code
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := TextValue;
+                                ColNo := 16;
+                                Clear(TextValue);
+                                TextValue := GetValueAtCell(RowNo, ColNo);
+                                TextValue := TextValue.Trim();
 
-                            end else begin
-                                //Status
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                if (StrLen(TextValue) <= 20) then begin
 
-                                //Shortcut Dimension 3 Code
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
+                                    //Shortcut Dimension 3 Code
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := TextValue;
 
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
-                                ErrorFile := true;
-                            end;
+                                end else begin
+                                    //Status
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
 
-                            //Shortcut Dimension 4 Code
-                            ColNo := 17;
-                            Clear(TextValue);
-                            TextValue := GetValueAtCell(RowNo, ColNo);
-                            TextValue := TextValue.Trim();
+                                    //Shortcut Dimension 3 Code
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
 
-                            if (StrLen(TextValue) <= 20) then begin
-
-                                //Shortcut Dimension 4 Code
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := TextValue;
-
-                            end else begin
-                                //Status
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
+                                    ErrorFile := true;
+                                end;
 
                                 //Shortcut Dimension 4 Code
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
+                                ColNo := 17;
+                                Clear(TextValue);
+                                TextValue := GetValueAtCell(RowNo, ColNo);
+                                TextValue := TextValue.Trim();
 
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
-                                ErrorFile := true;
-                            end;
+                                if (StrLen(TextValue) <= 20) then begin
 
-                            //Shortcut Dimension 5 Code
-                            ColNo := 18;
-                            Clear(TextValue);
-                            TextValue := GetValueAtCell(RowNo, ColNo);
-                            TextValue := TextValue.Trim();
+                                    //Shortcut Dimension 4 Code
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := TextValue;
 
-                            if (StrLen(TextValue) <= 20) then begin
+                                end else begin
+                                    //Status
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+
+                                    //Shortcut Dimension 4 Code
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
+
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
+                                    ErrorFile := true;
+                                end;
 
                                 //Shortcut Dimension 5 Code
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := TextValue;
+                                ColNo := 18;
+                                Clear(TextValue);
+                                TextValue := GetValueAtCell(RowNo, ColNo);
+                                TextValue := TextValue.Trim();
 
-                            end else begin
-                                //Status
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                if (StrLen(TextValue) <= 20) then begin
 
-                                //Shortcut Dimension 5 Code
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
+                                    //Shortcut Dimension 5 Code
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := TextValue;
 
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
-                                ErrorFile := true;
-                            end;
+                                end else begin
+                                    //Status
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
 
-                            //Shortcut Dimension 6 Code
-                            ColNo := 19;
-                            Clear(TextValue);
-                            TextValue := GetValueAtCell(RowNo, ColNo);
-                            TextValue := TextValue.Trim();
+                                    //Shortcut Dimension 5 Code
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
 
-                            if (StrLen(TextValue) <= 20) then begin
-
-                                //Shortcut Dimension 6 Code
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := TextValue;
-
-                            end else begin
-                                //Status
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
+                                    ErrorFile := true;
+                                end;
 
                                 //Shortcut Dimension 6 Code
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo);
-                                IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
+                                ColNo := 19;
+                                Clear(TextValue);
+                                TextValue := GetValueAtCell(RowNo, ColNo);
+                                TextValue := TextValue.Trim();
 
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
-                                ErrorFile := true;
-                            end;
+                                if (StrLen(TextValue) <= 20) then begin
 
-                            //Applies-to Doc. Type
-                            ColNo := 20;
-                            Clear(TextValue);
-                            TextValue := GetValueAtCell(RowNo, ColNo);
-                            TextValue := TextValue.Trim();
+                                    //Shortcut Dimension 6 Code
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := TextValue;
 
-                            TextValue := 'Invoice';
+                                end else begin
+                                    //Status
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
 
-                            //Applies-to Doc. Type
-                            IntegrationFieldRef := IntegrationRef.Field(ColNo + 2);
-                            if not evaluate(IntegrationFieldRef, TextValue) then begin
-                                //Status
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                    //Shortcut Dimension 6 Code
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo);
+                                    IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
+
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
+                                    ErrorFile := true;
+                                end;
+
+                                //Applies-to Doc. Type
+                                ColNo := 20;
+                                Clear(TextValue);
+                                TextValue := GetValueAtCell(RowNo, ColNo);
+                                TextValue := TextValue.Trim();
+
+                                TextValue := 'Invoice';
 
                                 //Applies-to Doc. Type
                                 IntegrationFieldRef := IntegrationRef.Field(ColNo + 2);
+                                if not evaluate(IntegrationFieldRef, TextValue) then begin
+                                    //Status
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
 
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
-                                ErrorFile := true;
-                            end;
+                                    //Applies-to Doc. Type
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo + 2);
 
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
+                                    ErrorFile := true;
+                                end;
 
-                            //Applies-to Doc. No.
-                            ColNo := 21;
-                            Clear(TextValue);
-                            TextValue := GetValueAtCell(RowNo, ColNo);
-                            TextValue := TextValue.Trim();
-
-                            if (StrLen(TextValue) <= 20) then begin
-                                //Applies-to Doc. No.
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo + 2);
-                                IntegrationFieldRef.Value := TextValue;
-                            end else begin
-                                //Status
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
 
                                 //Applies-to Doc. No.
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo + 2);
-                                IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
+                                ColNo := 21;
+                                Clear(TextValue);
+                                TextValue := GetValueAtCell(RowNo, ColNo);
+                                TextValue := TextValue.Trim();
 
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
-                                ErrorFile := true;
-                            end;
-                            // end;
+                                if (StrLen(TextValue) <= 20) then begin
+                                    //Applies-to Doc. No.
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo + 2);
+                                    IntegrationFieldRef.Value := TextValue;
+                                end else begin
+                                    //Status
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
 
-                            //External Document No.
-                            ColNo := 22;
-                            Clear(TextValue);
-                            TextValue := GetValueAtCell(RowNo, ColNo);
-                            TextValue := TextValue.Trim();
+                                    //Applies-to Doc. No.
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo + 2);
+                                    IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
 
-                            if (StrLen(TextValue) <= 20) then begin
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
+                                    ErrorFile := true;
+                                end;
+                                // end;
+
                                 //External Document No.
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo + 2);
-                                IntegrationFieldRef.Value := TextValue;
-                            end else begin
-                                //Status
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                ColNo := 22;
+                                Clear(TextValue);
+                                TextValue := GetValueAtCell(RowNo, ColNo);
+                                TextValue := TextValue.Trim();
 
-                                //External Document No.
-                                IntegrationFieldRef := IntegrationRef.Field(ColNo + 2);
-                                IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
+                                if (StrLen(TextValue) <= 20) then begin
+                                    //External Document No.
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo + 2);
+                                    IntegrationFieldRef.Value := TextValue;
+                                end else begin
+                                    //Status
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
 
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
-                                ErrorFile := true;
+                                    //External Document No.
+                                    IntegrationFieldRef := IntegrationRef.Field(ColNo + 2);
+                                    IntegrationFieldRef.Value := 'Errors-' + format(RowNo);
+
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Maximum 20 characters', TextValue, FileName);
+                                    ErrorFile := true;
+                                end;
+
+                                //Check empty values ++++++++
+                                Clear(TextValue);
+                                IntegrationFieldRef := IntegrationRef.Field(1);
+                                TextValue := IntegrationFieldRef.Value;
+                                if TextValue = '' then begin
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'It cannot be empty.', TextValue, FileName);
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                end;
+
+                                Clear(TextValue);
+                                IntegrationFieldRef := IntegrationRef.Field(2);
+                                TextValue := IntegrationFieldRef.Value;
+                                if TextValue = '' then begin
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'It cannot be empty.', TextValue, FileName);
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                end;
+
+                                Clear(IntegerValue);
+                                IntegrationFieldRef := IntegrationRef.Field(3);
+                                IntegerValue := IntegrationFieldRef.Value;
+                                if IntegerValue = 0 then begin
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'It cannot be zero.', TextValue, FileName);
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                end;
+
+                                Clear(TextValue);
+                                IntegrationFieldRef := IntegrationRef.Field(5);
+                                TextValue := IntegrationFieldRef.Value;
+                                if TextValue = '' then begin
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'It cannot be empty.', TextValue, FileName);
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                end;
+
+                                Clear(DateValue);
+                                IntegrationFieldRef := IntegrationRef.Field(6);
+                                DateValue := IntegrationFieldRef.Value;
+                                if DateValue = 0D then begin
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'It cannot be empty.', TextValue, FileName);
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                end;
+
+                                Clear(TextValue);
+                                IntegrationFieldRef := IntegrationRef.Field(8);
+                                TextValue := IntegrationFieldRef.Value;
+                                if TextValue = '' then begin
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'It cannot be empty.', TextValue, FileName);
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                end;
+
+                                Clear(TextValue);
+                                IntegrationFieldRef := IntegrationRef.Field(11);
+                                TextValue := IntegrationFieldRef.Value;
+                                if TextValue = '' then begin
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'It cannot be empty.', TextValue, FileName);
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
+                                end;
+                                //Check empty values ------------~
+
+                                //VendorValue
+                                IntegrationFieldRef := IntegrationRef.Field(23);
+                                VLE.Reset();
+                                VLE.SetRange("Document No.", IntegrationFieldRef.Value);
+                                VLE.SetRange(Open, false);
+                                VLE.SetFilter("CADBR Tax Jurisdiction Code", '<>%1', '');
+                                //VLE.SetFilter("Amount", '<%1', 0);
+                                if VLE.FindFirst() then begin
+
+                                    IntegrationFieldRef := IntegrationRef.Field(257);
+                                    IntegrationFieldRef.Value := true;
+                                end;
+
+                                //VendorValue
+                                IntegrationFieldRef := IntegrationRef.Field(23);
+                                VLE.Reset();
+                                VLE.SetRange("Document No.", IntegrationFieldRef.Value);
+                                VLE.SetFilter("CADBR Tax Jurisdiction Code", '<>%1', '');
+                                IntegrationFieldRef := IntegrationRef.Field(24);
+                                VLE.SetRange("SBA Applies-to Doc. No.", IntegrationFieldRef.Value);
+                                if VLE.FindFirst() then begin
+                                    vle.CalcFields(Amount);
+
+                                    IntegrationFieldRef := IntegrationRef.Field(13);
+                                    IntegrationFieldRef.Value := VLE.Amount;
+                                    IntegrationFieldRef := IntegrationRef.Field(25);
+                                    IntegrationFieldRef.Value := VLE."Vendor No.";
+                                end;
+
+                                //VendorValue
+                                IntegrationFieldRef := IntegrationRef.Field(23);
+                                VLE.Reset();
+                                VLE.SetRange("Document No.", IntegrationFieldRef.Value);
+                                IntegrationFieldRef := IntegrationRef.Field(24);
+                                VLE.SetRange("SBA Applies-to Doc. No.", IntegrationFieldRef.Value);
+                                VLE.SetRange("Document Type", VLE."Document Type"::Payment);
+                                if not VLE.FindFirst() then begin
+                                    TextValue := IntegrationFieldRef.Value;
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Pagamento nao Identificado: Verificacao documento de Pagto no Movimento do fornecedor', TextValue, FileName);
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Error";
+                                    IntegrationFieldRef := IntegrationRef.Field(99);
+                                    IntegrationFieldRef.Value := CopyStr('Pagamento nao Identificado: Verificacao documento de Pagto no Movimento do fornecedor', 1, 200);
+                                end else begin
+                                    IntegrationFieldRef := IntegrationRef.Field(259);
+                                    IntegrationFieldRef.Value := VLE."Entry No.";
+                                    IntegrationFieldRef := IntegrationRef.Field(27);
+                                    IntegrationFieldRef.Value := VLE."Posting Date";
+                                end;
+
+                                IntegrationFieldRef := IntegrationRef.Field(6);
+
+                                if not UserSetup.TestAllowedPostingDate(IntegrationFieldRef.Value, ErrorDate) then begin
+                                    TextValue := IntegrationFieldRef.Value;
+                                    IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), ErrorDate, TextValue, FileName);
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Data Error";
+                                    IntegrationFieldRef := IntegrationRef.Field(99);
+                                    IntegrationFieldRef.Value := CopyStr(ErrorDate, 1, 200);
+
+                                end;
+
+                                SearchRef.Reset();
+                                //document no
+                                SearchFieldRef := SearchRef.Field(8);
+                                SearchFieldRef.SetRange(GetValueAtCell(RowNo, 8));
+                                //Purchase document no                               
+                                SearchFieldRef := SearchRef.Field(24);
+                                SearchFieldRef.SetRange(GetValueAtCell(RowNo, 22));
+                                if SearchRef.FindFirst() then begin
+                                    IntegrationFieldRef := IntegrationRef.Field(98);
+                                    IntegrationFieldRef.Value := IntegrationImportStatus::"Under Analysis";
+                                    IntegrationFieldRef := IntegrationRef.Field(99);
+                                    IntegrationFieldRef.Value := CopyStr('Combinação de aplicação utilizada em outra linha', 1, 200);
+                                end;
+
+                                if ExistLine then
+                                    IntegrationRef.Modify()
+                                else
+                                    IntegrationRef.Insert();
+
                             end;
-
-                            //Check empty values ++++++++
-                            Clear(TextValue);
-                            IntegrationFieldRef := IntegrationRef.Field(1);
-                            TextValue := IntegrationFieldRef.Value;
-                            if TextValue = '' then begin
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'It cannot be empty.', TextValue, FileName);
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
-                            end;
-
-                            Clear(TextValue);
-                            IntegrationFieldRef := IntegrationRef.Field(2);
-                            TextValue := IntegrationFieldRef.Value;
-                            if TextValue = '' then begin
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'It cannot be empty.', TextValue, FileName);
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
-                            end;
-
-                            Clear(IntegerValue);
-                            IntegrationFieldRef := IntegrationRef.Field(3);
-                            IntegerValue := IntegrationFieldRef.Value;
-                            if IntegerValue = 0 then begin
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'It cannot be zero.', TextValue, FileName);
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
-                            end;
-
-                            Clear(TextValue);
-                            IntegrationFieldRef := IntegrationRef.Field(5);
-                            TextValue := IntegrationFieldRef.Value;
-                            if TextValue = '' then begin
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'It cannot be empty.', TextValue, FileName);
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
-                            end;
-
-                            Clear(DateValue);
-                            IntegrationFieldRef := IntegrationRef.Field(6);
-                            DateValue := IntegrationFieldRef.Value;
-                            if DateValue = 0D then begin
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'It cannot be empty.', TextValue, FileName);
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
-                            end;
-
-                            Clear(TextValue);
-                            IntegrationFieldRef := IntegrationRef.Field(8);
-                            TextValue := IntegrationFieldRef.Value;
-                            if TextValue = '' then begin
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'It cannot be empty.', TextValue, FileName);
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
-                            end;
-
-                            Clear(TextValue);
-                            IntegrationFieldRef := IntegrationRef.Field(11);
-                            TextValue := IntegrationFieldRef.Value;
-                            if TextValue = '' then begin
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'It cannot be empty.', TextValue, FileName);
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
-                            end;
-                            //Check empty values ------------~
-
-                            //VendorValue
-                            IntegrationFieldRef := IntegrationRef.Field(23);
-                            VLE.Reset();
-                            VLE.SetRange("Document No.", IntegrationFieldRef.Value);
-                            VLE.SetRange(Open, false);
-                            VLE.SetFilter("CADBR Tax Jurisdiction Code", '<>%1', '');
-                            //VLE.SetFilter("Amount", '<%1', 0);
-                            if VLE.FindFirst() then begin
-
-                                IntegrationFieldRef := IntegrationRef.Field(257);
-                                IntegrationFieldRef.Value := true;
-                            end;
-
-                            //VendorValue
-                            IntegrationFieldRef := IntegrationRef.Field(23);
-                            VLE.Reset();
-                            VLE.SetRange("Document No.", IntegrationFieldRef.Value);
-                            VLE.SetFilter("CADBR Tax Jurisdiction Code", '<>%1', '');
-                            IntegrationFieldRef := IntegrationRef.Field(24);
-                            VLE.SetRange("SBA Applies-to Doc. No.", IntegrationFieldRef.Value);
-                            if VLE.FindFirst() then begin
-                                vle.CalcFields(Amount);
-
-                                IntegrationFieldRef := IntegrationRef.Field(13);
-                                IntegrationFieldRef.Value := VLE.Amount;
-                                IntegrationFieldRef := IntegrationRef.Field(25);
-                                IntegrationFieldRef.Value := VLE."Vendor No.";
-                            end;
-
-                            //VendorValue
-                            IntegrationFieldRef := IntegrationRef.Field(23);
-                            VLE.Reset();
-                            VLE.SetRange("Document No.", IntegrationFieldRef.Value);
-                            if not VLE.FindFirst() then begin
-                                IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'It cannot be empty.', TextValue, FileName);
-                                IntegrationFieldRef := IntegrationRef.Field(98);
-                                IntegrationFieldRef.Value := IntegrationImportStatus::"Data Excel Error";
-                            end;
-
-                            if ExistLine then
-                                IntegrationRef.Modify()
-                            else
-                                IntegrationRef.Insert();
 
                         end;
-                    end;
+                end;
 
-                if ErrorFile then begin
+                if ErrorFile or (ExistLineExcel) then begin
                     FTPCommunication.DoAction(Enum::"FTP Actions"::rename, FileName, FTPIntSetup.Directory, FTPIntSetup."Error Folder", '');
                     if FTPIntSetup."Send Email" then
                         IntegrationEmail.SendMail(FTPIntSetup."E-mail Rejected Data", False, '', FileName);
@@ -4331,6 +4398,8 @@ codeunit 50002 "Import Excel Buffer"
         DocNo: Text;
         TotDirectUnit: Decimal;
         DecimalValueTot: Decimal;
+        ErrorCalcLabel: Label 'The Purchase Order is listed as Cancelled. Please check.';
+        DocCancel: Boolean;
 
     begin
         RowNo := 0;
@@ -4431,6 +4500,7 @@ codeunit 50002 "Import Excel Buffer"
                         clear(ExistingLineNo);
                         clear(ExistLine);
                         Clear(DocNo);
+                        Clear(DocCancel);
 
                         Evaluate(LineNo, GetValueAtCell(RowNo, 3));
                         DocNo := GetValueAtCell(RowNo, 8);
@@ -5145,7 +5215,10 @@ codeunit 50002 "Import Excel Buffer"
                                         IntegrationFieldRef := IntegrationRef.Field(98);
                                         IntegrationFieldRef.Value := IntegrationImportStatus::"Data Error";
                                         IntegrationFieldRef := IntegrationRef.Field(99);
-                                        IntegrationFieldRef.Value := 'A Ordem de compra consta como Cancelada. Favor verificar.';
+                                        IntegrationFieldRef.Value := ErrorCalcLabel;
+                                        IntegrationFieldRef := IntegrationRef.Field(201);
+                                        IntegrationFieldRef.Value := true;
+                                        DocCancel := true;
 
                                     end else begin
                                         IntegrationErros.InsertErros(IntegrationErrosType, DocNo, LineNo, CopyStr(IntegrationFieldRef.Caption, 1, 50), 'Existe mais de 1 linha com o mesmo documento Aplicado que ultrapassa o Valor pendente', TextValue, FileName);
@@ -5154,7 +5227,7 @@ codeunit 50002 "Import Excel Buffer"
                                         IntegrationFieldRef.Value := IntegrationImportStatus::"Data Error";
                                         IntegrationFieldRef := IntegrationRef.Field(99);
                                         IntegrationFieldRef.Value := 'A Ordem de compra ainda não foi registrada.';
-
+                                        DocCancel := true;
                                     end;
 
                                 end;
@@ -5199,7 +5272,7 @@ codeunit 50002 "Import Excel Buffer"
                                 IntPurcPay.SetRange("Applies-to Doc. No.", IntegrationFieldRef.Value);
                                 IntegrationFieldRef := IntegrationRef.Field(3);
                                 IntPurcPay.SetFilter("Line No.", '<>%1', IntegrationFieldRef.Value);
-                                if IntPurcPay.FindFirst() then begin
+                                if (IntPurcPay.FindFirst()) and (DocCancel = false) then begin
                                     repeat
                                         DecimalValueTot += IntPurcPay.Amount + IntPurcPay."Order CSRF Ret" + IntPurcPay."Order IRRF Ret";
                                     until IntPurcPay.Next() = 0;
@@ -5226,7 +5299,6 @@ codeunit 50002 "Import Excel Buffer"
                                 end;
 
                             end;
-
 
                             if ExistLine then
                                 IntegrationRef.Modify()

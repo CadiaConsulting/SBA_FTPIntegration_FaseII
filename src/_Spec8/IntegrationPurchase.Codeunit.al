@@ -796,13 +796,13 @@ codeunit 50013 "Integration Purchase"
             exit(true);
     end;
 
-    procedure PurchRealse(var
-                              IntPurchase: Record "Integration Purchase")
+    procedure PurchRealse(var IntPurchase: Record "Integration Purchase")
     var
         IntegrationPurchase: Record "Integration Purchase";
         intPurch: Record "Integration Purchase";
         PurchHeader: Record "Purchase Header";
         PurchLine: Record "Purchase Line";
+        OldDocu: Code[20];
     begin
 
         IntegrationPurchase.Reset();
@@ -815,36 +815,25 @@ codeunit 50013 "Integration Purchase"
         if not IntegrationPurchase.IsEmpty then begin
             IntegrationPurchase.FindSet();
             repeat
-                PurchHeader.Reset();
-                PurchHeader.SetRange("No.", IntegrationPurchase."Document No.");
-                if PurchHeader.Find('-') then
-                    repeat
+                if OldDocu <> IntegrationPurchase."Document No." then begin
 
-                        PurchHeader."Posting Message" := '';
+                    PurchHeader.Reset();
+                    PurchHeader.SetRange("No.", IntegrationPurchase."Document No.");
+                    if PurchHeader.Find('-') then
+                        repeat
 
-                        if not StatusOrder(PurchHeader) then begin
-                            IntegrationPurchase."Posting Message" := GetLastErrorText;
-                            IntegrationPurchase.Modify();
+                            PurchHeader."Posting Message" := '';
 
-                            intPurch.Reset();
-                            intPurch.SetRange("Document No.", PurchHeader."No.");
-                            intPurch.ModifyAll("Posting Message", PurchHeader."Posting Message");
-                            intPurch.ModifyAll(Status, intPurch.Status::"Data Error");
+                            if not StatusOrder(PurchHeader) then begin
+                                IntegrationPurchase."Posting Message" := GetLastErrorText;
+                                IntegrationPurchase.Modify();
 
-                            PurchHeader."Posting Message" := IntegrationPurchase."Posting Message";
-                            PurchHeader.Status := PurchHeader.Status::Open;
-                            PurchHeader.Modify();
+                                intPurch.Reset();
+                                intPurch.SetRange("Document No.", PurchHeader."No.");
+                                intPurch.ModifyAll("Posting Message", PurchHeader."Posting Message");
+                                intPurch.ModifyAll(Status, intPurch.Status::"Data Error");
 
-                            PurchLine.Reset();
-                            PurchLine.SetRange("Document Type", PurchHeader."Document Type");
-                            PurchLine.SetRange("Document No.", PurchHeader."No.");
-                            PurchLine.ModifyAll("Status SBA", PurchLine."Status SBA"::Open);
-
-
-                        end else begin
-
-                            if PurchHeader."Posting Message" <> '' then begin
-
+                                PurchHeader."Posting Message" := IntegrationPurchase."Posting Message";
                                 PurchHeader.Status := PurchHeader.Status::Open;
                                 PurchHeader.Modify();
 
@@ -853,15 +842,31 @@ codeunit 50013 "Integration Purchase"
                                 PurchLine.SetRange("Document No.", PurchHeader."No.");
                                 PurchLine.ModifyAll("Status SBA", PurchLine."Status SBA"::Open);
 
-                                intPurch.Reset();
-                                intPurch.SetRange("Document No.", PurchHeader."No.");
-                                intPurch.ModifyAll("Posting Message", PurchHeader."Posting Message");
-                                intPurch.ModifyAll(Status, intPurch.Status::"Data Error");
 
-                            end;
-                        End;
+                            end else begin
 
-                    until PurchHeader.Next() = 0;
+                                if PurchHeader."Posting Message" <> '' then begin
+
+                                    PurchHeader.Status := PurchHeader.Status::Open;
+                                    PurchHeader.Modify();
+
+                                    PurchLine.Reset();
+                                    PurchLine.SetRange("Document Type", PurchHeader."Document Type");
+                                    PurchLine.SetRange("Document No.", PurchHeader."No.");
+                                    PurchLine.ModifyAll("Status SBA", PurchLine."Status SBA"::Open);
+
+                                    intPurch.Reset();
+                                    intPurch.SetRange("Document No.", PurchHeader."No.");
+                                    intPurch.ModifyAll("Posting Message", PurchHeader."Posting Message");
+                                    intPurch.ModifyAll(Status, intPurch.Status::"Data Error");
+
+                                end;
+                            End;
+
+                        until PurchHeader.Next() = 0;
+                    OldDocu := IntegrationPurchase."Document No.";
+
+                end;
 
             until IntegrationPurchase.Next() = 0;
         end;
@@ -875,7 +880,7 @@ codeunit 50013 "Integration Purchase"
         PurchHeader: Record "Purchase Header";
         PurchLine: Record "Purchase Line";
         UserSetup: Record "User Setup";
-
+        OldDocu: Code[20];
     begin
 
         UserSetup.Reset();
@@ -892,72 +897,77 @@ codeunit 50013 "Integration Purchase"
             if not IntegrationPurchase.IsEmpty then begin
                 IntegrationPurchase.FindSet();
                 repeat
-                    PurchHeader.Reset();
-                    PurchHeader.SetRange("No.", IntegrationPurchase."Document No.");
-                    if PurchHeader.Find('-') then
-                        repeat
+                    if OldDocu <> IntegrationPurchase."Document No." then begin
 
-                            PurchLine.reset;
-                            PurchLine.SetRange("Document Type", PurchHeader."Document Type");
-                            PurchLine.SetRange("Document No.", PurchHeader."No.");
-                            PurchLine.Setrange(Type, PurchLine.Type::" ");
-                            PurchLine.DeleteAll();
+                        PurchHeader.Reset();
+                        PurchHeader.SetRange("No.", IntegrationPurchase."Document No.");
+                        if PurchHeader.Find('-') then
+                            repeat
 
-                            PurchHeader."Posting Message" := '';
+                                PurchLine.reset;
+                                PurchLine.SetRange("Document Type", PurchHeader."Document Type");
+                                PurchLine.SetRange("Document No.", PurchHeader."No.");
+                                PurchLine.Setrange(Type, PurchLine.Type::" ");
+                                PurchLine.DeleteAll();
 
-                            if not StatusOrderUnderAnalysis(PurchHeader) then begin
-                                IntegrationPurchase."Posting Message" := CopyStr(GetLastErrorText, 1, 200);
-                                IntegrationPurchase.Modify();
+                                PurchHeader."Posting Message" := '';
 
-                                intPurch.Reset();
-                                intPurch.SetRange("Document No.", PurchHeader."No.");
-                                intPurch.ModifyAll("Posting Message", PurchHeader."Posting Message");
-                                intPurch.ModifyAll(Status, intPurch.Status::"Data Error");
-
-                                PurchHeader."Posting Message" := IntegrationPurchase."Posting Message";
-                                PurchHeader.Status := PurchHeader.Status::Open;
-                                PurchHeader.Modify();
-
-                            end else begin
-
-                                if PurchHeader."Posting Message" <> '' then begin
-
-                                    PurchHeader.Status := PurchHeader.Status::Open;
-                                    PurchHeader.Modify();
-
-                                    PurchLine.SetRange("Document Type", PurchHeader."Document Type");
-                                    PurchLine.SetRange("Document No.", PurchHeader."No.");
-                                    PurchLine.SetFilter(Type, '<>%1', PurchLine.Type::" ");
-                                    PurchLine.ModifyAll("Status SBA", PurchLine."Status SBA"::Open);
-
+                                if not StatusOrderUnderAnalysis(PurchHeader) then begin
+                                    IntegrationPurchase."Posting Message" := CopyStr(GetLastErrorText, 1, 200);
+                                    IntegrationPurchase.Modify();
 
                                     intPurch.Reset();
                                     intPurch.SetRange("Document No.", PurchHeader."No.");
                                     intPurch.ModifyAll("Posting Message", PurchHeader."Posting Message");
                                     intPurch.ModifyAll(Status, intPurch.Status::"Data Error");
 
+                                    PurchHeader."Posting Message" := IntegrationPurchase."Posting Message";
+                                    PurchHeader.Status := PurchHeader.Status::Open;
+                                    PurchHeader.Modify();
+
                                 end else begin
 
-                                    intPurch.Reset();
-                                    intPurch.SetRange("Document No.", PurchHeader."No.");
-                                    intPurch.ModifyAll("Posting Message", PurchHeader."Posting Message");
-                                    intPurch.ModifyAll(Status, intPurch.Status::Created);
+                                    if PurchHeader."Posting Message" <> '' then begin
 
-                                    PurchHeader.Status := PurchHeader.Status::"Under Analysis";
-                                    PurchHeader.Modify();
-                                    PurchLine.Reset;
+                                        PurchHeader.Status := PurchHeader.Status::Open;
+                                        PurchHeader.Modify();
 
-                                    PurchLine.SetRange("Document Type", PurchHeader."Document Type");
-                                    PurchLine.SetRange("Document No.", PurchHeader."No.");
-                                    PurchLine.SetFilter(Type, '<>%1', PurchLine.Type::" ");
-                                    PurchLine.ModifyAll("Status SBA", PurchLine."Status SBA"::"Under Analysis");
+                                        PurchLine.SetRange("Document Type", PurchHeader."Document Type");
+                                        PurchLine.SetRange("Document No.", PurchHeader."No.");
+                                        PurchLine.SetFilter(Type, '<>%1', PurchLine.Type::" ");
+                                        PurchLine.ModifyAll("Status SBA", PurchLine."Status SBA"::Open);
+
+
+                                        intPurch.Reset();
+                                        intPurch.SetRange("Document No.", PurchHeader."No.");
+                                        intPurch.ModifyAll("Posting Message", PurchHeader."Posting Message");
+                                        intPurch.ModifyAll(Status, intPurch.Status::"Data Error");
+
+                                    end else begin
+
+                                        intPurch.Reset();
+                                        intPurch.SetRange("Document No.", PurchHeader."No.");
+                                        intPurch.ModifyAll("Posting Message", PurchHeader."Posting Message");
+                                        intPurch.ModifyAll(Status, intPurch.Status::Created);
+
+                                        PurchHeader.Status := PurchHeader.Status::"Under Analysis";
+                                        PurchHeader.Modify();
+                                        PurchLine.Reset;
+
+                                        PurchLine.SetRange("Document Type", PurchHeader."Document Type");
+                                        PurchLine.SetRange("Document No.", PurchHeader."No.");
+                                        PurchLine.SetFilter(Type, '<>%1', PurchLine.Type::" ");
+                                        PurchLine.ModifyAll("Status SBA", PurchLine."Status SBA"::"Under Analysis");
+
+                                    end;
 
                                 end;
 
-                            end;
 
+                            until PurchHeader.Next() = 0;
+                        OldDocu := IntegrationPurchase."Document No.";
 
-                        until PurchHeader.Next() = 0;
+                    end;
 
                 until IntegrationPurchase.Next() = 0;
             end;
@@ -1031,6 +1041,7 @@ codeunit 50013 "Integration Purchase"
         PurchHeader: Record "Purchase Header";
         PurchLine: Record "Purchase Line";
         UserSetup: Record "User Setup";
+        OldDocu: Code[20];
     begin
 
         IntegrationPurchase.Reset();
@@ -1049,27 +1060,31 @@ codeunit 50013 "Integration Purchase"
                 if not UserSetup."Open PO" then
                     error('Usuario %1 sem Permissão para Reabrir o Pedido', USERID);
 
-                PurchHeader.Reset();
-                PurchHeader.SetRange("No.", IntegrationPurchase."Document No.");
-                if PurchHeader.Find('-') then
-                    repeat
-                        PurchHeader.Status := PurchHeader.Status::Open;
-                        PurchHeader.Modify();
+                if OldDocu <> IntegrationPurchase."Document No." then begin
+                    PurchHeader.Reset();
+                    PurchHeader.SetRange("No.", IntegrationPurchase."Document No.");
+                    if PurchHeader.Find('-') then
+                        repeat
+                            PurchHeader.Status := PurchHeader.Status::Open;
+                            PurchHeader.Modify();
 
-                        PurchLine.Reset;
-                        PurchLine.SetRange("Document Type", PurchHeader."Document Type");
-                        PurchLine.SetRange("Document No.", PurchHeader."No.");
-                        PurchLine.SetFilter(Type, '<>%1', PurchLine.Type::" ");
-                        PurchLine.ModifyAll("Status SBA", PurchLine."Status SBA"::Open);
+                            PurchLine.Reset;
+                            PurchLine.SetRange("Document Type", PurchHeader."Document Type");
+                            PurchLine.SetRange("Document No.", PurchHeader."No.");
+                            PurchLine.SetFilter(Type, '<>%1', PurchLine.Type::" ");
+                            PurchLine.ModifyAll("Status SBA", PurchLine."Status SBA"::Open);
 
-                    until PurchHeader.Next() = 0;
+                        until PurchHeader.Next() = 0;
 
-                if PurchHeader."Posting Message" <> '' then begin
-                    IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Error";
-                    IntegrationPurchase.Modify();
-                end else begin
-                    IntegrationPurchase.Status := IntegrationPurchase.Status::Created;
-                    IntegrationPurchase.Modify();
+                    if PurchHeader."Posting Message" <> '' then begin
+                        IntegrationPurchase.Status := IntegrationPurchase.Status::"Data Error";
+                        IntegrationPurchase.Modify();
+                    end else begin
+                        IntegrationPurchase.Status := IntegrationPurchase.Status::Created;
+                        IntegrationPurchase.Modify();
+                    end;
+                    OldDocu := IntegrationPurchase."Document No.";
+
                 end;
 
             until IntegrationPurchase.Next() = 0;

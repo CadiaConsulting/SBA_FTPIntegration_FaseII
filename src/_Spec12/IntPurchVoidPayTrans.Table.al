@@ -1,6 +1,6 @@
-table 50078 "IntPurchVoidPayment"
+table 50079 "IntPurchVoidPayTrans"
 {
-    Caption = 'Integration Purchase Void Payment';
+    Caption = 'Integration Purchase Transactions Void Payment';
     DataClassification = ToBeClassified;
 
     fields
@@ -120,10 +120,6 @@ table 50078 "IntPurchVoidPayment"
             Caption = 'Journal Line No.';
             Editable = false;
         }
-        field(27; "Payment Date"; Date)
-        {
-            Caption = 'Payment Date';
-        }
         field(98; Status; enum "Integration Import Status")
         {
             Caption = 'Status ';
@@ -146,27 +142,17 @@ table 50078 "IntPurchVoidPayment"
             Editable = false;
             FieldClass = FlowField;
             CalcFormula = count(IntegrationErros where("Integration Type" = filter(16),
-                                                        "Excel File Name" = field("Excel File Name"),
-                                                        "Line No." = field("Line No.")));
+                                                        "Excel File Name" = field("Excel File Name")));
         }
         field(115; "Excel File Name"; text[200])
         {
             Caption = 'Excel File Name';
             Editable = false;
         }
-
         field(256; "Ignore Unapply"; Boolean)
         {
             Caption = 'Ignore Unapply';
-            trigger OnValidate()
-            var
 
-            begin
-                if "Ignore Unapply" then
-                    Status := rec.Status::Unapply
-                else
-                    Status := rec.Status::Imported;
-            end;
         }
         field(257; "Tax Paid"; Boolean)
         {
@@ -183,22 +169,25 @@ table 50078 "IntPurchVoidPayment"
             TableRelation = "Vendor Ledger Entry"."Entry No." where("Entry No." = field("Vendor Ledger Entry No."));
             Editable = false;
         }
-        field(260; "Detail Ledger Document No."; Integer)
+        field(270; "Trans. Document No."; Code[20])
         {
-            Caption = 'Detail Ledger Document No.';
+            Caption = 'Trans. Document No.';
+        }
+        field(271; "Trans Vendor Ledger Entry No."; Integer)
+        {
+            Caption = 'Trans Vendor Ledger Entry No.';
+            TableRelation = "Vendor Ledger Entry"."Entry No." where("Entry No." = field("Vendor Ledger Entry No."));
             Editable = false;
-            FieldClass = FlowField;
-            CalcFormula = count(IntPurchVoidPayTrans where("Journal Template Name" = field("Journal Template Name"),
-                                                        "Journal Batch Name" = field("Journal Batch Name"),
-                                                        "Line No." = field("Line No."),
-                                                        "Excel File Name" = field("Excel File Name")));
+        }
+        field(272; "Trans Line No."; Integer)
+        {
+            Caption = 'Trans Line No.';
         }
 
     }
-
     keys
     {
-        key(PK; "Journal Template Name", "Journal Batch Name", "Line No.", "Excel File Name")
+        key(PK; "Journal Template Name", "Journal Batch Name", "Line No.", "Excel File Name", "Trans Line No.")
         {
             Clustered = true;
         }
@@ -217,28 +206,4 @@ table 50078 "IntPurchVoidPayment"
 
         }
     }
-    trigger OnDelete()
-    var
-        VoidTrans: Record IntPurchVoidPayTrans;
-        IntegErros: Record IntegrationErros;
-    begin
-
-        VoidTrans.Reset();
-        VoidTrans.SetRange("Journal Template Name", rec."Journal Template Name");
-        VoidTrans.SetRange("Journal Batch Name", rec."Journal Batch Name");
-        VoidTrans.SetRange("Line No.", rec."Line No.");
-        VoidTrans.SetRange("Excel File Name", rec."Excel File Name");
-        if VoidTrans.FindLast() then
-            VoidTrans.DeleteAll();
-
-
-        IntegErros.Reset();
-        IntegErros.SetRange("Integration Type", IntegErros."Integration Type"::"Purchase Void Payment");
-        IntegErros.SetRange("Excel File Name", rec."Excel File Name");
-        IntegErros.SetRange("Line No.", Rec."Line No.");
-        if IntegErros.FindSet() then
-            IntegErros.DeleteAll();
-
-
-    end;
 }

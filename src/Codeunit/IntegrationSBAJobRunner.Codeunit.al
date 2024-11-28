@@ -141,6 +141,10 @@ codeunit 50009 "Integration SBA Job Runner"
                     end;
 
                     if FTPSetup.Unapply then begin
+
+                        if IntPurchVoidPayment.TransUnapplyPaymentVoidJournal(IntPurchVoidPay) then;
+                        Commit();
+
                         if IntPurchVoidPayment.UnapplyPaymentVoidJournal(IntPurchVoidPay) then;
                         Commit();
                     end;
@@ -151,7 +155,12 @@ codeunit 50009 "Integration SBA Job Runner"
                     end;
 
                     if FTPSetup."Post Order\Journal" then begin
-                        if IntPurchVoidPayment.PostPaymentJournal(IntPurchVoidPay) then;
+                        IntPurchVoidPay.Reset();
+                        IntPurchVoidPay.SetRange("Journal Template Name", 'GENERAL');
+                        IntPurchVoidPay.SetRange("Journal Batch Name", 'VOID PAY');
+                        IntPurchVoidPay.SetRange(Status, IntPurchVoidPay.Status::Created);
+                        if IntPurchVoidPay.FindSet() then
+                            if IntPurchVoidPayment.PostPaymentJournal(IntPurchVoidPay) then;
                         Commit();
                     end;
                 end;

@@ -18,24 +18,11 @@ page 50077 "IntPurchPaymentPosted"
         {
             repeater(General)
             {
-                FreezeColumn = "Errors Import Excel";
-
                 field(Status; Rec.Status)
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Status  field.';
                 }
-                field("Line Errors"; Rec."Line Errors")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Error Order field.';
-                }
-                field("Errors Import Excel"; Rec."Errors Import Excel")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Errors Import Excel field.';
-                }
-
                 field("Journal Template Name"; Rec."Journal Template Name")
                 {
                     ApplicationArea = All;
@@ -387,6 +374,6 @@ page 50077 "IntPurchPaymentPosted"
     var
         IntPurchPayment: codeunit IntPurchPayment;
         ImportMessageLbl: Label 'The Excel file was imported';
-        PostJornalLbl: Label 'The joranl was posted';
+        PostJornalLbl: Label 'The jornal was posted';
         CopyToJournalLbl: Label 'Lines were Copied to Journal';
 }

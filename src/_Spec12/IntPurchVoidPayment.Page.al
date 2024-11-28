@@ -1,13 +1,10 @@
-/// <summary>
-/// Page "IntegrationPurchasePayment" (ID 50079).
-/// NGS
-/// </summary>
 page 50079 "IntPurchVoidPayment"
 {
     ApplicationArea = All;
     Caption = 'Integration Purchase Void Payment';
     PageType = List;
     SourceTable = IntPurchVoidPayment;
+    SourceTableView = where(Status = filter(Imported | Created | "Data Error" | Reviewed | "On Hold" | "Data Excel Error" | "Layout Error" | "Exported" | "Under Analysis" | Unapply | "Error Unapply"));
     UsageCategory = Lists;
 
     layout
@@ -84,10 +81,20 @@ page 50079 "IntPurchVoidPayment"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Applies-to Doc. No. field.';
                 }
-                field("External Document No."; Rec."External Document No.")
+                field("Payment Date"; Rec."Payment Date")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the External Document No. field.';
+                    ToolTip = 'Specifies the value of the Payment Date field.';
+                }
+                field("Purchase Document No"; Rec."Purchase Document No")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Purchase Document No field.';
+                }
+                field("Ignore Unapply"; Rec."Ignore Unapply")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Ignore Unapply field.';
                 }
                 field("Tax Paid"; Rec."Tax Paid")
                 {
@@ -179,6 +186,22 @@ page 50079 "IntPurchVoidPayment"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Excel File Name field.';
                 }
+                field("Vendor Ledger Entry No."; Rec."Vendor Ledger Entry No.")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Vendor Ledger Entry No. field.';
+                }
+                field("Old Detail Transaction No."; Rec."Old Detail Transaction No.")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Old Detail Transaction No. field.';
+                }
+
+                field("Detail Ledger Document No."; Rec."Detail Ledger Document No.")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Detail Ledger Document No.. field.';
+                }
             }
         }
     }
@@ -205,6 +228,24 @@ page 50079 "IntPurchVoidPayment"
                     Message(ImportMessageLbl);
                 end;
             }
+            action(TransUnapplyPaymentVoidJournal)
+            {
+                ApplicationArea = All;
+                Caption = 'Trans Unapply Payment Void Journal';
+                Image = PostDocument;
+                ToolTip = 'Trans Unapply Payment Void Journal';
+                Visible = false;
+                trigger OnAction();
+                var
+                    IntPurchVoidPay: Record IntPurchVoidPayment;
+                begin
+                    CurrPage.SetSelectionFilter(IntPurchVoidPay);
+                    IntPurchVoidPay.CopyFilters(Rec);
+                    IntPurchVoidPayment.TransUnapplyPaymentVoidJournal(IntPurchVoidPay);
+                    CurrPage.Update();
+                    Message(Unapply);
+                end;
+            }
             action(UnapplyPaymentVoidJournal)
             {
                 ApplicationArea = All;
@@ -218,6 +259,9 @@ page 50079 "IntPurchVoidPayment"
                 begin
                     CurrPage.SetSelectionFilter(IntPurchVoidPay);
                     IntPurchVoidPay.CopyFilters(Rec);
+
+                    IntPurchVoidPayment.TransUnapplyPaymentVoidJournal(IntPurchVoidPay);
+
                     IntPurchVoidPayment.UnapplyPaymentVoidJournal(IntPurchVoidPay);
                     CurrPage.Update();
                     Message(Unapply);
@@ -250,8 +294,12 @@ page 50079 "IntPurchVoidPayment"
                 ToolTip = 'Post Jornal';
 
                 trigger OnAction();
+                var
+                    IntPurchVoidPay: Record IntPurchVoidPayment;
                 begin
-                    IntPurchVoidPayment.PostPaymentJournal(Rec);
+                    CurrPage.SetSelectionFilter(IntPurchVoidPay);
+                    IntPurchVoidPay.CopyFilters(Rec);
+                    IntPurchVoidPayment.PostPaymentJournal(IntPurchVoidPay);
                     CurrPage.Update();
                     Message(PostJornalLbl);
                 end;
@@ -325,6 +373,27 @@ page 50079 "IntPurchVoidPayment"
                     PAGE.Run(PAGE::"General Journal", GenJournalLine);
                 end;
             }
+            action(DetailVendor)
+            {
+                ApplicationArea = All;
+                Caption = 'Detail Vendor Ledger';
+                Image = VendorLedger;
+                ToolTip = 'Detail Vendor Ledger';
+
+                trigger OnAction();
+                var
+                    TransVoid: Record IntPurchVoidPayTrans;
+                begin
+                    TransVoid.Reset();
+                    TransVoid.SetRange("Journal Template Name", rec."Journal Template Name");
+                    TransVoid.SetRange("Journal Batch Name", rec."Journal Batch Name");
+                    TransVoid.SetRange("Line No.", rec."Line No.");
+                    TransVoid.SetRange("Excel File Name", rec."Excel File Name");
+                    if TransVoid.FindSet() then
+                        PAGE.Run(PAGE::IntPurchVoidPayTrans, TransVoid);
+
+                end;
+            }
             action(DeleteEntries)
             {
                 ApplicationArea = All;
@@ -370,7 +439,7 @@ page 50079 "IntPurchVoidPayment"
     var
         IntPurchVoidPayment: Codeunit IntPurchVoidPayment;
         ImportMessageLbl: Label 'The Excel file was imported';
-        PostJornalLbl: Label 'The joranl was posted';
+        PostJornalLbl: Label 'The jornal was posted';
         CopyToJournalLbl: Label 'Lines were Copied to Journal';
         Unapply: Label 'Unapply';
 }

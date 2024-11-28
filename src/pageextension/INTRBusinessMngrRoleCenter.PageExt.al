@@ -136,6 +136,12 @@ pageextension 50020 "INTRBusinessMngrRoleCenter" extends "Business Manager Role 
                                 ApplicationArea = all;
                                 RunObject = page IntPurchVoidPayment;
                             }
+                            action(PaymentVoidJournalPosted)
+                            {
+                                Caption = 'Int Purchase Void Payment Posted';
+                                ApplicationArea = all;
+                                RunObject = page IntPurchVoidPaymentPosted;
+                            }
                         }
                     }
                     group(PurchaseLandlord)

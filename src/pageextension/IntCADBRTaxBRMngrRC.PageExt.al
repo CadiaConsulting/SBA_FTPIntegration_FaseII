@@ -154,6 +154,13 @@ pageextension 50021 "IntCADBRTaxBRMngrRC" extends "CADBR Tax BR Manager RC"
                                 ApplicationArea = all;
                                 RunObject = page IntPurchVoidPayment;
                             }
+
+                            action(PaymentVoidJournalPosted)
+                            {
+                                Caption = 'Int Purchase Void Payment Posted';
+                                ApplicationArea = all;
+                                RunObject = page IntPurchVoidPaymentPosted;
+                            }
                         }
                     }
                 }

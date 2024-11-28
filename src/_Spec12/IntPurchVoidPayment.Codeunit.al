@@ -1,5 +1,8 @@
 codeunit 50079 "IntPurchVoidPayment"
 {
+    Permissions = tabledata "Detailed Vendor Ledg. Entry" = RIMD,
+                tabledata "VAT Entry" = RIMD;
+
     trigger OnRun()
     begin
 
@@ -16,28 +19,38 @@ codeunit 50079 "IntPurchVoidPayment"
         GenJournalLine: Record "Gen. Journal Line";
         FTPIntSetup: Record "FTP Integration Setup";
         IntegrationEmail: Codeunit "Integration Email";
+        UserSetup: codeunit "User Setup Management";
+        ErrorDate: Text;
     begin
         RecordTocheck.CopyFilters(IntPurchVoidPayment);
         RecordTocheck.SetFilter(Status, '%1', IntPurchVoidPayment.Status::Unapply);
         if not RecordTocheck.IsEmpty then begin
             RecordTocheck.FindSet();
             repeat
-                if ValidateIntPurchVoidPaymentData(RecordTocheck) then begin
-                    CreatePaymentJournal(RecordTocheck);
-
-                    if (RecordTocheck."Tax Paid" = false) and (RecordTocheck."Tax Amount" <> 0) then begin
-                        CreatePaymentTaxAJournal(RecordTocheck);
-                        CreatePaymentTaxBJournal(RecordTocheck);
-                    end;
+                if not UserSetup.TestAllowedPostingDate(RecordTocheck."Posting Date", ErrorDate) then begin
+                    RecordTocheck.Status := RecordTocheck.Status::"Data Error";
+                    RecordTocheck."Posting Message" := CopyStr(ErrorDate, 1, 200);
+                    RecordTocheck.Modify();
 
                 end else begin
 
-                    FTPIntSetup.Reset();
-                    FTPIntSetup.SetRange(Integration, FTPIntSetup.Integration::"Purchase Void Payment");
-                    FTPIntSetup.SetRange(Sequence, 0);
-                    FTPIntSetup.FindSet();
-                    if FTPIntSetup."Send Email" then
-                        IntegrationEmail.SendMail(FTPIntSetup."E-mail Rejected Data", True, RecordTocheck."Posting Message", RecordTocheck."Excel File Name");
+                    if ValidateIntPurchVoidPaymentData(RecordTocheck) then begin
+                        CreatePaymentJournal(RecordTocheck);
+
+                        if (RecordTocheck."Tax Paid" = false) and (RecordTocheck."Tax Amount" <> 0) then begin
+                            CreatePaymentTaxAJournal(RecordTocheck);
+                            CreatePaymentTaxBJournal(RecordTocheck);
+                        end;
+
+                    end else begin
+
+                        FTPIntSetup.Reset();
+                        FTPIntSetup.SetRange(Integration, FTPIntSetup.Integration::"Purchase Void Payment");
+                        FTPIntSetup.SetRange(Sequence, 0);
+                        FTPIntSetup.FindSet();
+                        if FTPIntSetup."Send Email" then
+                            IntegrationEmail.SendMail(FTPIntSetup."E-mail Rejected Data", True, RecordTocheck."Posting Message", RecordTocheck."Excel File Name");
+                    end;
                 end;
             until RecordTocheck.Next() = 0;
         end;
@@ -411,7 +424,7 @@ codeunit 50079 "IntPurchVoidPayment"
             if GenJournalLine.FindFirst() then begin
                 GenJnlPostBatch.SetPreviewMode(false);
                 GenJnlPostBatch.Run(GenJournalLine);
-                PostIntPurchVoidPayment.ModifyAll(Status, PostIntPurchVoidPayment.Status::Posted);
+                //PostIntPurchVoidPayment.ModifyAll(Status, PostIntPurchVoidPayment.Status::Posted);
             end;
         end;
     end;
@@ -479,7 +492,7 @@ codeunit 50079 "IntPurchVoidPayment"
         VLE: Record "Vendor Ledger Entry";
     begin
         VLE.Reset();
-        VLE.SetRange("Document No.", RecordToCheck."External Document No.");
+        VLE.SetRange("Document No.", RecordToCheck."Purchase Document No");
         VLE.SetRange(Open, false);
         VLE.SetFilter("CADBR Tax Jurisdiction Code", '<>%1', '');
         if VLE.FindFirst() then begin
@@ -498,97 +511,123 @@ codeunit 50079 "IntPurchVoidPayment"
         DetailedVendorLedgEntry: Record "Detailed Vendor Ledg. Entry";
         VendEntryApplyPostedEntries: Codeunit "VendEntry-Apply Posted Entries";
         VLE: Record "Vendor Ledger Entry";
+        ErrorPay: Boolean;
         TextLabel0001: Label 'Pagamento não localizado para Desaplicação do Cliente %1 - Tipo de documento %2 - Documento %3 - Aplicação %4';
         TextLabel0002: Label 'Pagamento já Desaplicado do Cliente %1 - Tipo de documento %2 - Documento %3 - Aplicação %4';
+        UserSetup: codeunit "User Setup Management";
+        ErrorDate: Text;
     begin
-
         RecordTocheck.Reset();
+        RecordTocheck.SetCurrentKey("Account No.", "Vendor Ledger Entry No.");
         RecordTocheck.CopyFilters(VoidToUnapply);
-        RecordTocheck.SetFilter(Status, '%1', RecordTocheck.Status::Imported);
+        RecordTocheck.SetFilter(Status, '%1|%2', RecordTocheck.Status::Imported, RecordTocheck.Status::"Data Error");
         if not RecordTocheck.IsEmpty then begin
             RecordTocheck.FindSet();
             repeat
+                Clear(ErrorPay);
 
-                VLE.Reset();
-                VLE.SetRange("Document No.", RecordTocheck."Applies-to Doc. No.");
-                VLE.SetFilter("CADBR Tax Jurisdiction Code", '<>%1', '');
-                VLE.SetRange("SBA Applies-to Doc. No.", RecordTocheck."External Document No.");
-                if VLE.FindFirst() then begin
-                    vle.CalcFields(Amount);
+                if not UserSetup.TestAllowedPostingDate(RecordTocheck."Posting Date", ErrorDate) then begin
+                    RecordTocheck.Status := RecordTocheck.Status::"Data Error";
+                    RecordTocheck."Posting Message" := CopyStr(ErrorDate, 1, 200);
 
-                    RecordTocheck."Tax Amount" := VLE.Amount;
-                    RecordTocheck."Tax Account No." := VLE."Vendor No.";
-                end;
+                end else begin
 
-                PaymentLedgerEntry.Reset();
-                PaymentLedgerEntry.SetCurrentKey("Vendor No.", "Document Type", "Document No.", Open);
-                PaymentLedgerEntry.SetRange("Vendor No.", RecordTocheck."Account No.");
-                PaymentLedgerEntry.SetRange("Document Type", RecordTocheck."Document Type"::" ");
-                PaymentLedgerEntry.SetRange("Document No.", RecordTocheck."Applies-to Doc. No.");
-                PaymentLedgerEntry.SetRange("SBA Applies-to Doc. No.", RecordTocheck."External Document No.");
-                if PaymentLedgerEntry.FindFirst() then begin
+                    VLE.Reset();
+                    VLE.SetRange("Document No.", RecordTocheck."Applies-to Doc. No.");
+                    VLE.SetFilter("CADBR Tax Jurisdiction Code", '<>%1', '');
+                    VLE.SetRange("SBA Applies-to Doc. No.", RecordTocheck."Purchase Document No");
+                    if VLE.FindFirst() then begin
+                        vle.CalcFields(Amount);
 
-                    DetailedVendorLedgEntry.Reset();
-                    DetailedVendorLedgEntry.SetCurrentKey("Vendor Ledger Entry No.", "Entry Type", Unapplied);
-                    DetailedVendorLedgEntry.SetRange("Vendor Ledger Entry No.", PaymentLedgerEntry."Entry No.");
-                    DetailedVendorLedgEntry.SetRange("Entry Type", DetailedVendorLedgEntry."Entry Type"::Application);
-                    DetailedVendorLedgEntry.SetRange(Unapplied, false);
-                    if DetailedVendorLedgEntry.FindFirst() then begin
-                        ClearLastError();
-
-                        UnapplyPayTaxVoid(RecordTocheck, DetailedVendorLedgEntry);
-                        RecordTocheck."Posting Message" := GetLastErrorText();
+                        RecordTocheck."Tax Amount" := VLE.Amount;
+                        RecordTocheck."Tax Account No." := VLE."Vendor No.";
                     end;
 
+                    PaymentLedgerEntry.Reset();
+                    PaymentLedgerEntry.SetCurrentKey("Vendor No.", "Document Type", "Document No.", Open);
+                    PaymentLedgerEntry.SetRange("Vendor No.", RecordTocheck."Account No.");
+                    PaymentLedgerEntry.SetRange("Document Type", RecordTocheck."Document Type"::" ");
+                    PaymentLedgerEntry.SetRange("Document No.", RecordTocheck."Applies-to Doc. No.");
+                    PaymentLedgerEntry.SetRange("SBA Applies-to Doc. No.", RecordTocheck."Purchase Document No");
+                    if PaymentLedgerEntry.FindFirst() then begin
+
+                        DetailedVendorLedgEntry.Reset();
+                        DetailedVendorLedgEntry.SetCurrentKey("Vendor Ledger Entry No.", "Entry Type", Unapplied);
+                        DetailedVendorLedgEntry.SetRange("Vendor Ledger Entry No.", PaymentLedgerEntry."Entry No.");
+                        DetailedVendorLedgEntry.SetRange("Entry Type", DetailedVendorLedgEntry."Entry Type"::Application);
+                        DetailedVendorLedgEntry.SetRange(Unapplied, false);
+                        if DetailedVendorLedgEntry.FindFirst() then begin
+
+                            ClearLastError();
+
+                            UnapplyPayTaxVoid(RecordTocheck, DetailedVendorLedgEntry);
+                            RecordTocheck."Posting Message" := GetLastErrorText();
+                        end;
+
+                    end;
+
+                    PaymentLedgerEntry.Reset();
+                    PaymentLedgerEntry.SetCurrentKey("Vendor No.", "Document Type", "Document No.", Open);
+                    PaymentLedgerEntry.SetRange("Vendor No.", RecordTocheck."Account No.");
+                    PaymentLedgerEntry.SetRange("Document Type", RecordTocheck."Document Type"::Payment);
+                    PaymentLedgerEntry.SetRange("Document No.", RecordTocheck."Applies-to Doc. No.");
+                    PaymentLedgerEntry.SetRange("SBA Applies-to Doc. No.", RecordTocheck."Purchase Document No");
+                    if not PaymentLedgerEntry.FindFirst() then begin
+                        RecordTocheck."Posting Message" := StrSubstNo(TextLabel0001, RecordTocheck."Account No.", RecordTocheck."Document Type"::Payment,
+                                                                      RecordTocheck."Applies-to Doc. No.", RecordTocheck."Purchase Document No");
+                        RecordTocheck.Status := RecordTocheck.Status::"Data Error";
+                        ErrorPay := true;
+                    end else begin
+
+                        DetailedVendorLedgEntry.Reset();
+                        DetailedVendorLedgEntry.SetCurrentKey("Vendor Ledger Entry No.", "Entry Type", Unapplied);
+                        DetailedVendorLedgEntry.SetRange("Vendor Ledger Entry No.", PaymentLedgerEntry."Entry No.");
+                        DetailedVendorLedgEntry.SetRange("Entry Type", DetailedVendorLedgEntry."Entry Type"::Application);
+                        DetailedVendorLedgEntry.SetRange(Unapplied, false);
+                        if not DetailedVendorLedgEntry.FindFirst() then
+                            RecordTocheck.Status := RecordTocheck.Status::Unapply
+                        // RecordTocheck."Posting Message" := StrSubstNo(TextLabel0002, RecordTocheck."Account No.", RecordTocheck."Document Type"::Payment,
+                        //                                               RecordTocheck."Applies-to Doc. No.", RecordTocheck."Purchase Document No")
+                        else begin
+
+                            Clear(ApplyUnapplyParameters);
+                            GLSetup.GetRecordOnce();
+                            if GLSetup."Journal Templ. Name Mandatory" then begin
+                                GLSetup.TestField("Apply Jnl. Template Name");
+                                GLSetup.TestField("Apply Jnl. Batch Name");
+                                ApplyUnapplyParameters."Journal Template Name" := GLSetup."Apply Jnl. Template Name";
+                                ApplyUnapplyParameters."Journal Batch Name" := GLSetup."Apply Jnl. Batch Name";
+                                GenJnlBatch.Get(GLSetup."Apply Jnl. Template Name", GLSetup."Apply Jnl. Batch Name");
+                            end;
+
+                            ClearLastError();
+                            if RecordTocheck."Posting Message" = '' then
+                                UnapplyPayTaxVoid(RecordTocheck, DetailedVendorLedgEntry);
+
+
+                            if RecordTocheck."Tax Paid" = true then
+                                ApplyPayTaxVoid(RecordTocheck);
+
+                        end;
+
+                    end;
+
+
+                    if GetLastErrorText() <> '' then
+                        RecordTocheck."Posting Message" := GetLastErrorText();
+
+                    RecordTocheck.CalcFields("Detail Ledger Document No.");
+                    if ErrorPay = false then
+                        if (RecordTocheck."Posting Message" <> '') and (RecordTocheck."Detail Ledger Document No." <> 0) then
+                            RecordTocheck.Status := RecordTocheck.Status::"Error Unapply"
+                        else
+                            RecordTocheck.Status := RecordTocheck.Status::Unapply;
+
+                    RecordTocheck.Modify();
+
+                    Commit();
+
                 end;
-
-                PaymentLedgerEntry.Reset();
-                PaymentLedgerEntry.SetCurrentKey("Vendor No.", "Document Type", "Document No.", Open);
-                PaymentLedgerEntry.SetRange("Vendor No.", RecordTocheck."Account No.");
-                PaymentLedgerEntry.SetRange("Document Type", RecordTocheck."Document Type"::Payment);
-                PaymentLedgerEntry.SetRange("Document No.", RecordTocheck."Applies-to Doc. No.");
-                PaymentLedgerEntry.SetRange("SBA Applies-to Doc. No.", RecordTocheck."External Document No.");
-                if not PaymentLedgerEntry.FindFirst() then
-                    RecordTocheck."Posting Message" := StrSubstNo(TextLabel0001, RecordTocheck."Account No.", RecordTocheck."Document Type"::Payment,
-                                                                  RecordTocheck."Applies-to Doc. No.", RecordTocheck."External Document No.");
-
-                DetailedVendorLedgEntry.Reset();
-                DetailedVendorLedgEntry.SetCurrentKey("Vendor Ledger Entry No.", "Entry Type", Unapplied);
-                DetailedVendorLedgEntry.SetRange("Vendor Ledger Entry No.", PaymentLedgerEntry."Entry No.");
-                DetailedVendorLedgEntry.SetRange("Entry Type", DetailedVendorLedgEntry."Entry Type"::Application);
-                DetailedVendorLedgEntry.SetRange(Unapplied, false);
-                if not DetailedVendorLedgEntry.FindFirst() then
-                    RecordTocheck."Posting Message" := StrSubstNo(TextLabel0002, RecordTocheck."Account No.", RecordTocheck."Document Type"::Payment,
-                                                                  RecordTocheck."Applies-to Doc. No.", RecordTocheck."External Document No.");
-
-                Clear(ApplyUnapplyParameters);
-                GLSetup.GetRecordOnce();
-                if GLSetup."Journal Templ. Name Mandatory" then begin
-                    GLSetup.TestField("Apply Jnl. Template Name");
-                    GLSetup.TestField("Apply Jnl. Batch Name");
-                    ApplyUnapplyParameters."Journal Template Name" := GLSetup."Apply Jnl. Template Name";
-                    ApplyUnapplyParameters."Journal Batch Name" := GLSetup."Apply Jnl. Batch Name";
-                    GenJnlBatch.Get(GLSetup."Apply Jnl. Template Name", GLSetup."Apply Jnl. Batch Name");
-                end;
-
-                ClearLastError();
-                if RecordTocheck."Posting Message" = '' then
-                    UnapplyPayTaxVoid(RecordTocheck, DetailedVendorLedgEntry);
-
-
-                if RecordTocheck."Tax Paid" = true then
-                    ApplyPayTaxVoid(RecordTocheck);
-
-                RecordTocheck."Posting Message" := GetLastErrorText();
-
-                if RecordTocheck."Posting Message" <> '' then
-                    RecordTocheck.Status := RecordTocheck.Status::"Data Error"
-                else
-                    RecordTocheck.Status := RecordTocheck.Status::Unapply;
-
-                RecordTocheck.Modify();
-
-                Commit();
 
             until RecordTocheck.Next() = 0;
 
@@ -606,7 +645,8 @@ codeunit 50079 "IntPurchVoidPayment"
     begin
 
         ApplyUnapplyParameters."Document No." := RecordTocheck."Applies-to Doc. No.";
-        ApplyUnapplyParameters."Posting Date" := DetailedVendorLedgEntry."Posting Date";
+        //ApplyUnapplyParameters."Posting Date" := DetailedVendorLedgEntry."Posting Date";
+        ApplyUnapplyParameters."Posting Date" := RecordTocheck."Posting Date";
 
         VendEntryApplyPostedEntries.PostUnApplyVendor(DetailedVendorLedgEntry, ApplyUnapplyParameters);
 
@@ -632,7 +672,7 @@ codeunit 50079 "IntPurchVoidPayment"
         DocumentLedger.SetRange("Vendor No.", RecordToAplly."Account No.");
         DocumentLedger.SetRange("Document Type", RecordToAplly."Document Type"::" ");
         DocumentLedger.SetRange("Document No.", RecordToAplly."Applies-to Doc. No.");
-        DocumentLedger.SetRange("SBA Applies-to Doc. No.", RecordToAplly."External Document No.");
+        DocumentLedger.SetRange("SBA Applies-to Doc. No.", RecordToAplly."Purchase Document No");
         if not DocumentLedger.IsEmpty then begin
             DocumentLedger.FindSet();
 
@@ -640,7 +680,7 @@ codeunit 50079 "IntPurchVoidPayment"
             PaymentLedger.SetCurrentKey("Vendor No.", "Document Type", "Document No.", Open);
             PaymentLedger.SetRange("Vendor No.", RecordToAplly."Account No.");
             //PaymentLedger.SetRange("Document Type", RecordToFilter."Document Type");
-            PaymentLedger.SetRange("Document No.", RecordToAplly."External Document No.");
+            PaymentLedger.SetRange("Document No.", RecordToAplly."Purchase Document No");
             PaymentLedger.SetRange(Open, true);
             if not PaymentLedger.IsEmpty then begin
                 PaymentLedger.FindSet();
@@ -664,6 +704,8 @@ codeunit 50079 "IntPurchVoidPayment"
                     ApplyUnapplyParameters."Journal Batch Name" := GLSetup."Apply Jnl. Batch Name";
                 end;
 
+                ApplyUnapplyParameters."Posting Date" := RecordToAplly."Posting Date";
+
                 VendEntryApplyPostedEntries.Apply(DocumentLedger, ApplyUnapplyParameters);
 
 
@@ -683,6 +725,7 @@ codeunit 50079 "IntPurchVoidPayment"
     local procedure Codeunit_13_OnAfterPostGenJournalLine(var GenJournalLine: Record "Gen. Journal Line"; var Result: Boolean)
     var
         IntPurchVoidPayment: Record IntPurchVoidPayment;
+        Vat: Record "VAT Entry";
     begin
 
         if Result then begin
@@ -690,16 +733,233 @@ codeunit 50079 "IntPurchVoidPayment"
             IntPurchVoidPayment.Reset();
             IntPurchVoidPayment.setrange("Journal Template Name", GenJournalLine."Journal Template Name");
             IntPurchVoidPayment.setrange("Journal Batch Name", GenJournalLine."Journal Batch Name");
-            IntPurchVoidPayment.SetRange("Line No.", GenJournalLine."Line No.");
+            IntPurchVoidPayment.SetRange("Journal Line No.", GenJournalLine."Line No.");
+            IntPurchVoidPayment.SetRange("Document No.", GenJournalLine."Document No.");
             if IntPurchVoidPayment.FindFirst() then begin
 
                 IntPurchVoidPayment.Status := IntPurchVoidPayment.Status::Posted;
+                IntPurchVoidPayment."Journal Line No." := 0;
                 IntPurchVoidPayment.Modify();
 
+                if IntPurchVoidPayment."Tax Paid" = false then begin
+                    Vat.Reset();
+                    Vat.SetCurrentKey("Document No.", "Posting Date");
+                    vat.SetRange("Document No.", IntPurchVoidPayment."Purchase Document No");
+                    Vat.SetFilter("CADBR Payment/Receipt Base", '<>%1', 0);
+                    if Vat.FindSet() then begin
+                        repeat
+                            vat.Base := 0;
+                            vat."CADBR Payment Date" := 0D;
+                            vat.Amount := 0;
+                            vat.Modify();
+                        until vat.Next() = 0;
+                    end;
+                end;
             end;
 
         end;
 
     end;
 
+
+    procedure PostUnApplyVendorCommit(DtldVendLedgEntry2: Record "Detailed Vendor Ledg. Entry"; var VoidToUna: Record IntPurchVoidPayment)
+    var
+        DtldVendLedgEntry: Record "Detailed Vendor Ledg. Entry";
+    begin
+
+        if DtldVendLedgEntry2."Transaction No." = 0 then begin
+            DtldVendLedgEntry.SetCurrentKey("Application No.", "Vendor No.", "Entry Type");
+            DtldVendLedgEntry.SetRange("Application No.", DtldVendLedgEntry2."Application No.");
+        end else begin
+            DtldVendLedgEntry.SetCurrentKey("Transaction No.", "Vendor No.", "Entry Type");
+            DtldVendLedgEntry.SetRange("Transaction No.", DtldVendLedgEntry2."Transaction No.");
+        end;
+        DtldVendLedgEntry.SetRange("Vendor No.", DtldVendLedgEntry2."Vendor No.");
+        DtldVendLedgEntry.SetFilter("Entry Type", '<>%1', DtldVendLedgEntry."Entry Type"::"Initial Entry");
+        DtldVendLedgEntry.SetRange(Unapplied, false);
+
+        if DtldVendLedgEntry.Find('-') then
+            repeat
+
+                if DtldVendLedgEntry."Transaction No." <> 0 then
+                    CheckUnappliedEntries(DtldVendLedgEntry, VoidToUna);
+            until DtldVendLedgEntry.Next() = 0;
+
+    end;
+
+    local procedure CheckUnappliedEntries(DtldVendLedgEntry: Record "Detailed Vendor Ledg. Entry"; var VoidToUna2: Record IntPurchVoidPayment)
+    var
+        LastTransactionNo: Integer;
+        IsHandled: Boolean;
+    begin
+        if DtldVendLedgEntry."Entry Type" = DtldVendLedgEntry."Entry Type"::Application then begin
+            LastTransactionNo := FindLastApplTransactionEntry(DtldVendLedgEntry."Vendor Ledger Entry No.");
+
+            if (LastTransactionNo <> 0) and (LastTransactionNo <> DtldVendLedgEntry."Transaction No.") then
+                InsertUnappliedEntries(DtldVendLedgEntry, VoidToUna2);
+        end;
+        LastTransactionNo := FindLastTransactionNo(DtldVendLedgEntry."Vendor Ledger Entry No.");
+        if (LastTransactionNo <> 0) and (LastTransactionNo <> DtldVendLedgEntry."Transaction No.") then
+            InsertUnappliedEntries(DtldVendLedgEntry, VoidToUna2);
+    end;
+
+    local procedure FindLastTransactionNo(VendLedgEntryNo: Integer): Integer
+    var
+        DtldVendLedgEntry: Record "Detailed Vendor Ledg. Entry";
+        LastTransactionNo: Integer;
+    begin
+        DtldVendLedgEntry.SetCurrentKey("Vendor Ledger Entry No.", "Entry Type");
+        DtldVendLedgEntry.SetRange("Vendor Ledger Entry No.", VendLedgEntryNo);
+        DtldVendLedgEntry.SetRange(Unapplied, false);
+        DtldVendLedgEntry.SetFilter(
+            "Entry Type", '<>%1&<>%2',
+            DtldVendLedgEntry."Entry Type"::"Unrealized Loss", DtldVendLedgEntry."Entry Type"::"Unrealized Gain");
+        LastTransactionNo := 0;
+        if DtldVendLedgEntry.FindSet() then
+            repeat
+                if LastTransactionNo < DtldVendLedgEntry."Transaction No." then
+                    LastTransactionNo := DtldVendLedgEntry."Transaction No.";
+            until DtldVendLedgEntry.Next() = 0;
+        exit(LastTransactionNo);
+    end;
+
+    local procedure FindLastApplTransactionEntry(VendLedgEntryNo: Integer): Integer
+    var
+        DtldVendLedgEntry: Record "Detailed Vendor Ledg. Entry";
+        LastTransactionNo: Integer;
+    begin
+        DtldVendLedgEntry.SetCurrentKey("Vendor Ledger Entry No.", "Entry Type");
+        DtldVendLedgEntry.SetRange("Vendor Ledger Entry No.", VendLedgEntryNo);
+        DtldVendLedgEntry.SetRange("Entry Type", DtldVendLedgEntry."Entry Type"::Application);
+        LastTransactionNo := 0;
+        if DtldVendLedgEntry.Find('-') then
+            repeat
+                if (DtldVendLedgEntry."Transaction No." > LastTransactionNo) and not DtldVendLedgEntry.Unapplied then
+                    LastTransactionNo := DtldVendLedgEntry."Transaction No.";
+            until DtldVendLedgEntry.Next() = 0;
+        exit(LastTransactionNo);
+    end;
+
+    procedure TransUnapplyPaymentVoidJournal(var VoidToUnapply: Record IntPurchVoidPayment): Boolean;
+    var
+        ApplyUnapplyParameters: Record "Apply Unapply Parameters";
+        GLSetup: Record "General Ledger Setup";
+        GenJnlBatch: Record "Gen. Journal Batch";
+        RecordTocheck: Record IntPurchVoidPayment;
+        PaymentLedgerEntry: Record "Vendor Ledger Entry";
+        DetailedVendorLedgEntry: Record "Detailed Vendor Ledg. Entry";
+        VendEntryApplyPostedEntries: Codeunit "VendEntry-Apply Posted Entries";
+        VLE: Record "Vendor Ledger Entry";
+        TextLabel0001: Label 'Pagamento não localizado para Desaplicação do Cliente %1 - Tipo de documento %2 - Documento %3 - Aplicação %4';
+        TextLabel0002: Label 'Pagamento já Desaplicado do Cliente %1 - Tipo de documento %2 - Documento %3 - Aplicação %4';
+        UserSetup: codeunit "User Setup Management";
+        ErrorDate: Text;
+    begin
+
+        RecordTocheck.Reset();
+        RecordTocheck.SetCurrentKey("Account No.", "Vendor Ledger Entry No.");
+        RecordTocheck.CopyFilters(VoidToUnapply);
+        RecordTocheck.SetFilter(Status, '%1|%2', RecordTocheck.Status::Imported, RecordTocheck.Status::"Data Error");
+        if not RecordTocheck.IsEmpty then begin
+            RecordTocheck.FindSet();
+            repeat
+
+                if not UserSetup.TestAllowedPostingDate(RecordTocheck."Posting Date", ErrorDate) then begin
+                    RecordTocheck.Status := RecordTocheck.Status::"Data Error";
+                    RecordTocheck."Posting Message" := CopyStr(ErrorDate, 1, 200);
+
+                end else begin
+
+                    PaymentLedgerEntry.Reset();
+                    PaymentLedgerEntry.SetCurrentKey("Vendor No.", "Document Type", "Document No.", Open);
+                    PaymentLedgerEntry.SetRange("Vendor No.", RecordTocheck."Account No.");
+                    PaymentLedgerEntry.SetRange("Document Type", RecordTocheck."Document Type"::" ");
+                    PaymentLedgerEntry.SetRange("Document No.", RecordTocheck."Applies-to Doc. No.");
+                    PaymentLedgerEntry.SetRange("SBA Applies-to Doc. No.", RecordTocheck."Purchase Document No");
+                    if PaymentLedgerEntry.FindFirst() then begin
+
+                        DetailedVendorLedgEntry.Reset();
+                        DetailedVendorLedgEntry.SetCurrentKey("Vendor Ledger Entry No.", "Entry Type", Unapplied);
+                        DetailedVendorLedgEntry.SetRange("Vendor Ledger Entry No.", PaymentLedgerEntry."Entry No.");
+                        DetailedVendorLedgEntry.SetRange("Entry Type", DetailedVendorLedgEntry."Entry Type"::Application);
+                        DetailedVendorLedgEntry.SetRange(Unapplied, false);
+                        if DetailedVendorLedgEntry.FindFirst() then begin
+                            PostUnApplyVendorCommit(DetailedVendorLedgEntry, RecordTocheck);
+
+                        end;
+
+                    end;
+
+                end;
+
+                RecordTocheck.Modify();
+
+                Commit();
+
+            until RecordTocheck.Next() = 0;
+
+        end;
+    end;
+
+    local procedure InsertUnappliedEntries(DtldVendLedgEntry: Record "Detailed Vendor Ledg. Entry"; var VoidToUna3: Record IntPurchVoidPayment)
+    var
+        VoidTrans: Record IntPurchVoidPayTrans;
+        OldVoidTrans: Record IntPurchVoidPayTrans;
+        VendLed: Record "Vendor Ledger Entry";
+        PaymentLedgerEntry: Record "Vendor Ledger Entry";
+        DetailedVendorLedgEntry: Record "Detailed Vendor Ledg. Entry";
+        LineNo: Integer;
+    begin
+
+        OldVoidTrans.Reset();
+        OldVoidTrans.SetRange("Journal Template Name", VoidToUna3."Journal Template Name");
+        OldVoidTrans.SetRange("Journal Batch Name", VoidToUna3."Journal Batch Name");
+        OldVoidTrans.SetRange("Line No.", VoidToUna3."Line No.");
+        OldVoidTrans.SetRange("Excel File Name", VoidToUna3."Excel File Name");
+        if OldVoidTrans.FindLast() then
+            LineNo := OldVoidTrans."Trans Line No." + 1
+        else
+            LineNo := 1;
+
+        OldVoidTrans.Reset();
+        OldVoidTrans.SetRange("Journal Template Name", VoidToUna3."Journal Template Name");
+        OldVoidTrans.SetRange("Journal Batch Name", VoidToUna3."Journal Batch Name");
+        OldVoidTrans.SetRange("Line No.", VoidToUna3."Line No.");
+        OldVoidTrans.SetRange("Excel File Name", VoidToUna3."Excel File Name");
+        OldVoidTrans.SetRange("Trans Vendor Ledger Entry No.", DtldVendLedgEntry."Vendor Ledger Entry No.");
+        if not OldVoidTrans.FindSet() then begin
+
+            VoidTrans.Init();
+            VoidTrans.TransferFields(VoidToUna3);
+            VoidTrans."Trans Line No." := LineNo;
+            VoidTrans."Trans Vendor Ledger Entry No." := DtldVendLedgEntry."Vendor Ledger Entry No.";
+            VendLed.get(DtldVendLedgEntry."Vendor Ledger Entry No.");
+            VoidTrans."Trans. Document No." := VendLed."Document No.";
+            VoidTrans.Insert();
+
+            VoidToUna3.Status := VoidToUna3.Status::"Error Unapply";
+            VoidToUna3."Posting Message" := 'Um ou mais movimentos para desaplicar, seguir com o processo manual';
+            VoidToUna3.Modify();
+
+            PaymentLedgerEntry.Reset();
+            if PaymentLedgerEntry.Get(DtldVendLedgEntry."Vendor Ledger Entry No.") then begin
+
+                DetailedVendorLedgEntry.Reset();
+                DetailedVendorLedgEntry.SetCurrentKey("Vendor Ledger Entry No.", "Entry Type", Unapplied);
+                DetailedVendorLedgEntry.SetRange("Vendor Ledger Entry No.", PaymentLedgerEntry."Entry No.");
+                DetailedVendorLedgEntry.SetRange("Entry Type", DetailedVendorLedgEntry."Entry Type"::Application);
+                DetailedVendorLedgEntry.SetRange(Unapplied, false);
+                if DetailedVendorLedgEntry.FindFirst() then
+                    PostUnApplyVendorCommit(DetailedVendorLedgEntry, VoidToUna3);
+
+            end;
+
+        end else begin
+
+            VoidToUna3.Status := VoidToUna3.Status::"Error Unapply";
+            VoidToUna3."Posting Message" := 'Um ou mais movimentos para desaplicar, seguir com o processo manual';
+            VoidToUna3.Modify();
+
+        end;
+    end;
 }

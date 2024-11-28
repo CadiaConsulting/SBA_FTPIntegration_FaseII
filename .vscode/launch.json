@@ -3,12 +3,12 @@
     "configurations": [
         {
              
-            "name": "COPY_SBA_26032024",
+            "name": "SBA_UAT_FASE_2_24102024",
             "request": "launch",
             "type": "al",
             "environmentType":"Sandbox"   ,
             "tenant": "3688e59a-3259-4495-8f8b-39d3649166e4",
-            "environmentName": "COPY_SBA_26032024",
+            "environmentName": "SBA_UAT_FASE_2_24102024",
             "startupObjectId": 50000,
             "startupObjectType": "Page",
             "breakOnError": true,
@@ -25,7 +25,7 @@
             "type": "al",
             "environmentType":"Sandbox"   ,
             "tenant": "3688e59a-3259-4495-8f8b-39d3649166e4",
-            "environmentName": "SBA_DEV_FASE_2_15102024",
+            "environmentName": "SBA_DEV_FASE_2_10112024",
             "startupObjectId": 22,
             "startupObjectType": "Page",
             "breakOnError": true,
@@ -37,12 +37,12 @@
         },
         {
              
-            "name": "SBA_UAT_FASE_2_17052024",
+            "name": "SBA_UAT_FASE_2_30102024",
             "request": "launch",
             "type": "al",
             "environmentType":"Sandbox"   ,
             "tenant": "3688e59a-3259-4495-8f8b-39d3649166e4",
-            "environmentName": "SBA_UAT_FASE_2_17052024",
+            "environmentName": "SBA_UAT_FASE_2_30102024",
             "startupObjectId": 22,
             "startupObjectType": "Page",
             "breakOnError": true,
@@ -54,12 +54,12 @@
         },
         {
              
-            "name": "SBA_UAT_FASE_2_30092024",
+            "name": "SBA_UAT_FASE_2_10112024",
             "request": "launch",
             "type": "al",
             "environmentType":"Sandbox"   ,
             "tenant": "3688e59a-3259-4495-8f8b-39d3649166e4",
-            "environmentName": "SBA_UAT_FASE_2_30092024",
+            "environmentName": "SBA_UAT_FASE_2_10112024",
             "startupObjectId": 50000,
             "startupObjectType": "Page",
             "breakOnError": true,
@@ -88,6 +88,18 @@
             "type": "al",
             "tenant": "3688e59a-3259-4495-8f8b-39d3649166e4",
             "environmentName": "SBA_UAT_FASE_2_17052024",     
+            "breakOnError": "All",            
+            "enableLongRunningSqlStatements": true,
+            "enableSqlInformationDebugger": true,
+            "breakOnNext": "Background"
+        
+        },
+        {            
+            "name": "Attach Debug SBA_DEV_FASE_2_15102024",
+            "request": "attach",
+            "type": "al",
+            "tenant": "3688e59a-3259-4495-8f8b-39d3649166e4",
+            "environmentName": "SBA_DEV_FASE_2_15102024",     
             "breakOnError": "All",            
             "enableLongRunningSqlStatements": true,
             "enableSqlInformationDebugger": true,

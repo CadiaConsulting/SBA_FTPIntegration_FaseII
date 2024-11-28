@@ -415,7 +415,7 @@ page 50070 "IntPurchPayment"
     var
         IntPurchPayment: codeunit IntPurchPayment;
         ImportMessageLbl: Label 'The Excel file was imported';
-        PostJornalLbl: Label 'The joranl was posted';
+        PostJornalLbl: Label 'The jornal was posted';
         CopyToJournalLbl: Label 'Lines were Copied to Journal';
         UpdateAmountEntryLbl: Label 'Lines were Update Amount Entry';
 }

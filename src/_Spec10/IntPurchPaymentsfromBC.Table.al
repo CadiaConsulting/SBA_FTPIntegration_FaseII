@@ -71,7 +71,7 @@ table 50073 "IntPurchPaymentsFromBC"
             Caption = 'Amount';
         }
 
-        field(13; WiteOffAmount; Decimal)
+        field(13; "WiteOffAmount"; Decimal)
         {
             Caption = 'WiteOffAmount';
         }
@@ -142,9 +142,20 @@ table 50073 "IntPurchPaymentsFromBC"
         }
         field(26; "Detail Ledger Entry No."; Integer)
         {
-            Caption = 'Line No.';
+            Caption = 'Detail Ledger Entry No.';
             TableRelation = "Detailed Vendor Ledg. Entry"."Entry No." where("Entry No." = field("Detail Ledger Entry No."));
         }
+
+        field(27; "Created w/ Manual Apply"; Boolean)
+        {
+            Caption = 'Created w/ Manual Apply';
+
+        }
+        field(28; "First Processing"; Boolean)
+        {
+            Caption = 'First Processing';
+        }
+
         field(97; "Dimension Set ID"; Integer)
         {
             Caption = 'Dimension Set ID';
@@ -169,6 +180,15 @@ table 50073 "IntPurchPaymentsFromBC"
             FieldClass = FlowField;
             CalcFormula = count(IntPurchPaymentsfromBC where("Excel File Name" = field("Excel File Name"),
                                                             "Status" = filter(2 | 6)));
+        }
+        field(101; "Line Payment"; Integer)
+        {
+            Caption = 'Line Payment';
+            Editable = false;
+            FieldClass = FlowField;
+            CalcFormula = count(IntPurchPaymentsfromBC where("Document No." = field("Applies-to Doc. No."),
+                                                            "Document Type" = filter(Payment),
+                                                            Status = filter(Created)));
         }
         field(110; "Errors Import Excel"; Integer)
         {

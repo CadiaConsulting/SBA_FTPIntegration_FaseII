@@ -1,10 +1,13 @@
-page 50073 "IntPurchPaymentsFromBC"
+
+page 50082 "IntPurchVoidPaymentPosted"
 {
     ApplicationArea = All;
-    Caption = 'Integration Payments from BC';
+    Caption = 'Integration Purchase Void Payment Posted';
     PageType = List;
-    SourceTable = IntPurchPaymentsFromBC;
+    SourceTable = IntPurchVoidPayment;
+    SourceTableView = where(Status = filter(Posted | Cancelled));
     UsageCategory = Lists;
+    Editable = false;
 
     layout
     {
@@ -12,15 +15,32 @@ page 50073 "IntPurchPaymentsFromBC"
         {
             repeater(General)
             {
+
+                field(Status; Rec.Status)
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Status  field.';
+                }
+
+                field("Journal Template Name"; Rec."Journal Template Name")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Journal Template Name field.';
+                }
+                field("Journal Batch Name"; Rec."Journal Batch Name")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Journal Batch Name field.';
+                }
                 field("Line No."; Rec."Line No.")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Line No. field.';
                 }
-                field("Detail Ledger Entry No."; Rec."Detail Ledger Entry No.")
+                field("Journal Line No."; Rec."Journal Line No.")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Detail Ledger Entry No. field.';
+                    ToolTip = 'Specifies the value of the Journal Line No. field.';
                 }
                 field("Account Type"; Rec."Account Type")
                 {
@@ -47,6 +67,26 @@ page 50073 "IntPurchPaymentsFromBC"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Document No. field.';
                 }
+                field("Applies-to Doc. No."; Rec."Applies-to Doc. No.")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Applies-to Doc. No. field.';
+                }
+                field("Payment Date"; Rec."Payment Date")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Posting Date field.';
+                }
+                field("Purchase Document No"; Rec."Purchase Document No")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Purchase Document No field.';
+                }
+                field("Tax Paid"; Rec."Tax Paid")
+                {
+                    ApplicationArea = All;
+                    ToolTip = 'Specifies the value of the Tax Paid field.';
+                }
                 field(Description; Rec.Description)
                 {
                     ApplicationArea = All;
@@ -67,15 +107,15 @@ page 50073 "IntPurchPaymentsFromBC"
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Amount field.';
                 }
-                field(WiteOffAmount; Rec.WiteOffAmount)
+                field("Tax Amount"; Rec."Tax Amount")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the WiteOffAmount field.';
+                    ToolTip = 'Specifies the value of the Tax Amount field.';
                 }
-                field("Dimension Set ID"; Rec."Dimension Set ID")
+                field("Tax Account No."; Rec."Tax Account No.")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Dimension Set ID field.';
+                    ToolTip = 'Specifies the value of the Tax Account No. field.';
                 }
                 field("Dimension 1"; Rec."Dimension 1")
                 {
@@ -115,106 +155,56 @@ page 50073 "IntPurchPaymentsFromBC"
                 field("Dimension 8"; Rec."Dimension 8")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Shortcut Dimension 7 Code field.';
+                    ToolTip = 'Specifies the value of the Shortcut Dimension 8 Code field.';
                 }
                 field("Applies-to Doc. Type"; Rec."Applies-to Doc. Type")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Applies-to Doc. Type field.';
                 }
-                field("Applies-to Doc. No."; Rec."Applies-to Doc. No.")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Applies-to Doc. No. field.';
-                }
-                field("External Document No."; Rec."External Document No.")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the External Document No. field.';
-                }
-                field(Integrated; Rec.Integrated)
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Integrated field.';
-                }
-                field("Created w/ Manual Apply"; Rec."Created w/ Manual Apply")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Created w/ Manual Apply field.';
-                }
-                field(Status; Rec.Status)
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Status field.';
-                }
                 field("Posting Message"; Rec."Posting Message")
                 {
                     ApplicationArea = All;
                     ToolTip = 'Specifies the value of the Posting Message field.';
                 }
-                field("Line Errors"; Rec."Line Errors")
+                field("Excel File Name"; Rec."Excel File Name")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Line Errors field.';
+                    ToolTip = 'Specifies the value of the Excel File Name field.';
                 }
-                field("Line Payment"; Rec."Line Payment")
+                field("Old Detail Transaction No."; Rec."Old Detail Transaction No.")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Line Payment field.';
+                    ToolTip = 'Specifies the value of the Old Detail Transaction No. field.';
                 }
-
-                field("Errors Import Excel"; Rec."Errors Import Excel")
+                field("Vendor Ledger Entry No."; Rec."Vendor Ledger Entry No.")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Errors Import Excel field.';
-                }
-                field("Excel Export File Name"; Rec."Excel Export File Name")
-                {
-                    ApplicationArea = All;
-                    ToolTip = 'Specifies the value of the Excel Export File Name field.';
+                    ToolTip = 'Specifies the value of the Vendor Ledger Entry No. field.';
                 }
             }
         }
     }
-
     actions
     {
         area(Processing)
         {
-            action(ExportExcel)
+
+            action(Bank)
             {
                 ApplicationArea = All;
-                Caption = 'Export Excel Purchase Payment';
-                Image = CreateDocument;
-                ToolTip = 'Export Excel Purchase Payment';
+                Caption = 'Bank Card';
+                Image = BankAccount;
+                ToolTip = 'Bank Card';
 
                 trigger OnAction();
                 var
-                    IntPurchPaymentsFromBC: Codeunit IntPurchPaymentsFromBC;
-                    ExportedFileLbl: Label 'Excel File Exported.';
-                    FTPIntegrationType: Enum "FTP Integration Type";
+                    Bank: Record "Bank Account";
                 begin
-                    IntPurchPaymentsFromBC.ExportExcelIntPurchPaymentsFromBC();
-
-                    CurrPage.Update();
-
-                    Message(ExportedFileLbl);
-                end;
-            }
-            action(SuggestPayments)
-            {
-                ApplicationArea = All;
-                Caption = 'Suggest Vendor Payments';
-                Image = SuggestVendorPayments;
-                ToolTip = 'Suggest Vendor Payments';
-
-                trigger OnAction();
-                var
-                    IntPurchPaymentsFromBC: Codeunit IntPurchPaymentsFromBC;
-                begin
-                    IntPurchPaymentsFromBC.SuggestVendorPayments();
-
-                    CurrPage.Update();
+                    if rec."Bal. Account Type" = rec."Bal. Account Type"::"Bank Account" then begin
+                        Bank."No." := rec."Bal. Account No.";
+                        PAGE.Run(PAGE::"Bank Account Card", Bank);
+                    end;
                 end;
             }
             action(Vendor)
@@ -253,6 +243,50 @@ page 50073 "IntPurchPaymentsFromBC"
                     end;
                 end;
             }
+            action(GeneralJournal)
+            {
+                ApplicationArea = All;
+                Caption = 'General Journal';
+                Image = GeneralLedger;
+                ToolTip = 'General Journal';
+
+                trigger OnAction();
+                var
+                    GenJournalLine: Record "Gen. Journal Line";
+                begin
+                    GenJournalLine."Journal Template Name" := rec."Journal Template Name";
+                    GenJournalLine."Journal Batch Name" := rec."Journal Batch Name";
+                    PAGE.Run(PAGE::"General Journal", GenJournalLine);
+                end;
+            }
+            action(DetailVendor)
+            {
+                ApplicationArea = All;
+                Caption = 'Detail Vendor Ledger';
+                Image = VendorLedger;
+                ToolTip = 'Detail Vendor Ledger';
+
+                trigger OnAction();
+                var
+                    TransVoid: Record IntPurchVoidPayTrans;
+                begin
+                    TransVoid.Reset();
+                    TransVoid.SetRange("Journal Template Name", rec."Journal Template Name");
+                    TransVoid.SetRange("Journal Batch Name", rec."Journal Batch Name");
+                    TransVoid.SetRange("Line No.", rec."Line No.");
+                    TransVoid.SetRange("Excel File Name", rec."Excel File Name");
+                    if TransVoid.FindSet() then
+                        PAGE.Run(PAGE::IntPurchVoidPayTrans, TransVoid);
+
+                end;
+            }
+
         }
     }
+    var
+        IntPurchVoidPayment: Codeunit IntPurchVoidPayment;
+        ImportMessageLbl: Label 'The Excel file was imported';
+        PostJornalLbl: Label 'The jornal was posted';
+        CopyToJournalLbl: Label 'Lines were Copied to Journal';
+        Unapply: Label 'Unapply';
 }

@@ -2,38 +2,6 @@ codeunit 50073 "IntPurchPaymentsFromBC"
 {
     Permissions = TableData "Vendor Ledger Entry" = rm;
 
-    // [EventSubscriber(ObjectType::Table, Database::"Vendor Ledger Entry", 'OnAfterCopyVendLedgerEntryFromGenJnlLine', '', false, false)]
-    // local procedure OnAfterCopyVendLedgerEntryFromGenJnlLine_TableVendorLedgerEntry(var VendorLedgerEntry: Record "Vendor Ledger Entry"; GenJournalLine: Record "Gen. Journal Line")
-    // var
-    //     IPPFromBC: Record IntPurchPaymentsFromBC;
-    //     CompareCNAB: Text;
-    // begin
-
-    //     CompareCNAB := GenJournalLine."Source Code";
-
-    //     if CompareCNAB.Contains('CNAB') then begin
-    //         IPPFromBC.Init();
-    //         IPPFromBC."Journal Template Name" := GenJournalLine."Journal Template Name";
-    //         IPPFromBC."Journal Batch Name" := GenJournalLine."Journal Batch Name";
-    //         IPPFromBC."Line No." := GenJournalLine."Line No.";
-    //         IPPFromBC."Account Type" := GenJournalLine."Account Type";
-    //         IPPFromBC."Account No." := GenJournalLine."Account No.";
-    //         IPPFromBC."Posting Date" := GenJournalLine."Posting Date";
-    //         IPPFromBC."Document Type" := GenJournalLine."Account Type";
-    //         IPPFromBC."Document No." := GenJournalLine."Document No.";
-    //         IPPFromBC.Description := GenJournalLine.Description;
-    //         IPPFromBC."Bal. Account Type" := GenJournalLine."Bal. Account Type";
-    //         IPPFromBC."Bal. Account No." := GenJournalLine."Bal. Account No.";
-    //         IPPFromBC.Amount := GenJournalLine.Amount;
-    //         IPPFromBC."Dimension Set ID" := GenJournalLine."Dimension Set ID";
-    //         IPPFromBC."Applies-to Doc. Type" := GenJournalLine."Applies-to Doc. Type";
-    //         IPPFromBC."Applies-to Doc. No." := GenJournalLine."Applies-to Doc. No.";
-    //         IPPFromBC."External Document No." := GenJournalLine."External Document No.";
-    //         IPPFromBC.Status := IPPFromBC.Status::Created;
-    //         VendorLedgerEntry.Integrated := IPPFromBC.Insert();
-    //     end;
-    // end;
-
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Vend. Entry-Edit", 'OnBeforeVendLedgEntryModify', '', false, false)]
     local procedure Codeunit_113_OnBeforeVendLedgEntryModify(var VendLedgEntry: Record "Vendor Ledger Entry"; FromVendLedgEntry: Record "Vendor Ledger Entry")
     begin
@@ -43,17 +11,21 @@ codeunit 50073 "IntPurchPaymentsFromBC"
     procedure SuggestVendorPayments()
     var
         IPPFromBC: Record IntPurchPaymentsFromBC;
+        OldIPPFromBC: Record IntPurchPaymentsFromBC;
         CompareCNAB: Text;
         VendorLedgerEntry: Record "Vendor Ledger Entry";
         DetailedVendorLed: Record "Detailed Vendor Ledg. Entry";
         CNABPaymentLine: Record "CADBR CNAB Payment Line";
         TotalAmount: Decimal;
         ExtDocumentNo: Code[20];
+        SegunProcess: Boolean;
         EntryNo: Integer;
         DetEntryNo: Integer;
         LineNo: Integer;
         DocumentNo: Code[20];
         AppliesToDocNo: Code[20];
+        ErrorLabel01: Label 'This payment has no linked applied document. Please check the Vendor Ledger Entry for its application.';
+        ErrorLabel02: Label 'This document has not been fully applied. There is an outstanding balance.';
     begin
 
         //Payment
@@ -65,12 +37,31 @@ codeunit 50073 "IntPurchPaymentsFromBC"
         if VendorLedgerEntry.FindSet then
             repeat
 
+                Clear(ExtDocumentNo);
+                Clear(DocumentNo);
+                Clear(LineNo);
+                Clear(EntryNo);
+                Clear(TotalAmount);
+
+                SegunProcess := false;
+                OldIPPFromBC.Reset();
+                OldIPPFromBC.SetRange("Journal Template Name", VendorLedgerEntry."Journal Templ. Name");
+                OldIPPFromBC.SetRange("Journal Batch Name", VendorLedgerEntry."Journal Batch Name");
+                OldIPPFromBC.SetRange("Line No.", VendorLedgerEntry."Entry No.");
+                if OldIPPFromBC.FindFirst() then begin
+                    SegunProcess := true;
+                    OldIPPFromBC.DeleteAll();
+                end;
+
+                VendorLedgerEntry.CalcFields("Remaining Amount");
+
                 DetailedVendorLed.Reset();
                 DetailedVendorLed.SetRange("Document No.", VendorLedgerEntry."Document No.");
                 DetailedVendorLed.SetFilter("Document Type", '%1|%2', DetailedVendorLed."Document Type"::" ", DetailedVendorLed."Document Type"::Payment);
                 DetailedVendorLed.SetRange("Entry Type", DetailedVendorLed."Entry Type"::Application);
                 DetailedVendorLed.SetFilter(Amount, '>%1', 0);
-                if DetailedVendorLed.FindSet() then
+                DetailedVendorLed.SetFilter("Unapplied by Entry No.", '=%1', 0);
+                if DetailedVendorLed.FindSet() then begin
                     repeat
                         DetailedVendorLed.CalcFields("CADBR VendLedg. Ext. Doc. No.");
                         DetailedVendorLed.CalcFields("CADBR Vend. Ledg. Document No.");
@@ -93,7 +84,7 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                                 IPPFromBC."Bal. Account Type" := VendorLedgerEntry."Bal. Account Type";
                                 IPPFromBC."Bal. Account No." := VendorLedgerEntry."Bal. Account No.";
                                 IPPFromBC.Amount := DetailedVendorLed.Amount;
-
+                                IPPFromBC."WiteOffAmount" := VendorLedgerEntry."Remaining Amount";
                                 IPPFromBC."Dimension Set ID" := VendorLedgerEntry."Dimension Set ID";
                                 IPPFromBC."Applies-to Doc. Type" := VendorLedgerEntry."Applies-to Doc. Type";
                                 IPPFromBC."Applies-to Doc. No." := Format(DetailedVendorLed."CADBR Vend. Ledg. Document No.");
@@ -101,6 +92,15 @@ codeunit 50073 "IntPurchPaymentsFromBC"
 
 
                                 IPPFromBC.Status := IPPFromBC.Status::Created;
+                                IF IPPFromBC."WiteOffAmount" <> 0 THEN begin
+                                    IPPFromBC.Status := IPPFromBC.Status::"Data Error";
+                                    IPPFromBC."Posting Message" := ErrorLabel02;
+                                end;
+
+                                IPPFromBC."First Processing" := true;
+                                if SegunProcess then
+                                    IPPFromBC."Created w/ Manual Apply" := true;
+
                                 if IPPFromBC.Insert then;
                                 ExtDocumentNo := DetailedVendorLed."CADBR VendLedg. Ext. Doc. No.";
                                 DocumentNo := VendorLedgerEntry."Document No.";
@@ -116,7 +116,11 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                                 IPPFromBC.SetRange("Document No.", DocumentNo);
                                 if IPPFromBC.FindFirst() then begin
                                     IPPFromBC.Amount := TotalAmount + DetailedVendorLed.Amount;
-
+                                    IPPFromBC."WiteOffAmount" := VendorLedgerEntry."Remaining Amount";
+                                    IF IPPFromBC."WiteOffAmount" <> 0 THEN begin
+                                        IPPFromBC.Status := IPPFromBC.Status::"Data Error";
+                                        IPPFromBC."Posting Message" := ErrorLabel02;
+                                    end;
                                     IPPFromBC.Modify(true);
 
                                     TotalAmount := TotalAmount + DetailedVendorLed.Amount;
@@ -141,12 +145,22 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                                 IPPFromBC."Bal. Account Type" := VendorLedgerEntry."Bal. Account Type";
                                 IPPFromBC."Bal. Account No." := VendorLedgerEntry."Bal. Account No.";
                                 IPPFromBC.Amount := DetailedVendorLed.Amount;
+                                IPPFromBC."WiteOffAmount" := VendorLedgerEntry."Remaining Amount";
                                 IPPFromBC."Dimension Set ID" := VendorLedgerEntry."Dimension Set ID";
                                 IPPFromBC."Applies-to Doc. Type" := VendorLedgerEntry."Applies-to Doc. Type";
                                 IPPFromBC."Applies-to Doc. No." := Format(DetailedVendorLed."CADBR Vend. Ledg. Document No.");
                                 IPPFromBC."External Document No." := Format(DetailedVendorLed."CADBR Vend. Ledg. Document No."); //ajustar
 
                                 IPPFromBC.Status := IPPFromBC.Status::Created;
+                                IF IPPFromBC."WiteOffAmount" <> 0 THEN begin
+                                    IPPFromBC.Status := IPPFromBC.Status::"Data Error";
+                                    IPPFromBC."Posting Message" := ErrorLabel02;
+                                end;
+
+                                IPPFromBC."First Processing" := true;
+                                if SegunProcess then
+                                    IPPFromBC."Created w/ Manual Apply" := true;
+
                                 if IPPFromBC.Insert then;
 
                                 ExtDocumentNo := Format(DetailedVendorLed."CADBR Vend. Ledg. Document No.");
@@ -163,6 +177,12 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                                 IPPFromBC.SetRange("Document No.", DocumentNo);
                                 if IPPFromBC.FindFirst() then begin
                                     IPPFromBC.Amount := TotalAmount + DetailedVendorLed.Amount;
+                                    IPPFromBC."WiteOffAmount" := VendorLedgerEntry."Remaining Amount";
+
+                                    IF IPPFromBC."WiteOffAmount" <> 0 THEN begin
+                                        IPPFromBC.Status := IPPFromBC.Status::"Data Error";
+                                        IPPFromBC."Posting Message" := ErrorLabel02;
+                                    end;
 
                                     IPPFromBC.Modify(true);
 
@@ -174,6 +194,76 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                         end;
 
                     until DetailedVendorLed.Next() = 0;
+                end else begin
+                    //Payment Sem Aplicação!
+
+                    if DocumentNo <> VendorLedgerEntry."Document No." then begin
+
+                        IPPFromBC.Init();
+                        IPPFromBC."Journal Template Name" := VendorLedgerEntry."Journal Templ. Name";
+                        IPPFromBC."Journal Batch Name" := VendorLedgerEntry."Journal Batch Name";
+                        IPPFromBC."Line No." := VendorLedgerEntry."Entry No.";
+                        IPPFromBC."Detail Ledger Entry No." := 0;
+                        IPPFromBC."Account Type" := IPPFromBC."Account Type"::Vendor;
+                        IPPFromBC."Account No." := VendorLedgerEntry."Vendor No.";
+                        IPPFromBC."Posting Date" := VendorLedgerEntry."Posting Date";
+                        IPPFromBC."Document Type" := VendorLedgerEntry."Document Type";
+                        IPPFromBC."Document No." := VendorLedgerEntry."Document No.";
+                        IPPFromBC."External Document No." := VendorLedgerEntry."External Document No.";
+
+                        IPPFromBC.Description := VendorLedgerEntry.Description;
+                        IPPFromBC."Bal. Account Type" := VendorLedgerEntry."Bal. Account Type";
+                        IPPFromBC."Bal. Account No." := VendorLedgerEntry."Bal. Account No.";
+
+                        VendorLedgerEntry.CalcFields(Amount);
+                        IPPFromBC.Amount := VendorLedgerEntry.Amount;
+                        IPPFromBC."WiteOffAmount" := VendorLedgerEntry."Remaining Amount";
+                        IPPFromBC."Dimension Set ID" := VendorLedgerEntry."Dimension Set ID";
+                        IPPFromBC.Status := IPPFromBC.Status::"Data Error";
+                        IPPFromBC."Posting Message" := ErrorLabel01;
+
+                        IF IPPFromBC."WiteOffAmount" <> 0 THEN
+                            IPPFromBC.Status := IPPFromBC.Status::"Data Error";
+
+                        IPPFromBC."First Processing" := true;
+                        if SegunProcess then
+                            IPPFromBC."Created w/ Manual Apply" := true;
+
+                        if IPPFromBC.Insert then;
+
+                        ExtDocumentNo := VendorLedgerEntry."Document No.";
+                        DocumentNo := VendorLedgerEntry."Document No.";
+                        LineNo := VendorLedgerEntry."Entry No.";
+                        EntryNo := DetailedVendorLed."Entry No.";
+                        TotalAmount := DetailedVendorLed.Amount;
+
+                    end else begin
+
+                        IPPFromBC.Reset();
+                        IPPFromBC.SetRange("External Document No.", ExtDocumentNo);
+                        IPPFromBC.SetRange("Line No.", LineNo);
+                        IPPFromBC.SetRange("Document No.", DocumentNo);
+                        if IPPFromBC.FindFirst() then begin
+
+                            VendorLedgerEntry.CalcFields(Amount);
+                            IPPFromBC.Amount := TotalAmount + VendorLedgerEntry.Amount;
+                            IPPFromBC."WiteOffAmount" := VendorLedgerEntry."Remaining Amount";
+
+                            TotalAmount := TotalAmount + VendorLedgerEntry.Amount;
+
+                            IF IPPFromBC."WiteOffAmount" <> 0 THEN
+                                IPPFromBC.Status := IPPFromBC.Status::"Data Error";
+
+                            IPPFromBC.Modify(true);
+
+                        end;
+
+                        ExtDocumentNo := VendorLedgerEntry."External Document No.";
+                        DocumentNo := VendorLedgerEntry."Document No.";
+
+                    end;
+
+                end;
 
             until VendorLedgerEntry.Next = 0;
 
@@ -187,11 +277,26 @@ codeunit 50073 "IntPurchPaymentsFromBC"
         if VendorLedgerEntry.FindSet then
             repeat
 
+                Clear(ExtDocumentNo);
+                Clear(DocumentNo);
+                Clear(LineNo);
+                Clear(EntryNo);
+                Clear(TotalAmount);
+
+                OldIPPFromBC.Reset();
+                OldIPPFromBC.SetRange("Journal Template Name", VendorLedgerEntry."Journal Templ. Name");
+                OldIPPFromBC.SetRange("Journal Batch Name", VendorLedgerEntry."Journal Batch Name");
+                OldIPPFromBC.SetRange("Line No.", VendorLedgerEntry."Entry No.");
+                if OldIPPFromBC.FindFirst() then begin
+                    OldIPPFromBC.DeleteAll();
+                end;
+
                 DetailedVendorLed.Reset();
                 DetailedVendorLed.SetRange("Document No.", VendorLedgerEntry."Document No.");
                 DetailedVendorLed.SetRange("Document Type", VendorLedgerEntry."Document Type");
                 DetailedVendorLed.SetRange("Entry Type", DetailedVendorLed."Entry Type"::Application);
                 DetailedVendorLed.SetFilter(Amount, '>%1', 0);
+                DetailedVendorLed.SetFilter("Unapplied by Entry No.", '=%1', 0);
                 if DetailedVendorLed.FindSet() then
                     repeat
                         DetailedVendorLed.CalcFields("CADBR VendLedg. Ext. Doc. No.");
@@ -225,6 +330,14 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                                 IPPFromBC.Status := IPPFromBC.Status::Created;
                                 if IPPFromBC.Insert then;
 
+                                IPPFromBC.CalcFields("Line Payment");
+                                if IPPFromBC."Line Payment" = 0 then begin
+                                    IPPFromBC.Status := IPPFromBC.Status::"Data Error";
+                                    IPPFromBC."Posting Message" := ErrorLabel01;
+                                    if IPPFromBC.Modify() then;
+
+                                end;
+
                                 ExtDocumentNo := DetailedVendorLed."CADBR VendLedg. Ext. Doc. No.";
                                 DocumentNo := VendorLedgerEntry."Document No.";
                                 LineNo := VendorLedgerEntry."Entry No.";
@@ -240,6 +353,12 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                                 IPPFromBC.SetRange("Document No.", DocumentNo);
                                 if IPPFromBC.FindFirst() then begin
                                     IPPFromBC.Amount := TotalAmount + DetailedVendorLed.Amount;
+
+                                    IPPFromBC.CalcFields("Line Payment");
+                                    if IPPFromBC."Line Payment" = 0 then begin
+                                        IPPFromBC.Status := IPPFromBC.Status::"Data Error";
+                                        IPPFromBC."Posting Message" := ErrorLabel01;
+                                    end;
 
                                     IPPFromBC.Modify(true);
 
@@ -273,6 +392,13 @@ codeunit 50073 "IntPurchPaymentsFromBC"
 
                                 if IPPFromBC.Insert then;
 
+                                IPPFromBC.CalcFields("Line Payment");
+                                if IPPFromBC."Line Payment" = 0 then begin
+                                    IPPFromBC.Status := IPPFromBC.Status::"Data Error";
+                                    IPPFromBC."Posting Message" := ErrorLabel01;
+                                    if IPPFromBC.Modify() then;
+
+                                end;
                                 ExtDocumentNo := Format(DetailedVendorLed."CADBR Vend. Ledg. Document No.");
                                 DocumentNo := VendorLedgerEntry."Document No.";
                                 LineNo := VendorLedgerEntry."Entry No.";
@@ -288,6 +414,13 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                                 IPPFromBC.SetRange("Document No.", DocumentNo);
                                 if IPPFromBC.FindFirst() then begin
                                     IPPFromBC.Amount := TotalAmount + DetailedVendorLed.Amount;
+
+                                    IPPFromBC.CalcFields("Line Payment");
+                                    if IPPFromBC."Line Payment" = 0 then begin
+                                        IPPFromBC.Status := IPPFromBC.Status::"Data Error";
+                                        IPPFromBC."Posting Message" := ErrorLabel01;
+
+                                    end;
 
                                     IPPFromBC.Modify(true);
 
@@ -311,11 +444,26 @@ codeunit 50073 "IntPurchPaymentsFromBC"
         if VendorLedgerEntry.FindSet then
             repeat
 
+                Clear(ExtDocumentNo);
+                Clear(DocumentNo);
+                Clear(LineNo);
+                Clear(EntryNo);
+                Clear(TotalAmount);
+
+                OldIPPFromBC.Reset();
+                OldIPPFromBC.SetRange("Journal Template Name", VendorLedgerEntry."Journal Templ. Name");
+                OldIPPFromBC.SetRange("Journal Batch Name", VendorLedgerEntry."Journal Batch Name");
+                OldIPPFromBC.SetRange("Line No.", VendorLedgerEntry."Entry No.");
+                if OldIPPFromBC.FindFirst() then begin
+                    OldIPPFromBC.DeleteAll();
+                end;
+
                 DetailedVendorLed.Reset();
                 DetailedVendorLed.SetRange("Document No.", VendorLedgerEntry."Document No.");
                 DetailedVendorLed.SetRange("Document Type", VendorLedgerEntry."Document Type");
                 DetailedVendorLed.SetRange("Entry Type", DetailedVendorLed."Entry Type"::Application);
                 DetailedVendorLed.SetFilter(Amount, '>%1', 0);
+                DetailedVendorLed.SetFilter("Unapplied by Entry No.", '=%1', 0);
                 if DetailedVendorLed.FindSet() then
                     repeat
                         DetailedVendorLed.CalcFields("CADBR VendLedg. Ext. Doc. No.");
@@ -348,6 +496,14 @@ codeunit 50073 "IntPurchPaymentsFromBC"
 
                                 if IPPFromBC.Insert then;
 
+                                IPPFromBC.CalcFields("Line Payment");
+                                if IPPFromBC."Line Payment" = 0 then begin
+                                    IPPFromBC.Status := IPPFromBC.Status::"Data Error";
+                                    IPPFromBC."Posting Message" := ErrorLabel01;
+                                    if IPPFromBC.Modify() then;
+
+                                end;
+
                                 ExtDocumentNo := DetailedVendorLed."CADBR VendLedg. Ext. Doc. No.";
                                 DocumentNo := VendorLedgerEntry."Document No.";
                                 LineNo := VendorLedgerEntry."Entry No.";
@@ -363,6 +519,12 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                                 IPPFromBC.SetRange("Document No.", DocumentNo);
                                 if IPPFromBC.FindFirst() then begin
                                     IPPFromBC.Amount := TotalAmount - DetailedVendorLed.Amount;
+
+                                    IPPFromBC.CalcFields("Line Payment");
+                                    if IPPFromBC."Line Payment" = 0 then begin
+                                        IPPFromBC.Status := IPPFromBC.Status::"Data Error";
+                                        IPPFromBC."Posting Message" := ErrorLabel01;
+                                    end;
 
                                     IPPFromBC.Modify(true);
 
@@ -396,6 +558,14 @@ codeunit 50073 "IntPurchPaymentsFromBC"
 
                                 if IPPFromBC.Insert then;
 
+                                IPPFromBC.CalcFields("Line Payment");
+                                if IPPFromBC."Line Payment" = 0 then begin
+                                    IPPFromBC.Status := IPPFromBC.Status::"Data Error";
+                                    IPPFromBC."Posting Message" := ErrorLabel01;
+                                    if IPPFromBC.Modify() then;
+
+                                end;
+
                                 ExtDocumentNo := Format(DetailedVendorLed."CADBR Vend. Ledg. Document No.");
                                 DocumentNo := VendorLedgerEntry."Document No.";
                                 LineNo := VendorLedgerEntry."Entry No.";
@@ -410,6 +580,12 @@ codeunit 50073 "IntPurchPaymentsFromBC"
                                 IPPFromBC.SetRange("Document No.", DocumentNo);
                                 if IPPFromBC.FindFirst() then begin
                                     IPPFromBC.Amount := TotalAmount - DetailedVendorLed.Amount;
+
+                                    IPPFromBC.CalcFields("Line Payment");
+                                    if IPPFromBC."Line Payment" = 0 then begin
+                                        IPPFromBC.Status := IPPFromBC.Status::"Data Error";
+                                        IPPFromBC."Posting Message" := ErrorLabel01;
+                                    end;
 
                                     IPPFromBC.Modify(true);
 

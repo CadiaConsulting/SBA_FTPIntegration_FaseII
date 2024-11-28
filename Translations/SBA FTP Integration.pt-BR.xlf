@@ -7521,7 +7521,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPayment - NamedType ImportMessageLbl</note>
         </trans-unit>
         <trans-unit id="Page 308713983 - NamedType 1573448402" size-unit="char" translate="yes" xml:space="preserve">
-          <source>The joranl was posted</source>
+          <source>The jornal was posted</source>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Page IntPurchPayment - NamedType PostJornalLbl</note>
         </trans-unit>
@@ -10043,6 +10043,30 @@
           <target>Código de condições de pagamento deve ter um valor no cabeçalho.</target>
           <note from="Developer" annotates="general" priority="2"></note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Integration Purchase - Method ReleasePurcDocValidate - NamedType Label50014</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 79103387 - Method 3356747371 - NamedType 2452659769" size-unit="char" translate="yes" xml:space="preserve">
+          <source>This payment has no linked applied document. Please check the Vendor Ledger Entry for its application.</source>
+          <target>Este Pagamento não tem Documento Aplicado vinculado. Verifique a Movs. Contábeis Fornecedor para sua aplicação.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntPurchPaymentsFromBC - Method SuggestVendorPayments - NamedType ErrorLabel01</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 79103387 - Method 3356747371 - NamedType 1814963152" size-unit="char" translate="yes" xml:space="preserve">
+          <source>This document has not been fully applied. There is an outstanding balance.</source>
+          <target>Esse documento não foi totalmente aplicado. Existe saldo pendente.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntPurchPaymentsFromBC - Method SuggestVendorPayments - NamedType ErrorLabel02</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1853925422 - Method 2281550622 - NamedType 4047908085" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Purchase Order is listed as Cancelled. Please check.</source>
+          <target>A Ordem de compra consta como Cancelada. Favor verificar.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Import Excel Buffer - Method ImportExcelPaymentPurchaseJournal - NamedType ErrorCalcLabel</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 308713983 - Method 2038713621 - NamedType 4047908085" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Purchase Order is listed as Cancelled. Please check.</source>
+           <target>A Ordem de compra consta como Cancelada. Favor verificar.</target>
+          <note from="Developer" annotates="general" priority="2"></note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit IntPurchPayment - Method ValidateIntPurchPaymentData - NamedType ErrorCalcLabel</note>
         </trans-unit>
       </group>
     </body>

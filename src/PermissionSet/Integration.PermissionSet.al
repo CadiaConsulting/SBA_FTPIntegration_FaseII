@@ -24,6 +24,7 @@ permissionset 50000 "Integration"
         tabledata "IntegrationPurchaseBuffer" = RIMD,
         tabledata "Integration Landlord" = RIMD,
         tabledata IntPurchVoidPayment = RIMD,
+        tabledata IntPurchVoidPayTrans = RIMD,
         table "FTP Blob" = X,
         table "FTP Directory" = X,
         table "FTP Integration Setup" = X,

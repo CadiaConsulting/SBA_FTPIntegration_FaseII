@@ -153,7 +153,8 @@ table 50070 "IntPurchPayment"
             Editable = false;
             FieldClass = FlowField;
             CalcFormula = count(IntegrationErros where("Integration Type" = filter(9),
-                                                        "Excel File Name" = field("Excel File Name")));
+                                                        "Excel File Name" = field("Excel File Name"),
+                                                        "Line No." = field("Line No.")));
         }
         field(115; "Excel File Name"; text[200])
         {
@@ -236,4 +237,17 @@ table 50070 "IntPurchPayment"
 
         }
     }
+    trigger OnDelete()
+    var
+        IntegErros: Record IntegrationErros;
+    begin
+
+        IntegErros.Reset();
+        IntegErros.SetRange("Integration Type", IntegErros."Integration Type"::"Purchase Payment");
+        IntegErros.SetRange("Excel File Name", rec."Excel File Name");
+        IntegErros.SetRange("Line No.", Rec."Line No.");
+        if IntegErros.FindSet() then
+            IntegErros.DeleteAll();
+
+    end;
 }

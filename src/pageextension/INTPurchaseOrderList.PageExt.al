@@ -108,8 +108,15 @@ pageextension 50017 "INTPurchaseOrderList" extends "Purchase Order List"
                     PurchaseHead.FindSet();
                     repeat
                         IntPurchase.Reset();
-                        IntPurchase.SetRange("Document No.", PurchaseHead."No.");
-                        IntegrationPurchase.UnderAnalysis(IntPurchase);
+                        IntPurchase.SetRange("Document No.", rec."No.");
+                        if IntPurchase.FindFirst() then begin
+                            IntPurchase.Reset();
+                            IntPurchase.SetRange("Document No.", IntPurchase."Document No.");
+                            IntPurchase.SetRange("Line No.", IntPurchase."Line No.");
+                            IntPurchase.SetRange("Excel File Name", IntPurchase."Excel File Name");
+                            if IntPurchase.FindFirst() then
+                                IntegrationPurchase.UnderAnalysis(IntPurchase);
+                        end;
 
                     until PurchaseHead.Next() = 0;
 

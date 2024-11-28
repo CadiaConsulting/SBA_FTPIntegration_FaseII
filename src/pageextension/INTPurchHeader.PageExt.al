@@ -709,7 +709,14 @@ pageextension 50013 "INTPurchHeader" extends "Purchase Order"
                 begin
                     IntPurchase.Reset();
                     IntPurchase.SetRange("Document No.", rec."No.");
-                    IntegrationPurchase.UnderAnalysis(IntPurchase);
+                    if IntPurchase.FindFirst() then begin
+                        IntPurchase.Reset();
+                        IntPurchase.SetRange("Document No.", IntPurchase."Document No.");
+                        IntPurchase.SetRange("Line No.", IntPurchase."Line No.");
+                        IntPurchase.SetRange("Excel File Name", IntPurchase."Excel File Name");
+                        if IntPurchase.FindFirst() then
+                            IntegrationPurchase.UnderAnalysis(IntPurchase);
+                    end;
 
                     CurrPage.SaveRecord();
                     CurrPage.Update();
